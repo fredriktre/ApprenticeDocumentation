@@ -32,3 +32,18 @@ Development:
     concept it presents to be quite nice. I am still at beginner level, yet to actually finish anything and
     also incredibly confused about what to do with this at the moment. I am setting up a project that I plan
     to make in React with 1 API, AXIOS, tailwind CSS, a database and additional React libraries.
+
+  CSS:
+    I wanted to mention this seperately, as it covers a bit more than standard css.
+    The things I mainly want to learn here is:
+      1. SVG
+        To write SVG art from the bottom up is something I would like to learn, and something that might be really
+        useful in the future.
+      2. CSS animation
+        I know how to use keyframes, but I would like to expand a bit on this knowledge. And especially learn
+        how to combine this with javascript to learn things like parralax and similar animation patterns.
+      3. SVG animation
+        This is almost a given, but to use the SVG's I get / make in a CSS animation is something I aspire
+        to do.
+        
+       
