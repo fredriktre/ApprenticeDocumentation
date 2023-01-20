@@ -46,7 +46,7 @@ Development:
         This is almost a given, but to use the SVG's I get / make in a CSS animation is something I aspire
         to do.
         
-    I am working on point[1, 2]; and will likely for a while, as it's just a side thing at the moment.
+   I am working on point 1 and 2 at the moment, but it will take time as it's not my main priority.
         
        
 This is about everything I have learned until now. 
