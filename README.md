@@ -46,4 +46,20 @@ Development:
         This is almost a given, but to use the SVG's I get / make in a CSS animation is something I aspire
         to do.
         
+    I am working on point[1, 2]; and will likely for a while, as it's just a side thing at the moment.
+        
        
+This is about everything I have learned until now. 
+
+A bit about my goals:
+
+1. I wish to become good enough in design to make medium to high quality webdesigns, webappsdesigns and appsdesigns.
+2. I wish to become a good enough web-developer to make medium to high quality React and vanilla websites / webapps
+3. I wish to learn how to make mobile apps using React-native and maybe also the native code for android and IOS (that being 2 different languages).
+4. I wish to become good enough at web- / app-animation to make high quality animations.
+
+Goals unrelated to my education:
+
+1. Learn c# and how the Unity engine works / Learn Unreal engine and its custom code works.
+
+This was all that I thought about for now, more will come in the future.
