@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+@layer components {
+
+  /* green */
+  .green-theme {
+    @apply text-green-500 stroke-green-500
+  }
+  .green-theme.hover-bg {
+    @apply hover:bg-green-600 hover:text-white
+  }
+  .green-theme.active-bg {
+    @apply bg-green-500
+  }
+  .green-theme.hover-bo {
+    @apply hover:border-green-500
+  }
+  .green-theme.focus-bo {
+    @apply focus:border-green-500
+  }
+  .green-theme::placeholder {
+    @apply text-green-500
+  }
+  .green-theme.active-shadow {
+    @apply shadow-green-500
+  }
+
+  /* blue */
+  .blue-theme {
+    @apply text-blue-500
+  }
+  .blue-theme.hover-bg{
+    @apply hover:bg-blue-600 hover:text-white
+  }
+  .blue-theme.active-bg{
+    @apply bg-blue-600
+  }
+  .blue-theme.hover-bo{
+    @apply hover:border-blue-500
+  }
+  .blue-theme.focus-bo{
+    @apply focus:border-blue-500
+  }
+  .blue-theme::placeholder {
+    @apply text-blue-500
+  }
+  .blue-theme.active-shadow {
+    @apply shadow-blue-500
+  }
+
+  /* red */
+  .red-theme {
+    @apply text-red-500
+  }
+  .red-theme.hover-bg{
+    @apply hover:bg-red-600 hover:text-white
+  }
+  .red-theme.active-bg{
+    @apply bg-red-600
+  }
+  .red-theme.hover-bo{
+    @apply hover:border-red-500
+  }
+  .red-theme.focus-bo{
+    @apply focus:border-red-500
+  }
+  .red-theme::placeholder {
+    @apply text-red-500
+  }
+  .red-theme.active-shadow {
+    @apply shadow-red-500
+  }
+
+  /* yellow */
+  .yellow-theme {
+    @apply text-yellow-500
+  }
+  .yellow-theme.hover-bg{
+    @apply hover:bg-yellow-600 hover:text-white
+  }
+  .yellow-theme.active-bg{
+    @apply bg-yellow-600
+  }
+  .yellow-theme.hover-bo{
+    @apply hover:border-yellow-500
+  }
+  .yellow-theme.focus-bo{
+    @apply focus:border-yellow-500
+  }
+  .yellow-theme::placeholder {
+    @apply text-yellow-500
+  }
+  .yellow-theme.active-shadow {
+    @apply shadow-yellow-500
+  }
+
+  .sidebar-icon {
+    @apply relative flex items-center justify-center
+            h-12 w-12 mt-2 mb-2 mx-auto shadow-md
+            bg-gray-800 hover:text-white
+            rounded-3xl hover:rounded-xl
+            transition-all duration-200 ease-linear
+            cursor-pointer;
+  }
+
+  .sidebar-tooltip { 
+    @apply absolute w-auto p-2 m-2 min-w-max
+    rounded-md shadow-md
+    text-white bg-gray-900
+    text-xs font-bold
+    transition-all duration-200 scale-0 z-50;
+  }  
+
+  .header-icon {
+    @apply relative flex items-center justify-center
+    h-12 w-12 mt-2 mb-2 mx-auto shadow-lg
+    bg-gray-900 hover:text-white
+    rounded-3xl hover:rounded-xl
+    transition-all duration-200 ease-linear
+    cursor-pointer;
+  }
+
+  .header-tooltip {    
+    @apply absolute w-auto p-2 m-2 min-w-max top-full
+    rounded-md shadow-md
+    text-white bg-gray-900
+    text-xs font-bold
+    transition-all duration-200 scale-0 origin-top z-50;
+  }
+
+  .h-custom-full {
+    height: calc(100% - calc(4rem + 4rem));
+  }
+}

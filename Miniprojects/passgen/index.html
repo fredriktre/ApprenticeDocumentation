@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script defer src="./main.js"></script>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        
+            width: 100%;
+            height: 100vh;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        div {
+            display: flex;
+        }
+
+        p {
+            margin: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <p>Password here</p>
+    <div>
+        <input id="lengthnum" type="number" placeholder="length"/>
+        <input id="amountnum" type="number" placeholder="amount"/>
+        <button onClick="generatePassword()">generate</button>  
+    </div>
+    <ul id="passcont"></ul>
+</body>
+</html>
