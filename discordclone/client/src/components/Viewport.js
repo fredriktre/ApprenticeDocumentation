@@ -2,8 +2,7 @@ import Auth from "./Auth";
 import { useState } from 'react';
 import { MdCall, MdVideoCall, MdPeople } from "react-icons/md";
 
-const Viewport = (props) => {
-    
+const Viewport = (props) => {    
 
     return (
         <div className="relative w-full h-full pl-16 bg-gray-800">
@@ -11,7 +10,18 @@ const Viewport = (props) => {
             <Chat themeColor={props.themeColor}>
                 {props.children}
             </Chat>
-            <Auth uploadImage={props.uploadImage} themeGlow={props.themeGlow} themeColor={props.themeColor} loginState={props.loginState} />
+            <Auth 
+                uploadImage={props.uploadImage} 
+                themeGlow={props.themeGlow} 
+                themeColor={props.themeColor} 
+                profileIcon={props.profileIcon}
+                userOn={props.userOn} 
+                userName={props.userName}
+                loginState={props.loginState}
+                setUserOn={props.setUserOn}
+                setIconType={props.setIconType}
+                setProfileIcon={props.setProfileIcon}
+                />
         </div>
     )
 }

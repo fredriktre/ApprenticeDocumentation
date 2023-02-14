@@ -24,11 +24,20 @@ body {
   .green-theme.active-bg {
     @apply bg-green-500
   }
+  .green-theme.active-darker-bg {
+    @apply bg-green-800
+  }
+  .green-theme.active-glass-bg {
+    @apply bg-gradient-to-br from-green-800 to-transparent
+  }
   .green-theme.hover-bo {
     @apply hover:border-green-500
   }
   .green-theme.focus-bo {
     @apply focus:border-green-500
+  }
+  .green-theme.active-bo {
+    @apply border-green-500
   }
   .green-theme::placeholder {
     @apply text-green-500
@@ -46,6 +55,12 @@ body {
   }
   .blue-theme.active-bg{
     @apply bg-blue-600
+  }
+  .blue-theme.active-darker-bg {
+    @apply bg-blue-800
+  }
+  .blue-theme.active-glass-bg {
+    @apply bg-gradient-to-br from-blue-800 to-transparent
   }
   .blue-theme.hover-bo{
     @apply hover:border-blue-500
@@ -70,6 +85,12 @@ body {
   .red-theme.active-bg{
     @apply bg-red-600
   }
+  .red-theme.active-darker-bg {
+    @apply bg-red-800
+  }
+  .red-theme.active-glass-bg {
+    @apply bg-gradient-to-br from-red-800 to-transparent
+  }
   .red-theme.hover-bo{
     @apply hover:border-red-500
   }
@@ -92,6 +113,12 @@ body {
   }
   .yellow-theme.active-bg{
     @apply bg-yellow-600
+  }
+  .yellow-theme.active-darker-bg {
+    @apply bg-yellow-800
+  }
+  .yellow-theme.active-glass-bg {
+    @apply bg-gradient-to-br from-yellow-800 to-transparent
   }
   .yellow-theme.hover-bo{
     @apply hover:border-yellow-500
