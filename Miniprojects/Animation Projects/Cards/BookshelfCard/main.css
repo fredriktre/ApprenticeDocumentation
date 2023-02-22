@@ -1,0 +1,57 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100vh;
+
+    margin: 0;
+    padding: 0;
+
+    background-color: black;
+}
+
+
+.bookshelf {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 30rem;
+    height: 25rem;
+}
+
+.bookshelf p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 15%;
+    height: 100%;
+
+    border: 1px solid purple;
+    padding: 2rem 1rem;
+    margin: 0;
+
+    transition: 0.3s ease-in-out;
+}
+
+.bookshelf p span {
+    text-transform: uppercase;
+    color: white;
+    font-size: 3rem;
+    transform: rotate(-90deg);
+    min-width: 16rem;
+    text-align: center;
+
+    transition: 0.3s ease-in-out;
+}
+
+.bookshelf p:hover {
+    width: 100%;
+}
+
+.bookshelf p:hover span {
+    transform: rotate(0);
+}
