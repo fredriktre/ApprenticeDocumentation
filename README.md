@@ -63,3 +63,36 @@ Goals unrelated to my education:
 1. Learn c# and how the Unity engine works / Learn Unreal engine and its custom code works.
 
 This was all that I thought about for now, more will come in the future.
+
+
+
+22.02.2023
+
+It's been about a month, and I would just like to update a little bit about what I have been trying to learn in this month
+
+  React webapps:
+    I have continued on this, making a discord clone that I have almost finished. I am taking a break from it due to a little bit of burnout.
+    I will finish it once I have another project I'm doing done.
+
+  React native:
+    I took a little look at React native! And it seems really fun, but I was suddenly hit with some internet problems at home so my testing system (expo)
+    doesn't work as expected. More work awaits when I get an emulator to fix that problem.
+
+  Tailwind CSS:
+    For both the mentioned projects, I used tailwind css. It's a utility class library that makes writing css seem seamless. It's really nice on the head and
+    just makes sense. I will very likely continue to use this.
+  
+  TrevlandSite:
+    I have been working on a little site for my father that is taking wayyyy too long due to my own laziness :P
+    It's just a site to display some information about people in the family, and I am currently working on the systems that interact with the database.
+
+  Firebase:
+    For all mentioned projects, I used Firebase for a backend. For now I have learned a bit about:
+      1. Firestore
+      2. Authentication
+      3. Storage
+    
+    I will likely continue to use it in the future, until I feel like learning something new.
+
+I want to continue on with doing these things in the future as well. Not that I have forgotten my earlier goals, but being able to make design into code
+is something I need to know. 
