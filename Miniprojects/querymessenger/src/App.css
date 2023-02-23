@@ -1,0 +1,7 @@
+.button-hover:hover button{
+    @apply bg-blue-600 transition-all duration-200
+}
+
+.button-hover:active button {
+    @apply bg-blue-900 shadow-inner
+}
