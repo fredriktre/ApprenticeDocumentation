@@ -1,7 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getStorage, uploadBytes, ref as storageRef, getDownloadURL, } from 'firebase/storage';
-import { getDatabase, onValue, ref as databaseRef, set } from 'firebase/database'
+import { getDatabase, onValue, ref as databaseRef, set } from 'firebase/database';
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider} from 'firebase/auth';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,6 +22,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const db = getDatabase(app)
+export const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
 function createCustomQuery() {
   const alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -45,7 +49,6 @@ export async function handleMessage(image:any, message:string) {
     uploadBytes(storageRef(storage, imageID), image)
     .then((snapshot) => {
       let query = createCustomQuery();
-      console.log("image uploaded")
       console.log(snapshot)
       writeMessage(imageID, message, query);
       resolve(query)
@@ -57,7 +60,6 @@ export async function handleMessage(image:any, message:string) {
 }
 
 function writeMessage(imageid:string, message:string, query:string){
-
   set(databaseRef(db, 'Messages/' + query), {
     imageid: imageid,
     message: message
@@ -71,7 +73,6 @@ export function getMessageFromQuery(query:string) {
     onValue(databaseRef(db, 'Messages/' + query), 
     (snapshot) => {
       const data = snapshot.val();
-      console.log(data)
       resolve(data)
     })
   })
@@ -82,6 +83,82 @@ export function getImageFromId(id:string) {
     getDownloadURL(storageRef(storage, id))
       .then((url) => {
         resolve(url);
+      })
+  })
+}
+
+export function handleEmailAndPassword(action:string, email:string, password:string, username?:string) {
+
+  if (action === "register") {
+    return new Promise (resolve => {
+      createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        if (username != null || username != undefined) {
+          set(databaseRef(db, 'UserData/' + userCredential.user.uid), {
+            username: username
+          })
+          let result = {
+            username: username,
+            ...userCredential.user
+            
+          }
+          resolve(result);
+        }
+        resolve(userCredential.user);
+      })
+    })
+        
+
+  } else if (action === "login") {
+
+    return new Promise (resolve => {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          let username;
+          onValue(databaseRef(db, 'UserData/' + userCredential.user.uid), 
+          (snapshot) => {
+            username = snapshot.val().username;
+          })
+
+          let result = {
+            username: username,
+            ...userCredential.user
+          }
+          
+          resolve(result)
+        })
+    })
+
+  }
+
+}
+
+export function handleGoogle() {
+  return new Promise (resolve => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        let username = result.user.displayName?.split('(').pop();
+        username = username?.slice(0, username.length - 1);
+        set(databaseRef(db, 'UserData/' + result.user.uid), {
+          username: username
+        })
+        resolve(result.user)
+      })
+  })
+}
+
+export function handleFacebook() {
+  facebookProvider.setCustomParameters({
+    'display' : 'popup'
+  })
+  return new Promise (resolve => {
+    signInWithPopup(auth, facebookProvider)
+      .then((result) => {
+        let username = result.user.displayName
+        set(databaseRef(db, 'UserData/' + result.user.uid), {
+          username: username
+        })
+        resolve(result.user)
       })
   })
 }
