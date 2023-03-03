@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .box-wrap {
+            --size: 30vmin;
+            --bg1: white;
+            --bg2: red;
+            --bg3: blue;
+            --bg4: green;
+            --bg5: orange;
+            --bg6: purple;
+            position: fixed;
+            top: 40vh;
+            left: 40vw;
+            height: 0;
+            perspective: 100vmin;
+            z-index: 0;
+        }
+
+        .box {
+            width: var(--size);
+            height: var(--size);
+
+            transform-style: preserve-3d;
+
+            animation: cube 1s linear;
+            animation-fill-mode: both;
+            
+            /* Pause the animation */
+            animation-play-state: paused;
+            /* Bind the animation to scroll */
+            animation-delay: calc(var(--scroll) * -1s);
+            /* These last 2 properites clean up overshoot weirdness */
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
+            animation-direction: alternate;
+        }
+
+        @keyframes cube {
+            to {
+                transform: rotateX(360deg) rotateY(-45deg) rotateZ(-45deg);
+            }
+        }
+
+        .box-side {
+            position: absolute;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width:  100%;
+            height: 100%;
+            border: 1px solid #000000;
+        }
+        
+        .box-side-top {
+            transform: translateY(-50%) rotateX(90deg);
+            background-color: var(--bg1);            
+        }
+        
+        .box-side-bottom {
+            transform: translateY(50%) rotateX(90deg);
+            background-color: var(--bg2);            
+        }
+        
+        .box-side-left {
+            transform: rotateY(270deg) translateZ(calc(var(--size) / 2)); 
+            background-color: var(--bg3);            
+        }
+        
+        .box-side-right {
+            transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); 
+            background-color: var(--bg4);            
+        }
+        
+        .box-side-front {
+            transform: translateZ(calc(var(--size) / 2));
+            background-color: var(--bg5);            
+        }
+        
+        .box-side-back {
+            transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); 
+            background-color: var(--bg6);            
+        }
+
+        .box-side-piece {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #000000;
+            opacity: 0.4;
+        }
+
+        .wrapper {
+            width: 100%;
+            height: 100vh;
+            
+            background-color: black;
+            
+            overflow-y: auto;
+            overflow-x: hidden;
+            
+            perspective: 10px;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ground {
+            position: relative;
+            display: flex;
+            justify-content: center;;
+            align-items: center;
+            height: 500vh;
+            transform-style: preserve-3d;
+            z-index: -1;
+        }
+
+        
+        .background,
+        .middleground,
+        .foreground {
+            position: absolute;
+            height: 100%;
+            width:100%;
+            z-index: -1;
+        }
+        
+        .moon-wrapper {
+            position: absolute;
+            height: 100%;
+            width:100%;
+            width: 100%;
+            height: 50vh;
+            top: 50%;
+            z-index: 2;
+        }
+
+        .background {
+            transform: translateZ(-20px);
+            width: 400%;
+        }
+
+        .middleground {
+            transform: translateZ(-10px);
+            width: 200%;
+        }
+
+        .stars {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            display: block;
+            width: 3rem;
+            aspect-ratio: 1;
+
+            background: radial-gradient(circle at center, var(--color), transparent, transparent);
+
+            filter: blur(4);
+        }
+
+        .moon {
+            position: absolute;
+            left: -50%;
+            top: 0;
+            z-index: inherit;
+
+            display: block;
+
+            width: 40rem;
+            aspect-ratio: 1;
+            
+            background: gray;
+            border-radius: 50%;      
+            box-shadow: 0 0 12rem white;      
+        }
+
+        .moon-animate {
+            animation: moonMove linear;
+
+            animation-fill-mode: both;
+            
+            animation-duration: 3s;
+
+            /* Pause the animation */
+            animation-play-state: paused;
+            /* Bind the animation to scroll */
+            animation-delay: calc(var(--scroll2) * -1s);
+            /* These last 2 properites clean up overshoot weirdness */
+            animation-iteration-count: 1;
+            animation-fill-mode: both;
+            animation-direction: alternate;
+        }
+
+
+        @media (max-width: 700px) {
+            .moon-animate {
+                animation-duration: 2s;
+            }
+        }
+
+        .mouth {
+            position: absolute;
+            bottom: 10rem;
+            left: 20%;
+            display: block;
+            width: 60%;
+            height: 6rem;
+            background-color: black;
+            border-radius: 0 0 50% 50%;
+        }
+        .mouth::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            background-color: gray;
+            width: 100%;
+            height: 120%;
+            border-radius: 0 0 50% 50%;
+        }
+
+        .eye-left {
+            position: absolute;
+            left: 30%;
+            top: 30%;
+            
+            width: 5rem;
+            aspect-ratio: 1;
+
+            background-color: #000000;
+            border-radius: 50%;
+        }
+
+        .eye-right {
+            position: absolute;
+            right: 30%;
+            top: 30%;
+            
+            width: 5rem;
+            aspect-ratio: 1;
+
+            background-color: #000000;
+            border-radius: 50%;
+        }
+
+
+        @keyframes moonMove {
+            from {
+                left: -50%;
+                transform: rotateZ(0);
+            }
+            to {
+                left: 100%;
+                transform: rotateZ(180deg);
+            }
+        }
+
+        
+    </style>
+
+<body>
+    <!-- <span class="star"></span> -->
+    <div id="wrapper" class="wrapper">
+        <div class="ground">            
+            <div id="background" class="background" >
+            </div>
+            <div class="middleground" id="middleground">                
+            </div>
+            <div id="foreground" class="foreground">
+            </div>
+            <div class="moon-wrapper">
+                <span id="moon" class="moon">
+                    <span class="eye-left"></span>
+                    <span class="eye-right"></span>
+                    <span class="mouth"></span>
+                </span>
+            </div>
+        </div>
+       
+    </div>
+    <div class="box-wrap">
+        <div class="box">   
+            <span class="box-side box-side-top">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+            <span class="box-side box-side-bottom">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+            <span class="box-side box-side-front">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+            <span class="box-side box-side-back">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+            <span class="box-side box-side-left">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+            <span class="box-side box-side-right">
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+                <span class="box-side-piece"></span>
+            </span>    
+        </div>
+    </div>
+    
+
+
+    <script>
+        const wrapper = document.getElementById("wrapper")
+
+        wrapper.addEventListener('scroll', () => {
+          document.body.style.setProperty('--scroll', wrapper.scrollTop / 1000);
+
+          if (wrapper.scrollTop / 1000 > 1.2) {
+            document.body.style.setProperty('--scroll2', wrapper.scrollTop / 1000 - 1.2)
+            document.getElementById("moon").classList.add("moon-animate")
+          }
+        }, false);
+
+        function makeStars (amount, id) {
+            for (let i = 0; i < amount; i++) {
+                const star = document.createElement('span');
+                star.classList.add("star");
+                const top = Math.floor(Math.random() * 100);
+                const left = Math.floor(Math.random() * 100);
+                let color = "#";
+                
+                for (let j = 0; j < 6; j++) {
+                    let number = Math.floor(Math.random() * 16);
+                    if (number > 9) {
+                        if (number === 10) {
+                            number = "a";
+                        } else if (number === 11) {
+                            number = "b";
+                        } else if (number === 12) {
+                            number = "c";
+                        } else if (number === 13) {
+                            number = "d";
+                        } else if (number === 14) {
+                            number = "e";
+                        } else if (number === 15) {
+                            number = "f";
+                        }
+                    } else {
+                        number = String(number)
+                    }
+                    color = color + number;
+                }
+                console.log(color)
+                
+
+                star.style = `top: ${top}%; left: ${left}%; --color: ${color};`
+
+
+
+                document.getElementById(id).appendChild(star)
+            }
+        }        
+        
+        function prepareGround () {
+            makeStars(30, "background")
+            makeStars(30, "middleground")
+            makeStars(30, "foreground")
+        }
+
+        prepareGround();
+    </script>
+</body>
+</html>
