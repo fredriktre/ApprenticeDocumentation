@@ -27,10 +27,21 @@ function generatePassword() {
             numTime++;
         }
         let li = document.createElement('li');
-        let p = document.createElement('p')
+        let p = document.createElement('p');
+        let copyBtn = document.createElement('button');
         p.innerText = password;
+        copyBtn.classList.add("copy-btn");
+        copyBtn.id = password
+        copyBtn.innerText = "Copy"
+        copyBtn.addEventListener('click', e => handleCopy(e))
+
         li.appendChild(p);
+        li.appendChild(copyBtn)
         passwordCont.appendChild(li);
     }
 
+}
+
+function handleCopy(e) {
+    navigator.clipboard.writeText(e.target.id)
 }
