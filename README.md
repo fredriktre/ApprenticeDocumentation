@@ -96,3 +96,19 @@ It's been about a month, and I would just like to update a little bit about what
 
 I want to continue on with doing these things in the future as well. Not that I have forgotten my earlier goals, but being able to make design into code
 is something I need to know. 
+
+07.03.2023
+
+It's been about a month, and here is the update:
+
+  I haven't really touched React Native since last month sadly. It's only been about 2 weeks, but still. 
+  
+  I have expanded my knowledge about tailwindcss and firebase, getting better and better bit by bit.
+  
+  https://querymessenger.web.app/ just got finished, and it is live! I am actually a bit proud of it even
+  if it's simple. It only took about a week to make after all.
+  
+  I have finished the first version of my family's page. Just need to get it online. I am, however, really
+  dissatisfied with the result. So I will redesign and redo the whole page. This time with more functionality and better design.
+  
+  Other than that, I am looking to make a couple different projects going forward. We will see what happens.
