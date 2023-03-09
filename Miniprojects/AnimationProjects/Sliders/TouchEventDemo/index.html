@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+        :root {
+            --left: 0px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+
+            background-color: #000000;
+        
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #app-container {
+            width: 600px;
+            height: 1000px;
+            
+            background-color: #fff;
+        }
+    
+        .position-wrapper {
+            position: relative;
+            width: 100%;
+            height: 2rem;
+            background-color: gray;
+        }
+
+        #position-dot {
+            position: absolute;
+            left: var(--left);
+            display: block;
+
+            width: 2rem;
+            height: 2rem;
+
+            background-color: red;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="position-wrapper">
+        <span id="position-dot"></span>
+    </div>
+    <script>
+        const r = document.querySelector(':root')
+        const windowWidth = window.innerWidth;
+
+        let startPos;
+
+        window.addEventListener("touchstart", e => {
+            [...e.touches].forEach(touch => {
+                startPos = touch.clientX;
+            })
+        })
+        window.addEventListener("touchmove", e => {
+            [...e.touches].forEach(touch => {
+
+                let processedPos = touch.clientX / windowWidth * 100;
+
+                if (touch.clientX > 100 && touch.clientX < 500) {
+                    r.style.setProperty('--left', `${processedPos}vw`)
+                }
+            })
+        })
+        window.addEventListener("touchend", e => {
+            [...e.changedTouches].forEach(touch => {
+                let processedPos = touch.clientX / windowWidth * 100;
+                if (touch.clientX > 100 && touch.clientX < 500) { 
+                    if (touch.clientX < windowWidth / 2) {
+                        r.style.setProperty('--left', `10vw`)
+                    } else {
+                        r.style.setProperty('--left', `90vw`)
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>

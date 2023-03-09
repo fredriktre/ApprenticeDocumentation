@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            
+            height: 100vh;
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-color: blueviolet;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem;
+
+            width: max-content;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+        
+        .window {
+            position: relative;
+            background-color: black;
+            
+            height: 30vh;
+            width: 30vh;
+        }
+
+        .dot {
+            position: absolute;
+
+            top: var(--top);
+            left: var(--left);
+
+            display: block;
+
+            width: 1rem;
+            height: 1rem;
+            
+            border-radius: 50%;
+
+            background-color: aliceblue;
+        }
+
+        .dot-2 {
+            position: absolute;
+
+            top: var(--top);
+            left: var(--left);
+
+            display: block;
+
+            width: 1rem;
+            height: 1rem;
+            
+            border-radius: 50%;
+
+            background-color: var(--bg);
+
+            animation-name: dotAnimate;
+            animation-duration: 1950ms;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes dotAnimate {
+            from {
+                scale: 1;
+            }
+
+            to {
+                scale: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid">
+        <div id="window1" class="window">
+            <div class="dot"></div>
+        </div>
+        <div id="window2" class="window">
+        </div>
+    </div>
+
+    
+        <script>
+            const windowElementOne = document.getElementById('window1');
+            const windowElementTwo = document.getElementById('window2');
+            const windowElementThree = document.getElementById('window3');
+            
+            function generateColor () {
+                let colors = "#";
+                for (let j = 0; j < 6; j++) {
+                    let number = Math.floor(Math.random() * 16);
+                    if (number > 9) {
+                        if (number === 10) {
+                            number = "a";
+                        } else if (number === 11) {
+                            number = "b";
+                        } else if (number === 12) {
+                            number = "c";
+                        } else if (number === 13) {
+                            number = "d";
+                        } else if (number === 14) {
+                            number = "e";
+                        } else if (number === 15) {
+                            number = "f";
+                        }
+                    } else {
+                        number = String(number)
+                    }
+                    colors = colors + number;
+                }
+                return colors;
+            }
+
+            windowElementOne.addEventListener('mousemove', e => {
+                windowElementOne.style.setProperty('--top', `${e.offsetY}px`)
+                windowElementOne.style.setProperty('--left', `${e.offsetX}px`)
+            })
+            
+            windowElementTwo.addEventListener('mousemove', e => { 
+                let colors = generateColor();
+                let dot = document.createElement('span');
+                let colorIndex = Math.floor(Math.random() * colors.length) - 1;
+                dot.classList.add("dot-2")
+                dot.style.setProperty('--bg', `${colors}`)
+                dot.style.setProperty('--top', `${e.offsetY}px`)
+                dot.style.setProperty('--left', `${e.offsetX}px`)
+                setTimeout(() => {
+                    dot.remove()
+                }, 2000)
+                windowElementTwo.appendChild(dot)
+            })
+        </script>
+</body>
+</html>

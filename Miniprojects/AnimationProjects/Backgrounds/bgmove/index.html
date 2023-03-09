@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bgmove</title>
+
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+
+            padding: 0;
+            margin: 0;
+        }
+
+        .section {
+            width: 100%;
+            height: 100vh;
+        }
+
+        #landing {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+            
+        
+        #landing div{
+            position: relative;
+            z-index: 2;
+            color: #ffffff;
+            pointer-events: none;
+        }
+
+        @media (min-width: 1000px) {
+            #landing div h1{
+                margin: 0;
+                font-size: 4rem !important;
+            }
+            #landing div h3{
+                margin: 0;
+                font-size: 1.6rem !important;
+            }
+        }
+        #landing div h1{
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        #landing div h3{
+            margin: 0;
+            font-size: 1rem;
+        }        
+        .bg-1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: url(./image.JPG);
+            object-fit: cover;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: var(--xPos1) var(--yPos1);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .bg-2 {
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(at var(--xPos2) var(--yPos2), rgba(0, 0, 0, 0.3), rgba(0,0,0,0.7), rgba(0, 0, 0, 0.9));  
+            background-size: 120%;
+            object-fit: cover; 
+            pointer-events: none;
+        }
+    
+    </style>
+</head>
+<body>
+    
+    <section id="landing" class="section" style="--xPos1: 50%; --yPos1: 50%; --xPos2: 50%; --yPos2: 50%;">
+        <span class="bg-1"></span>
+        <span class="bg-2"></span>
+        <div>
+            <h1>Familypage</h1>
+            <h3>For family <span id="family-text"></span>_</h3>
+        </div>
+
+    </section>
+
+    <script>
+        const landing = document.getElementById("landing");
+        const familyText = document.getElementById("family-text");
+        const familyTextArray = ["search", "info", "forum", "contact"];
+        let windowHeight;
+
+        function moveBackground(e) {
+            landing.style.setProperty("--xPos1", `${Math.floor(100 - e.offsetX / landing.offsetWidth * 100)}%`)
+            landing.style.setProperty("--yPos1", `${Math.floor(100 - e.offsetY / landing.offsetHeight * 50 - 20)}%`)
+            landing.style.setProperty("--xPos2", `${Math.floor(e.offsetX / landing.offsetWidth * 100)}%`)
+            landing.style.setProperty("--yPos2", `${Math.floor(e.offsetY / landing.offsetHeight * 100)}%`)
+        }
+
+        function handleWrite(index, iteration) {
+            const text = familyTextArray[iteration % familyTextArray.length];
+            if (index <= text.length) {
+                let word = familyText.innerText;
+                word = `${word}${text.charAt(index)}`;
+                familyText.innerText = word;
+                index += 1;
+                setTimeout(() => {
+                    handleWrite(index, iteration)
+                }, 200)
+            } else {
+                iteration += 1;
+                setTimeout(() => {
+                    handleDelete(0, iteration)
+                }, 1500)
+            }
+        }
+
+        function handleDelete(index, iteration) {
+            if (familyText.innerText.length > 1) {
+                let word = familyText.innerText;
+                word = word.slice(0, word.length - 1)
+                familyText.innerText = word;
+                setTimeout(() => {
+                    handleDelete(index, iteration)
+                }, 200)
+            }   else if (familyText.innerText.length === 1) {
+                familyText.innerText = "";
+                setTimeout(() => {
+                    handleDelete(index, iteration)
+                }, 100)
+            }   else {
+                setTimeout(() => {
+                    handleWrite(index, iteration)
+                }, 500)
+            }
+        }
+
+        window.addEventListener("resize", e => {
+            windowHeight = window.innerHeight;
+        })
+
+        window.addEventListener("load", () => {
+            landing.addEventListener("mousemove", e => moveBackground(e))
+            handleWrite(0, 0)
+        })
+    </script>
+</body>
+</html>
