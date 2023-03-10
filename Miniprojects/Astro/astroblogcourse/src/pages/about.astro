@@ -1,0 +1,42 @@
+---
+import Link from "../components/Link.astro";
+import MainLayout from "../layout/mainLayout.astro";
+
+const description = "This is the about page"
+---
+
+<MainLayout title="About" description={description}>
+
+<section class="container about" aria-label="About me">
+    <img src="/images/headshotStock.jpg" alt="headshot" width="200" height="330" />
+    <div class="content">
+        <h1 class="h1">My Blog</h1>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Commodi quo ea, sed a veniam distinctio asperiores vero voluptas aliquid ut, recusandae obcaecati fugiat harum quaerat tempora modi minus cupiditate odit.
+        Natus nobis necessitatibus provident, id adipisci in, praesentium fuga similique unde harum atque voluptatum, autem magni distinctio enim alias voluptas laboriosam dolorum totam earum culpa! Quas et esse magnam inventore.
+        Ducimus deleniti impedit, quas debitis a, culpa facilis doloremque enim odit modi ex quos laudantium ea libero obcaecati ipsam perspiciatis. Provident blanditiis consectetur recusandae omnis, possimus eveniet dolorum repellat nulla?
+        Beatae voluptatibus blanditiis molestiae praesentium illo unde sequi quisquam eveniet, ullam vitae quae tempora aut sed soluta enim obcaecati odit, laborum consequuntur sapiente quis! Veritatis nihil aperiam libero inventore aspernatur.
+        Omnis at obcaecati ipsam sequi quibusdam quo, harum labore qui in natus deleniti, nemo aliquid eveniet distinctio asperiores veritatis laboriosam ab exercitationem. Sunt laboriosam beatae tempora ab qui consequuntur fuga.</p>
+        <Link href="mailto:trevlandf0604@gmail.com"
+        style="primary" isFilled={true}>Contact me!</Link>
+    </div>
+</section>
+
+</MainLayout>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        height: 100%;
+    }
+
+    h1 {
+        margin-bottom: 1rem;
+    }
+
+    p {
+        margin-bottom: 2rem;
+    }
+</style>

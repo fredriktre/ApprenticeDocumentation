@@ -1,0 +1,30 @@
+---
+import Link from "../components/Link.astro";
+import MainLayout from "../layout/mainLayout.astro";
+
+const description = "404"
+---
+
+<MainLayout title="Page not found" description={description}>
+
+<section class="container about" aria-label="404section">
+    <div class="content">
+        <h1>Welp, this is akward!</h1>
+        <p>We seem to have misplaced something...</p>
+        <Link href="/" style={"primary"} isFilled={true} icon={{name: "logo", side: "left"}}>Go home</Link>
+    </div>
+</section>
+
+</MainLayout>
+
+<style>
+    .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        height: 100%;
+    }
+</style>

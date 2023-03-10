@@ -1,0 +1,7 @@
+---
+import Link from "./Link.astro";
+
+const { frontmatter, url } = Astro.props
+---
+
+<Link href={url} style="primary" isFilled={false}>{frontmatter.title}</Link>

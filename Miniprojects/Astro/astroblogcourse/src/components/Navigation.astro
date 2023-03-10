@@ -1,0 +1,65 @@
+---
+import { Icon } from 'astro-icon'
+import navData from '../data/navData';
+import Link from './Link.astro';
+---
+
+<nav>
+    <a href="/" class="logo-link" aria-label="Go home" data-navlink>
+        <Icon name="logo" width="60" />
+    </a>
+    <ul>
+        {navData.map((link: any) => (
+            <li><Link 
+                href={link.path}
+                style={'primary'}
+                isFilled={false}
+                data-navlink
+                >{link.name}</Link>
+            </li>
+        ))}
+    </ul>
+</nav>
+
+<style>
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 0.5rem 1rem;
+    
+        border-bottom: 2px solid #dedede;
+    }
+
+    .logo-link {
+        scale: 1;
+        transition: 0.1s linear;
+    }
+    .logo-link:hover {
+        scale: 1.2;
+    }
+    .logo-link:active {
+        scale: 0.8;
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+    
+        padding: 0;
+        margin: 0;
+    }
+
+    nav ul li {
+        list-style: none;
+    }
+
+</style>
+
+<script>
+    import "../js/nav.js"
+</script>

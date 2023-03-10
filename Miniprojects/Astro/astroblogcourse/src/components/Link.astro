@@ -1,0 +1,116 @@
+---
+import { Icon } from 'astro-icon';
+
+interface Props {
+    href: string;
+    style: "primary" | "secondary";
+    icon?: {
+        name: string;
+        side: "left" | "right";
+    };
+    isFilled?: boolean;
+    borderVisible?: boolean;
+    classes?: string;
+}
+
+const { 
+    href, 
+    style, 
+    icon, 
+    isFilled, 
+    borderVisible,
+    classes, 
+    ...rest} 
+    = Astro.props as Props;
+
+---
+
+<a 
+    href={href}
+    class:list={[
+        "link",
+        classes,
+        style,
+        {
+            filled: isFilled,
+            bordered: borderVisible,
+        }
+    ]}
+    {...rest}
+>
+    
+    {
+        icon && icon.side === "left" && (
+            <Icon name={icon.name} height="24" width="24" />
+        )
+    }
+
+    <span><slot></slot></span>
+
+    {
+
+        icon && icon.side === "right" && (
+            <Icon name={icon.name} height="24" width="24" />
+        )
+    }
+
+</a>
+
+<style>
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: fit-content;
+
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+
+        transition: 0.2s ease-in-out;
+    }
+
+    a span {
+        margin: 0 0.5rem;
+    }
+
+    .filled{
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .primary {
+        color: #000000;
+        font-weight: bold;
+    }
+    
+    .secondary {
+        color: #0000ff;
+        font-weight: bold;
+    }
+
+    a:hover.primary {
+        border-bottom: 2px solid #000000;
+    }
+    a:hover.secondary {
+        border-bottom: 2px solid #0000ff;
+    }
+
+    .filled.primary {
+        background-color: #0000ff;
+        color: #ffffff !important;
+    }
+    .filled.secondary {
+        background-color: #000000;
+        color: #ffffff !important;
+    }
+
+    a:hover.filled.primary {
+        background-color: #6666ff;
+    }
+
+    a:hover.filled.secondary {
+        background-color: #666666;
+    }
+
+</style>

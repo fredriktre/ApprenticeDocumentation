@@ -1,0 +1,70 @@
+---
+	import Link from "../components/Link.astro";
+    import MainLayout from "../layout/mainLayout.astro";
+    import { slugify, formatDate } from "../js/utils"
+    import { Image } from "@astrojs/image/components"
+
+    const { frontmatter } = Astro.props;
+
+    const { title, description, date, category, author, image} = frontmatter;
+
+---
+
+<MainLayout title={title} description={description}>
+
+	<section>
+        <header>
+            <div class="container">
+                <small>
+                    <Link href={`/category/${slugify(category)}/`}
+                    class:list={["badge"]} style="primary" isFilled={true}>{category}</Link>
+                </small>
+                <h1 class="title">{title}</h1>
+                <p class="author">by <Link href={`/author/${slugify(author)}/`} style="primary" isFilled={false}>{author}</Link> at {formatDate(date)}</p>
+            </div>
+            {
+                image != null && (
+                <Image 
+                src={image.src} 
+                alt={image.alt}
+                width={1200} 
+                height={600}
+                format="avif"
+                fit="cover"
+                quality={80}
+                aspectRatio="5:2" />
+                )
+            }
+        </header>
+        <div class="post-content">
+            <div class="content">
+                <slot></slot>
+            </div>
+            <div class="sidebar">
+
+            </div>
+        </div>
+	</section>
+
+</MainLayout>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+        color: #000000;
+    }
+    .author {
+        display: flex;
+        align-items: center;
+    }
+
+    .content {
+        line-height: 2rem;
+    }
+</style>
