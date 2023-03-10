@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            height: 100vh;
+
+            margin: 0;
+            padding: 0;
+
+            overflow: hidden;
+
+            background-color: #000;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        #body {
+            width: 600px;
+            height: 1000px;
+
+            background-color: #fff;
+        }
+
+        #content-manager {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+        }
+
+        #last-content{
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            z-index: var(--lcLayer);
+            bottom:0;
+            right: var(--lcPos);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg);
+        }
+
+        #content {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: var(--cLayer);
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg);
+        }
+
+        #menu{
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            z-index: var(--mLayer);
+            bottom: 0;
+            left: var(--mPos);
+
+            background-color: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="body">
+
+        <div id="content-manager" style="--lcLayer: -1; --cLayer: 0; --mLayer: -1; --mPos: -100%; --lcPos: -100%;">
+
+            <div id="content" style="--bg: #fff">
+            </div>
+
+            <div id="last-content" style="--bg: #fff">
+            </div>
+            
+            
+            <nav id="menu">
+                <p>menu</p>
+                <ul id="menu-links">
+                </ul>
+            </nav>
+
+        </div>
+
+    </div>
+
+    <script>
+        const contentManager = document.getElementById("content-manager");
+        const lastContentHTML = document.getElementById("last-content");
+        const contentHTML = document.getElementById("content");
+        const menuHTML = document.getElementById("menu");
+        const menuLinks = document.getElementById("menu-links");
+
+        let active = "content";
+
+        const cookies = [];
+        let noHistory = {
+            name: "home",
+                content: [
+                    {
+                        type: "p",
+                        id: "p1",
+                        text: "Home"
+                    }
+                ]
+        }
+
+        const pages = [
+            {
+                name: "home",
+                content: [
+                    {
+                        type: "p",
+                        id: "p1",
+                        text: "Home"
+                    }
+                ]
+            },
+            {
+                name: "about",
+                    content: [
+                        {
+                            type: "p",
+                            id: "p1",
+                            text: "About"
+                        }
+                    ]
+            },    
+            {
+                name: "contact",
+                    content: [
+                        {
+                            type: "p",
+                            id: "p1",
+                            text: "Contact"
+                        }
+                    ]
+            }            
+        ]
+
+        let activePage = {
+                name: "home",
+                content: [
+                    {
+                        type: "p",
+                        id: "p1",
+                        text: "Home"
+                    }
+                ]
+            }
+
+        pages.forEach(page => {
+            let li = document.createElement("li")
+            let a = document.createElement("a")
+
+            a.dataset.name = page.name
+            a.innerText = page.name;
+            a.addEventListener('click', e => linkHandler(a.dataset.name))
+
+            li.appendChild(a)
+            menuLinks.appendChild(li)
+        })
+
+        let addpage;
+
+        let mouseStartPos;
+        let historyActive = false;
+
+        function handleCookieAdd (newPage) {
+            cookies.unshift(newPage);
+            historyActive = true;
+            return "done"
+        }
+
+        function handleCookieRemove () {
+            return cookies.shift();
+        }
+
+        function renderLastContent (lastpage) {
+            console.log(lastpage)
+            let i = 0;
+            while (lastContentHTML.children.length > 0) {
+                lastContentHTML.children[i].remove()
+                i++
+            }
+            const pageCode = makePage(lastpage.content, lastpage.name);
+            lastContentHTML.appendChild(pageCode)
+        }
+
+        function renderContent (newPage) {
+            console.log("handleContent")
+            const pageCode = makePage(newPage.content, newPage.name);
+
+            contentHTML.append(pageCode);
+        }
+
+        function linkHandler (name) {
+            pages.forEach(page => {
+                if (page.name === name) {
+                    addpage = page;
+                }
+            })
+            handlePageSwitch("add")
+        }
+
+        function handlePageSwitch (action) {
+            content.innerHTML = ""
+            let response;
+            if (action === "add") {
+                response = handleCookieAdd(activePage)
+                activePage = addpage;
+                console.log(response)
+                if (response === "done") {
+                    renderLastContent(activePage)
+                    renderContent(addpage)
+                    contentManager.style.setProperty("--mPos", `100%`);
+                    active = "content"
+                    console.log(cookies)
+                }
+            } else if (action === "back") {            
+                if (cookies.length >= 1) {
+                    response = handleCookieRemove();
+                    console.log(response)
+                }            
+
+                if (cookies.length >= 1) {
+                    renderContent(response);
+                    renderLastContent(cookies[0])
+                } else {
+                    renderContent(noHistory)
+                    historyActive = false;
+                }
+            }
+        }
+
+        function makeP (id, text) {
+            let p = document.createElement("p");
+            p.id = id
+            p.innerText = text;
+            return p
+        }
+
+        function makePage (content, id) {
+            let container = document.createElement('div');
+            content.forEach(element => {
+                let code;
+                if (element.type === "p") {
+                    code = makeP(element.id, element.text)
+                }
+                container.appendChild(code);
+            });
+            container.id = id
+            return container;
+        }
+
+        contentManager.addEventListener("touchstart", e => {
+            mouseStartPos = e.touches[0].clientX / window.innerWidth * 100; 
+        })
+            
+
+        contentManager.addEventListener("touchmove", e => {
+            const rawValue = e.touches[0].clientX / window.innerWidth * 100;
+            let moveValue = rawValue - mouseStartPos;
+
+            if (active != "menu") {
+                if (moveValue < 0) {
+                    moveValue = 100 - moveValue * -1;                
+                    contentManager.style.setProperty("--lcPos", `0%`);
+                    contentManager.style.setProperty("--mPos", `${moveValue}%`);
+                    contentManager.style.setProperty("--lcLayer", `-1`);
+                    contentManager.style.setProperty("--mLayer", `0`);
+                } else if (moveValue > 0) {        
+                    if (historyActive != false) {
+                        moveValue = 100 - moveValue
+                        contentManager.style.setProperty("--lcPos", `${moveValue}%`);
+                        contentManager.style.setProperty("--mPos", `100%`);
+                        contentManager.style.setProperty("--lcLayer", `0`);
+                        contentManager.style.setProperty("--mLayer", `-1`);
+                    }
+                }
+            } else {
+                if (moveValue > 0) {                    
+                    contentManager.style.setProperty("--mPos", `${moveValue}%`);
+                }
+            }
+        })
+
+        contentManager.addEventListener("touchend", e => {
+            const rawValue = e.changedTouches[0].clientX / window.innerWidth * 100;
+            let endValue = rawValue - mouseStartPos
+            if (active != "menu") {
+                if (endValue < 0) {
+                    endValue = endValue * -1
+                    if (endValue > 50){
+                        active = "menu"
+                        contentManager.style.setProperty("--lcPos", `100%`)
+                        contentManager.style.setProperty("--mPos", `0%`)
+                        contentManager.style.setProperty("--lcLayer", `-1`)
+                        contentManager.style.setProperty("--mLayer", `0`)
+                    } else {
+                        contentManager.style.setProperty("--lcPos", `0%`)
+                        contentManager.style.setProperty("--mPos", `0%`)
+                    }
+                } else if (endValue > 0) {
+                    if (endValue > 50) {   
+                        if (historyActive != false) {
+                            contentManager.style.setProperty("--mPos", `100%`)
+                            contentManager.style.setProperty("--lcPos", `100%`)
+                            contentManager.style.setProperty("--mLayer", `-1`)
+                            contentManager.style.setProperty("--lcLayer", `-2`)
+                            handlePageSwitch("back")
+                        }
+                    } else {
+                        contentManager.style.setProperty("--lcPos", `100%`)
+                        contentManager.style.setProperty("--mPos", `0%`)
+                    }
+                } 
+            } else {
+                if (endValue > 40) {
+                    active = "content"
+                    contentManager.style.setProperty("--mPos", `0%`)
+                    contentManager.style.setProperty("--lcPos", `100%`)
+                    contentManager.style.setProperty("--cLayer", `0`)
+                    contentManager.style.setProperty("--mLayer", `-1`)
+                    contentManager.style.setProperty("--lcLayer", `-2`)
+                }
+            }
+        })
+
+        handlePageSwitch("back");
+    </script>
+</body>
+</html>
