@@ -102,7 +102,6 @@
         const landing = document.getElementById("landing");
         const familyText = document.getElementById("family-text");
         const familyTextArray = ["search", "info", "forum", "contact"];
-        let windowHeight;
 
         function moveBackground(e) {
             landing.style.setProperty("--xPos1", `${Math.floor(100 - e.offsetX / landing.offsetWidth * 100)}%`)
@@ -148,10 +147,6 @@
                 }, 500)
             }
         }
-
-        window.addEventListener("resize", e => {
-            windowHeight = window.innerHeight;
-        })
 
         window.addEventListener("load", () => {
             landing.addEventListener("mousemove", e => moveBackground(e))
