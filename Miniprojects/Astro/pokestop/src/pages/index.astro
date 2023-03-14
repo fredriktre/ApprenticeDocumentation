@@ -1,0 +1,213 @@
+---
+
+// component imports
+import IndexLayout from "../layouts/indexLayout.astro";
+
+// data imports
+import Card1 from "../components/cards/card1.astro";
+import Card2 from "../components/cards/card2.astro";
+
+import popData from '../data/popData.js'
+
+const pokeFetch = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1280");
+const pokeData = await pokeFetch.json()
+
+---
+
+<IndexLayout title="Home">
+
+	<section class="landing-section">
+		<div class="ls-left">
+			<h1>Discover pokémon</h1>
+			<p>The pokéstop is a place for the curious!</p>
+			<p>Find all kinds of information about your favorite pokémon!</p>
+			<button><img src="/assets/icons/search.svg" />Start Searching!</button>
+			<div class="data-wrapper">
+				<div>
+					<p class="data-text"><span id="visit-amount"></span></p>
+					<p>Total Visits</p>
+				</div>
+				<div>
+					<p class="data-text"><span id="pokemon-amount"></span></p>
+					<p>Number of pokémon</p>
+				</div>
+				<div>
+					<p class="data-text"><span id="visits-today-amount"></span></p>
+					<p>Visits today</p>
+				</div>
+			</div>
+		</div>
+		<div class="ls-right">
+			<Card1 Header="Pokemon" URL="/assets/images/maskotti.jpg/" Author="me" width="100%" height="100%" />
+		</div>
+	</section>
+
+	<section class="pokeoftheweek-section">
+		<div>
+			<h2>Pokémon of the week</h2>
+			<p>Checkout these pokémon!</p>
+		</div>
+		<div class="card-wrapper">
+			<Card1 Header="pikachu" URL="/assets/images/maskotti.jpg/" width="15rem" height="20rem" />
+			<Card1 Header="pikachu" URL="/assets/images/maskotti.jpg/" width="15rem" height="20rem" />
+			<Card1 Header="pikachu" URL="/assets/images/maskotti.jpg/" width="15rem" height="20rem" />
+		</div>
+	</section>
+
+	<section class="popular-section">
+		<div>
+			<h2>Popular pokémon</h2>
+			<p>These are the most popular pokémon</p>
+		</div>
+		<div class="pop-card-wrapper">
+			{	
+				popData.map(pop => (
+					<Card2 URL={pop.url} totalSearches={pop.searches} title={pop.name} />
+				))
+			}
+		</div>
+	</section>
+</IndexLayout>
+
+<style>
+	.landing-section {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	
+		width: calc(100% - 4rem);
+		height: 100vh;
+
+		margin: 0 2rem
+	}
+
+	.ls-left {
+		width: calc(50% - 1rem);
+		margin: 0 2rem 0 0;
+		
+		color: #fff;
+	}
+
+	.ls-left h1{
+		margin: 0 0 1.5rem 0;
+		font-size: 3rem;
+	}
+
+	.ls-left p {
+		margin: 0;
+	}
+
+	.ls-left button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 0.5rem;
+
+		font-size: 0.6rem;
+		color: #fff;
+		background-color: rgba(200, 100, 0, 1);
+		outline: unset;
+		border: unset;
+		border-radius: 2rem;
+		padding: 0.8rem 1.5rem;
+		margin: 1rem 0;
+		transition: 0.1s linear;
+	}
+
+	.ls-left button img {
+		width: 1rem;
+	}
+
+	.ls-left button:hover {
+		scale: 1.1;
+	}
+	.ls-left button:active {
+		scale: 0.9;
+	}
+
+	.ls-right {
+		width: calc(50% - 1rem);
+		margin: 0 0 0 2rem;
+	}
+
+	.data-wrapper {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.data-wrapper>div>p {
+		font-size: 0.6rem;
+		opacity: 0.8;
+	}
+
+	.data-text {
+		font-size: 1rem !important;
+		opacity: 1 !important;
+	}
+
+	.pokeoftheweek-section {	
+		width: calc(100% - 4rem);
+		height: 50vh;
+
+		margin: 0 2rem;
+		color: #ffffff;
+	}
+	
+	.card-wrapper {
+		display: flex;
+		justify-content: space-between;
+		
+		width: 100%;
+	}
+
+	.popular-section {	
+		width: calc(100% - 4rem);
+		min-height: 40vh;
+
+		margin: 0 2rem;
+		color: #ffffff;
+	}
+
+	.pop-card-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+	}
+
+</style>
+
+<script>
+	import webData from "../data/webData";
+
+
+	const visitAmount = document.getElementById("visit-amount");
+	const pokemon = document.getElementById("pokemon-amount");
+	const visitTodayAmount = document.getElementById("visits-today-amount");
+
+	let visits = 0;
+	let pokemons = 0;
+	let visitsToday = 0;
+
+	function handleDataIncrement () {
+		setInterval(() => {
+			if (visits <= webData.visits) {
+				visitAmount.innerText = `${visits}`
+				visits += 1;
+			}
+		}, 1000 / webData.visits)
+		setInterval(() => {
+			if (pokemons <= webData.pokemon) {
+				pokemon.innerText = `${pokemons}`
+				pokemons += 1;
+			}
+		}, 1000 / webData.pokemon)
+		setInterval(() => {
+			if (visitsToday <= webData.visitsToday) {
+				visitTodayAmount.innerText = `${visitsToday}`
+				visitsToday += 1;
+			}
+		}, 1000 / webData.visitsToday)
+	}
+
+	handleDataIncrement()
+
+</script>
