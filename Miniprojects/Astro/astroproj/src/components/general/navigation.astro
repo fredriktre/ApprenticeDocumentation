@@ -1,0 +1,95 @@
+---
+// component imports
+import navData from "../../data/navData";
+
+// Image imports
+import Logo from "../../../public/assets/images/logo.svg"
+
+import Login from '../../pages/auth/login.astro'
+---
+
+<nav>
+
+    <a class="logo" href="/">
+        <img src={Logo} alt="logo" />
+    </a>
+
+    <ul>
+        {
+            navData.map(path => (
+                <li><a href={path.path}>{ path.name }</a></li>
+            ))
+        }
+        <li><a href='/auth/login'>Login</a></li>
+    </ul>
+
+</nav>
+
+<style>
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        width: calc(width: 100% - 4rem);
+        height: 6rem;
+
+        padding: 0 2rem;
+
+        background: rgba(0, 0, 0, 1);
+    }
+
+    .logo:hover img {
+        border: 2px solid #aaaaaa;
+        scale: 1.2;
+    }
+    .logo:active img {
+        border: 2px solid #aaaaaa;
+        scale: 0.8;
+    }
+
+    .logo img {
+        width: 4rem;
+        height: 4rem;
+        border: 2px solid transparent;
+        border-radius: 50%;
+
+        transition: 0.2s linear;
+    }
+
+    ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+    ul li a {
+        padding: 0.5rem 1rem;
+        border: 2px solid transparent;
+        border-radius: 1rem;
+        
+        color: #ffffff;
+        font-size: 1rem;
+        text-decoration: none;
+
+        transition: 0.2s linear;
+    }
+
+    ul li a:hover {
+        border: 2px solid #aaaaaa;
+        font-size: 1.2rem;
+    }
+    ul li a:active {
+        border: 2px solid #aaaaaa;
+        font-size: 0.8rem;
+    }
+
+</style>

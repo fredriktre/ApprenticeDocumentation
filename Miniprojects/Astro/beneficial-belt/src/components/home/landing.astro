@@ -1,0 +1,111 @@
+---
+---
+
+<section>
+    <div class="landing-wrapper">
+        <div class="text-wrapper">
+            <h1>Beneficial-belt</h1>
+            <h3>Made for your <span id="text-write"></span>| needs</h3>
+            <div>
+                <button>Contact us</button>
+                <button>See prices</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    section {
+		width: 100%;
+		height: 100%;
+		min-height: 100vh;
+
+		margin-top: 4rem;
+	}
+
+    .landing-wrapper {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		width: 100%;
+		height: 100%;
+		min-height: 100vh;
+
+		color: #ffffff;
+		overflow: hidden;
+	}
+
+	.text-wrapper {
+        min-width: 30rem;
+		position: relative;
+		z-index: 3
+	}
+
+	.text-wrapper button {
+		margin: 1rem 0 0 0;
+		padding: 0.5rem 1rem;
+		background-color: #000;
+		color: #fff;
+		font-size: 1rem;
+		font-weight: bold;
+		outline: none;
+		border: 2px solid transparent;
+		border-radius: 0.5rem;
+		transition: 0.2s linear;
+	}
+
+	.text-wrapper button:hover {
+		scale: 1.2;
+	}
+	.text-wrapper button:active {
+		scale: 1;
+	}
+
+	.text-wrapper button:focus {
+		border-color: #fff;
+	}
+
+    .text-wrapper button:nth-child(1) {
+        margin-right: 2rem;
+    }
+</style>
+
+<script>
+	const write = document.getElementById("text-write");
+	const words = ["analytical", "financial", "statistical"]
+
+	function writeText (word:number, iteration:number) {
+		if (iteration <= words[word].length) {
+			write.innerText = `${words[word].slice(0, iteration)}`
+			setTimeout(() => {
+				writeText(word, iteration + 1);
+			}, 50)
+		} else {
+			setTimeout(() => {
+				deleteText(word, 0);
+			}, 2000)
+			
+		}
+	}
+
+	function deleteText (word:number, iteration:number) {
+		let removeNum = words[word].length - iteration
+		if (iteration <= words[word].length) {
+			write.innerText = `${words[word].slice(0, removeNum)}`
+			setTimeout(() => {
+				deleteText(word, iteration + 1);
+			}, 75)
+		} else {
+			setTimeout(() => {
+				if (word >= words.length - 1) {
+					word = -1;
+				}
+				writeText(word + 1, 0);
+			}, 1500)
+			
+		}
+	}
+	writeText(0, 0);
+</script>
