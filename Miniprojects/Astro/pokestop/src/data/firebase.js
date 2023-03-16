@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, updateDoc, getDoc, getDocs, collection } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyChawCIlpH0GN4w4gLBwgJycE1_DLzDNMI",
@@ -30,14 +30,53 @@ const db = getFirestore(app)
 
 // }
 
-export function changeSearchCount(name) {
-
+function handlePokeData() {
+    return new Promise (resolve => {
+        fetch("https://pokeapi.co/api/v2/pokemon?limit=1280")
+            .then(result => {
+                resolve(result.json());
+            })
+    })
 }
 
-export function getDataByName(name) {
+export function changeSearchCount(name) {
+    getDoc(doc(db, "pokemon", name))
+        .then((result) => {
+            updateDoc(doc(db, "pokemon", name), {
+                searches: result.data().searches + 1,
+            })            
+        })
+}
 
+
+export function getDataByName(name) {
+    return new Promise (resolve => {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+            .then(result => {
+                resolve(result.json());
+            })
+    })
 }
 
 export function getData() {
-    
+    return new Promise(resolve => {
+        const dataArray = [];
+        getDocs(collection(db, "pokemon"))
+            .then((results) => {
+                handlePokeData()
+                    .then((pokeResults) => {
+                        const pokeData = pokeResults.results;
+                        let i = 0;
+                        results.forEach((result) => {
+                            if (pokeData[i].name === result.data().name) {
+                                console.log(pokeData[i])
+                                dataArray.push()
+                                console.log(dataArray)
+                            }
+                            i += 1;
+                        })
+                        resolve(dataArray)
+                    })
+            })
+    })
 }

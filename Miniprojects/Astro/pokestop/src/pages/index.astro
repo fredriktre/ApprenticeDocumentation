@@ -1,5 +1,4 @@
 ---
-
 // component imports
 import IndexLayout from "../layouts/indexLayout.astro";
 
@@ -7,10 +6,13 @@ import IndexLayout from "../layouts/indexLayout.astro";
 import Card1 from "../components/cards/card1.astro";
 import Card2 from "../components/cards/card2.astro";
 
-import popData from '../data/popData.js'
+import { changeSearchCount, getData, getDataByName } from '../data/firebase.js'
 
-const pokeFetch = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1280");
-const pokeData = await pokeFetch.json()
+// getData()
+// 	.then((result) => {
+// 		console.log(result)
+// 	})
+
 
 ---
 
@@ -38,7 +40,7 @@ const pokeData = await pokeFetch.json()
 			</div>
 		</div>
 		<div class="ls-right">
-			<Card1 Header="Pokemon" URL="/assets/images/maskotti.jpg/" Author="me" width="100%" height="100%" />
+			<Card1 Header="Pokemon" URL="/assets/images/maskotti.jpg/" Author="me" width="80%" height="80%" />
 		</div>
 	</section>
 
@@ -60,11 +62,11 @@ const pokeData = await pokeFetch.json()
 			<p>These are the most popular pokémon</p>
 		</div>
 		<div class="pop-card-wrapper">
-			{	
+			<!-- {	
 				popData.map(pop => (
 					<Card2 URL={pop.url} totalSearches={pop.searches} title={pop.name} />
 				))
-			}
+			} -->
 		</div>
 	</section>
 </IndexLayout>
@@ -76,7 +78,7 @@ const pokeData = await pokeFetch.json()
 		align-items: center;
 	
 		width: calc(100% - 4rem);
-		height: 100vh;
+		height: 90vh;
 
 		margin: 0 2rem
 	}
@@ -176,8 +178,6 @@ const pokeData = await pokeFetch.json()
 </style>
 
 <script>
-	import webData from "../data/webData";
-
 
 	const visitAmount = document.getElementById("visit-amount");
 	const pokemon = document.getElementById("pokemon-amount");
@@ -187,27 +187,35 @@ const pokeData = await pokeFetch.json()
 	let pokemons = 0;
 	let visitsToday = 0;
 
-	function handleDataIncrement () {
-		setInterval(() => {
-			if (visits <= webData.visits) {
-				visitAmount.innerText = `${visits}`
-				visits += 1;
-			}
-		}, 1000 / webData.visits)
-		setInterval(() => {
-			if (pokemons <= webData.pokemon) {
-				pokemon.innerText = `${pokemons}`
-				pokemons += 1;
-			}
-		}, 1000 / webData.pokemon)
-		setInterval(() => {
-			if (visitsToday <= webData.visitsToday) {
-				visitTodayAmount.innerText = `${visitsToday}`
-				visitsToday += 1;
-			}
-		}, 1000 / webData.visitsToday)
-	}
+	// getData()
+	// 	.then((result) => {
+	// 		console.log(result)
+	// 	})
 
-	handleDataIncrement()
+	// console.log(getDataByName("ditto"))
+
+	// function handleDataIncrement () {
+	// 	setInterval(() => {
+	// 		if (visits <= webData.visits) {
+	// 			visitAmount.innerText = `${visits}`
+	// 			visits += 1;
+	// 		}
+	// 	}, 1000 / webData.visits)
+	// 	setInterval(() => {
+	// 		if (pokemons <= webData.pokemon) {
+	// 			pokemon.innerText = `${pokemons}`
+	// 			pokemons += 1;
+	// 		}
+	// 	}, 1000 / webData.pokemon)
+	// 	setInterval(() => {
+	// 		if (visitsToday <= webData.visitsToday) {
+	// 			visitTodayAmount.innerText = `${visitsToday}`
+	// 			visitsToday += 1;
+	// 		}
+	// 	}, 1000 / webData.visitsToday)
+	// }
+
+	// handleDataIncrement()
+
 
 </script>

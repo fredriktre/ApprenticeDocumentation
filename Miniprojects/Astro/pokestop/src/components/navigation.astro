@@ -1,0 +1,168 @@
+---
+
+// Data imports
+import navData from '../data/navData.js'
+
+---
+
+<nav>
+
+    <a class="logo" href="/">
+        <img src="/assets/icons/logo.png" />
+    </a>
+
+    <div class="search">
+        <div>
+            <input id="search" type="text" autocomplete="off" />
+            <button><img src="/assets/icons/search.svg" /></button>
+        </div>
+        <ul id="search-results" style={{
+            top: `-100%`,
+        }}>
+            {
+
+            }
+        </ul>
+    </div>
+
+    <ul>
+        {
+            navData.map(nav => (
+                <li><a class="link" href={ nav.path }>{ nav.name }</a></li>
+            ))
+        }
+    </ul>
+
+</nav>
+
+<style>
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        width: 100%;
+        height: 4rem;
+
+        background-color: rgba(200, 100, 0, 1);
+    }
+
+    .logo {
+        width: 2rem;
+        height: 2rem;
+
+        margin: 0 0 0 2rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+
+        background-color: #000000;
+        transition: 0.1s linear;
+    }
+
+    .logo:hover {
+        background-color: #222222;
+    }
+
+    .logo img {
+        width: inherit;
+        height: inherit;
+    }
+
+    .search {
+        position: relative;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        height: 100%;
+
+        background-color: rgba(200, 100, 0, 1);
+    }
+
+    .search div {
+        position: relative;
+        z-index: 5;
+
+        width: 100%;
+
+        border-radius: 0.5rem;
+        
+        background-color: #000000;
+    }
+
+    .search div input {
+        background-color: transparent;
+        border: unset;
+        outline: unset;
+        color: #ffffff;
+        text-indent: 0.5rem;
+    }
+
+    .search div button {
+        background-color: transparent;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        transition: 0.1s linear;
+    }
+
+    .search div button:hover {
+        background-color: #222222;
+    }
+
+    .search button img {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .search ul {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+
+        width: 60%;
+        height: fit-content;
+
+        padding: 1rem;
+
+        background-color: #000000;
+    }
+
+    ul {
+        padding: 0;
+        margin: 0 2rem 0 0;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+    .link {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+
+        background-color: #000000;
+        color: #ffffff;
+        text-decoration: none;
+        transition: 0.1s linear;
+    }
+
+    .link:hover {
+        background-color: #222222;
+    }
+</style>
+
+<script define:vars={{}}>
+    const searchResults = document.getElementById("search-results");
+    const search = document.getElementById("search");
+
+
+    search.addEventListener("keyup", e => {
+        console.log(e.target.value)
+        
+    })
+
+
+</script>
