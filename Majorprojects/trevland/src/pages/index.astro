@@ -1,0 +1,24 @@
+---
+import Landing from "../components/index/landing.astro";
+import Information from "../components/index/information.astro";
+import Contact from "../components/index/contact.astro";
+import MainLayout from "../layouts/mainLayout.astro";
+import About from "../components/index/about.astro";
+
+const title = "Home"
+
+// 0 = EN, 1 = NO, 2 = JP. Only 0 and 1 should be publicly available atm.
+const currentlang = 1;
+---
+
+<MainLayout title={title} currentLang={currentlang}>
+    <div>
+        <Landing currentlang={currentlang} />
+
+        <About />
+        
+        <Information currentlang={currentlang} />
+    
+        <Contact currentlang={currentlang} />
+    </div>
+</MainLayout>

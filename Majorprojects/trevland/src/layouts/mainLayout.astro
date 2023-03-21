@@ -1,0 +1,42 @@
+---
+import Navigation from '../components/index/navigation.astro';
+
+import '../styles/global.css'
+
+// prop import
+interface Props {
+    title: string;
+	currentLang: number;
+}
+
+const { title, currentLang } = Astro.props as Props
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{ title }</title>
+	</head>
+	<body>
+
+		<Navigation currentlang={currentLang} />
+
+        <main>
+            <slot />
+        </main>
+
+	</body>
+</html>
+
+<style>
+	body {
+		padding: 0;
+		margin: 0;
+
+		background-color: #FAFAFA;
+	}
+</style>

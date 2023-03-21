@@ -1,0 +1,169 @@
+---
+// data imports
+import lang from '../../data/lang'
+
+
+interface Props {
+    currentlang: number;
+}
+
+const { currentlang } = Astro.props as Props
+
+const data = lang[currentlang].data.landing;
+
+---
+
+<section>
+
+    <div class="left">
+        <div class="text">
+            <p>{data.text.subheader}</p>
+            <h1>{data.text.header}</h1>
+            <p>{data.text.paragraph}</p>
+        </div>
+        <div class="counters">
+            <div class="counters-members">
+                <div>
+                    <img src="/assets/icons/png/forrest.png" />
+                    <p>0</p>
+                </div>
+                <p>{data.counter.familymembers}</p>
+            </div>
+            <div class="counters-visits">
+                <div>
+                    <img src="/assets/icons/png/email.png" />
+                    <p>0</p>
+                </div>
+                <p>{data.counter.request}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="image">
+            <img src="/assets/images/landingImageOne.JPG" />
+            <div class="background"></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        min-height: 100dvh;
+    }
+
+    @media (max-width: 500px) {
+        section {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .left {
+            text-align: center;
+        }
+
+        .left .counters{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+        }
+    }
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 1rem;
+
+        width: max(30%, 20rem);
+        height: 100%;
+    }
+
+    .text h1{
+        font-size: 3.052rem;
+    }
+
+    .text p {
+        font-size: 1rem;
+    }
+
+    .counters {
+        display: flex;
+        gap: 1rem;
+
+        width: fit-content;
+    }
+
+    .counters div>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .counters div>p {
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    .counters div>div>p {
+        width: fit-content;    
+        margin: 0 0 0 0.5rem;    
+    }
+    .counters div>div>img {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        width: max(30%, 20rem);
+        height: 100%;
+    }
+
+    .image {
+        position: relative;
+
+        width: 15rem;
+        height: 15rem;
+
+    }
+
+    .image img {
+        position: absolute;
+        z-index: 4;
+        top: 0;
+        left: 0;
+
+        width: inherit;
+        height: inherit;
+
+        border-radius: 50% 0 50% 0;
+    }
+
+    .background {
+        position: absolute;
+        z-index: 3;
+        top: 1em;
+        left: 1rem;
+
+        width: inherit;
+        height: inherit;
+
+        border-radius: 50% 0 50% 0;
+
+        background-color: #DCFED8;
+    }
+</style>

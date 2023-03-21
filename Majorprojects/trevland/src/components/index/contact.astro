@@ -1,0 +1,220 @@
+---
+import lang from '../../data/lang'
+
+interface Props {
+    currentlang: number;
+}
+
+const { currentlang } = Astro.props as Props
+
+const data = lang[currentlang].data.contact;
+
+---
+
+<section id="contact">
+
+    <form id="frf" class="family-request-form">
+        <h2>{data?.familyrequestform.header}</h2>
+        <div>
+            <input type="text" placeholder={ data?.familyrequestform.firstname } />
+            <input type="text" placeholder={ data?.familyrequestform.lastname } />
+        </div>
+        <div>
+            <select> 
+                <option>{ data?.familyrequestform.gender }</option>
+                <option>{ data?.familyrequestform.male }</option>
+                <option>{ data?.familyrequestform.female }</option>
+            </select>
+            <input type="date" />
+        </div>
+        <div>
+            <input type="text" placeholder={ data?.familyrequestform.mother } />
+            <input type="text" placeholder={ data?.familyrequestform.father } />
+        </div>
+        <input type="text" placeholder={ data?.familyrequestform.children }  />
+        <textarea placeholder={ data?.familyrequestform.about} />
+        <div>
+            <input type="text" placeholder={ data?.familyrequestform.bornin } />
+            <input type="text" placeholder={ data?.familyrequestform.diedin } />
+        </div>
+        <input type="text" placeholder={ data?.familyrequestform.email } />
+        <textarea placeholder={ data?.familyrequestform.additionalinfo } />
+        <div>
+            <button>{data?.familyrequestform.submit}</button>
+            <div class="image">
+                <input id="fileInput" type="file" accept="image/png, image/jpeg" />
+                <button>{data?.familyrequestform.image}</button>
+            </div>
+        </div>
+    </form>
+    
+    <form id="cf" class="contact-form">
+        <h2>{data?.contactform.header}</h2>
+        <input type="text" placeholder={data?.contactform.email} />
+        <input type="text" placeholder={data?.contactform.subject} />
+        <textarea placeholder={data?.contactform.content} />
+        <button>{ data?.contactform.submit }</button>
+    </form>
+
+</section>
+
+<style>
+    section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-flow: row dense;
+        gap: 1rem;
+
+        width: calc(100% - 4rem);
+        min-height: 50vh;
+        height: fit-content;
+
+        padding: 2rem;
+    }
+
+    @media (max-width: 500px) {
+        section {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+        }
+    }
+
+    .family-request-form {
+        grid-column: span 1;
+        grid-row: span 2;
+
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        box-sizing: border-box;
+        padding: 1rem;
+        border: 1px solid #5F209E;
+        border-radius: 0.5rem;
+
+        background-color: #DCFED8;
+    }
+    .contact-form {
+        grid-column: span 1;
+        grid-row: span 1;
+
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        box-sizing: border-box;
+        padding: 1rem;
+        border: 1px solid #5F209E;
+        border-radius: 0.5rem;
+
+        background-color: #DCFED8;
+    }
+
+    form>h2 {
+        margin: 0 auto
+    }
+
+    div {
+        display: flex;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    input {
+        width: calc(100% - 0.4rem);
+        margin: 0;
+        padding: 0.2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #5F209E;
+        outline: 0;
+    }
+
+    select {
+        width: calc(100% - 0.4rem);
+        margin: 0;
+        padding: 0.2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #5F209E;
+        outline: 0;
+    }
+    
+    textarea {
+        width: calc(100% - 0.4rem);
+        margin: 0;
+        padding: 0.2rem;
+        border: 1px solid #5F209E;
+        border-radius: 0.5rem;
+        outline: 0;
+        resize: none;
+    }
+
+    button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+
+        background-color: #5F209E;
+        color: #ffffff;
+        transition: 0.1s linear;
+        border: unset;
+        outline: unset;
+    }
+
+    button:hover {
+        font-size: 1rem;
+    }
+
+    button:active {
+        font-size: 0.6rem;
+    }
+
+    .image {
+        position: relative;
+
+        width: fit-content;
+    }
+
+    .image input {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        padding: 0;
+        margin: 0;
+
+        opacity: 0;
+    }
+
+    .image button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+
+        background-color: #5F209E;
+        color: #ffffff;
+        transition: 0.1s linear;
+        border: unset;
+        outline: unset;
+    }
+
+    .image:hover button {
+        font-size: 1rem;
+    }
+
+    .image:active button {
+        font-size: 0.6rem;
+    }
+</style>
+
+<script src="../../data/firebase.js"></script>
+<script>
+    const fileInput:any = document.getElementById("fileInput")
+    
+
+    function imageInput(e:any) {
+
+    }
+    
+</script>

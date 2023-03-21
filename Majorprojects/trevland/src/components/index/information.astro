@@ -1,0 +1,151 @@
+---
+import lang from '../../data/lang'
+
+interface Props {
+    currentlang: number;
+}
+
+const { currentlang } = Astro.props as Props
+
+const data = lang[currentlang].data.information;
+
+---
+
+<section id="information">
+
+    <div class="card-wrapper">
+        <div class="library-wrapper">
+            <h2>{ data.library.header }</h2>
+            <div>
+                <p>{ data.library.text }</p>
+            </div>
+            <a href={ data.library.buttonpath }><img src="/assets/icons/svg/openarrow.svg" /></a>
+        </div>
+        <div class="fs-wrapper">
+            <h2>{ data.familysearch.header }</h2>
+            <div>
+                <p>{ data.familysearch.text }</p>
+            </div>
+            <a href={ data.familysearch.buttonpath }><img src="/assets/icons/svg/openarrow.svg" /></a>
+        </div>
+        <div class="forum-wrapper">
+            <h2>{ data.forum.header }</h2>
+            <div>
+                <p>{ data.forum.text }</p>
+            </div>
+            <a href={ data.forum.buttonpath }><img src="/assets/icons/svg/openarrow.svg" /></a>
+        </div>
+    </div>
+
+</section>
+
+<style>
+
+    section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height: 60dvh;
+    }
+
+    .card-wrapper {
+        width: 80%;
+        height: 80%;
+    }
+
+    .card-wrapper>div>a {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+
+        padding: 0.2rem 0.3rem;
+        background-color: #5F209E;
+        border-radius: 0.5rem;
+
+        transition: 0.2s linear;
+    }
+
+    .card-wrapper>div>a:hover {
+        padding: 0.3rem 0.4rem;
+    }
+
+    .library-wrapper {
+        position: relative;
+        width: calc(100% - 2rem);;
+        height: 10%;
+        background-color: #DCFED8;
+        padding: 1rem;
+        border: 1px solid #5F209E;
+        transition: 0.2s linear;
+        overflow: hidden;
+    }
+
+    .library-wrapper>div {
+        opacity: 0;
+        height: 0;
+        transition: 0.15s linear;
+    }
+
+    .library-wrapper:hover {
+        height: 20dvh;
+    }
+
+    .library-wrapper:hover>div {
+        height: 100%;
+        opacity: 1;
+    }
+    
+    .fs-wrapper {
+        position: relative;
+        width: calc(100% - 2rem);
+        height: 10%;
+        background-color: #DCFED8;
+        padding: 1rem;
+        border: 1px solid #5F209E;
+        transition: 0.2s linear;
+        overflow: hidden;
+    }
+    .fs-wrapper>div {
+        opacity: 0;
+        height: 0;
+        transition: 0.15s linear;
+    }
+    .fs-wrapper:hover {
+        height: 20dvh;
+    }
+
+    .fs-wrapper:hover>div {
+        height: 100%;
+        opacity: 1;
+    }
+    
+    
+    .forum-wrapper {
+        position: relative;
+        width: calc(100% - 2rem);;
+        height: 10%;
+        background-color: #DCFED8;
+        padding: 1rem;
+        border: 1px solid #5F209E;
+        transition: 0.2s linear;
+        overflow: hidden;
+    }
+    .forum-wrapper>div {
+        opacity: 0;
+        height: 0;
+        transition: 0.15s linear;
+    }
+
+    .forum-wrapper:hover {
+        height: 20dvh;
+    }
+
+    .forum-wrapper:hover>div {
+        height: 100%;
+        opacity: 1;
+    }
+    
+
+</style>
