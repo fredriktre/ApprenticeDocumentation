@@ -89,8 +89,20 @@ const data = lang[currentlang].data.information;
     }
 
     .library-wrapper:hover {
-        height: 20dvh;
+        height: 5dvh;
     }
+
+    @media (max-width: 600px) {
+        .library-wrapper:hover {
+            height: 8dvh;
+        }
+    }
+    @media (max-width: 300px) {
+        .library-wrapper:hover {
+            height: 10dvh;
+        }
+    }
+
 
     .library-wrapper:hover>div {
         height: 100%;
@@ -113,7 +125,18 @@ const data = lang[currentlang].data.information;
         transition: 0.15s linear;
     }
     .fs-wrapper:hover {
-        height: 20dvh;
+        height: 5dvh;
+    }
+
+    @media (max-width: 600px) {
+        .fs-wrapper:hover {
+            height: 8dvh;
+        }
+    }
+    @media (max-width: 300px) {
+        .fs-wrapper:hover {
+            height: 10dvh;
+        }
     }
 
     .fs-wrapper:hover>div {
@@ -139,7 +162,18 @@ const data = lang[currentlang].data.information;
     }
 
     .forum-wrapper:hover {
-        height: 20dvh;
+        height: 5dvh;
+    }
+
+    @media (max-width: 600px) {
+        .forum-wrapper:hover {
+            height: 8dvh;
+        }
+    }
+    @media (max-width: 300px) {
+        .forum-wrapper:hover {
+            height: 10dvh;
+        }
     }
 
     .forum-wrapper:hover>div {
