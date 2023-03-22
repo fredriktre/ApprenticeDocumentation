@@ -112,3 +112,26 @@ It's been about a month, and here is the update:
   dissatisfied with the result. So I will redesign and redo the whole page. This time with more functionality and better design.
   
   Other than that, I am looking to make a couple different projects going forward. We will see what happens.
+
+
+22.03.2023
+
+I have been researching a lot of different possibilites for techstacks.
+
+Currently I have my eyes on
+  1. Astro.js
+  2. Next.js
+
+Astro is good because of its insane load-times and static generation. Though you can also
+use "islands" for interactive components.
+
+I still need to learn a lot more about Astro before I know how all this works. And I know
+that Astro isn't the "best" one, but I think it will fit my needs for the imminent future really great.
+
+Next is more of a backend framework from what I understand. It consists of react on the front-end and mainly
+typescript on the backend. Then there are things like Trpc and Prisma that can make things there easier.
+
+Other than that, I am really trying to push my coding to the next level. It's hard though, as I have no clue
+where I'm going.
+
+I am positive however. I think I will find a path further in the future.
