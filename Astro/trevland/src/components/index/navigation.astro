@@ -33,12 +33,35 @@ const data = lang[currentlang].data.navigation;
 
     <!-- <div id="langdrop" class="language-dropdown">
         <ul>
-            <li><button>English</button></li>
-            <li><button>Norwegian</button></li>
+            <li><button id="EN">{data.langdrop?.en.name}</button></li>
+            <li><button id="NO">{data.langdrop?.no.name}</button></li>
         </ul>
     </div> -->
 
 </nav>
+
+<script>
+    const infodrop:any = document.getElementById("infodrop");
+    const dropbtn:any = document.getElementById("dropbtn");
+    let infoNavOpen = false;
+
+    dropbtn.addEventListener("pointerdown", () => {
+        if (infoNavOpen != false) {
+            infodrop.animate({
+              top: `-10rem`,
+            }, { duration: 200, fill: "forwards" })
+            
+            dropbtn.classList.remove("active");
+        } else {
+            infodrop.animate({
+                top: `3rem`,
+            }, { duration: 200, fill: "forwards" })
+            dropbtn.classList.add("active");
+        }
+        infoNavOpen = !infoNavOpen;
+        console.log(infoNavOpen)
+    })
+</script>
 
 <style>
 
@@ -206,26 +229,3 @@ const data = lang[currentlang].data.navigation;
     }
 
 </style>
-
-<script>
-    const infodrop:any = document.getElementById("infodrop");
-    const dropbtn:any = document.getElementById("dropbtn");
-    let infoNavOpen = false;
-
-    dropbtn.addEventListener("pointerdown", () => {
-        if (infoNavOpen != false) {
-            infodrop.animate({
-              top: `-10rem`,
-            }, { duration: 200, fill: "forwards" })
-            
-            dropbtn.classList.remove("active");
-        } else {
-            infodrop.animate({
-                top: `3rem`,
-            }, { duration: 200, fill: "forwards" })
-            dropbtn.classList.add("active");
-        }
-        infoNavOpen = !infoNavOpen;
-        console.log(infoNavOpen)
-    })
-</script>

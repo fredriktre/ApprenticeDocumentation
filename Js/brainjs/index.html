@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="//unpkg.com/brain.js" defer></script>
+    <script src="script.js" defer></script>
+    
+    <style>
+        #color {
+            width: 200px;
+            height: 200px;
+            border: 5px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .white {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="diagram">
+
+    </div>
+
+    <div id="color">
+        <div class="white">White</div>
+        <div>Dark</div>
+        <div id="guess">Guess</div>
+    </div>
+
+    <button id="white-btn">white</button>
+    <button id="black-btn">black</button>
+    <button id="print-btn">print</button>
+
+</body>
+</html>

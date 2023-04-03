@@ -1,3 +1,4 @@
+
 const lang = [
     {
         language: "EN",
@@ -33,6 +34,14 @@ const lang = [
                     name: "Login",
                     path: "/auth/",
                 },
+                langdrop: {
+                    en: {
+                        name: "English"
+                    },
+                    no: {
+                       name: "Norwegian"
+                    }
+                }
             },
             landing: {
                 text: {
@@ -76,17 +85,18 @@ const lang = [
                     about: "About",
                     bornin: "Born in",
                     diedin: "Died in",
+                    birthcountry: "Birthcountry",
                     email: "Your email",
                     additionalinfo: "Additional Information",
-                    submit: "submit",
-                    image: "image",
+                    submit: "Submit",
+                    image: "Image",
                 },
                 contactform: {
                     header: "Contact us",
                     email: "E-mail",
                     subject: "Subject",
                     content: "Content",
-                    submit: "submit",
+                    submit: "Submit",
                 }
             }
         }
@@ -125,6 +135,14 @@ const lang = [
                     name: "Logg inn",
                     path: "/auth/",
                 },
+                langdrop: {
+                    en: {
+                        name: "Engelsk"
+                    },
+                    no: {
+                       name: "Norsk"
+                    }
+                }
             },
             landing: {
                 text: {
@@ -217,6 +235,14 @@ const lang = [
                     name: "ログイン",
                     path: "/auth/",
                 },
+                langdrop: {
+                    en: {
+                        name: "英語"
+                    },
+                    no: {
+                       name: "ノルウエー語"
+                    }
+                }
             },
             landing: {
                 text: {
