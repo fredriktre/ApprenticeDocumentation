@@ -1,5 +1,7 @@
 ---
 import Bottomnav from "../components/fs/bottomnav.astro";
+import Fsscreen from "../components/fs/fsscreen.astro";
+import Navigation from "../components/index/navigation.astro";
 import Inprod from "../components/inprod.astro";
 import InformationLayout from "../layouts/informationLayout.astro";
 
@@ -7,8 +9,11 @@ import InformationLayout from "../layouts/informationLayout.astro";
 
 <InformationLayout title="Family search">
 
+    <Navigation currentlang={0} />
+
     <section>
-        
+        <Fsscreen />
+
         <Bottomnav />
     </section>
 
