@@ -11,11 +11,33 @@
 
     <div class="searchbar">
         <input type="text" placeholder="Search..." />
+        <button id="searchbtn"><img src="/assets/icons/svg/searchicon.svg" /></button>
     </div>
 
 </div>
 
 <style>
+    .bottomnav-wrapper {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        width: 100%;
+        height: 4rem;
+
+        background-color: #DCFED8;
+    }
+
+    .generation-move-btn-wrapper {
+        display: flex;
+        gap: 0.5rem;
+    }
+
     .generation-move-btn-wrapper button {
         display: flex;
         justify-content: center;
@@ -23,9 +45,69 @@
         
         width: 2rem;
         height: 2rem;
+
+        background-color: #5F209E;
+        border: unset;
+        border-radius: 0.5rem;
+
+        transition: 0.2s linear;
+    }
+
+    .generation-move-btn-wrapper button:hover {
+        box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+        -webkit-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+    }
+    .generation-move-btn-wrapper button:active {
+        box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
+        -webkit-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
+        -moz-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
     }
 
     .generation-move-btn-wrapper button img {
+        width: 1.5rem;
+    }
+
+    .searchbar {
+        display: flex;
+    }
+
+    .searchbar input {
+        width: calc(100% - 0.4rem);
+        margin: 0;
+        padding: 0.2rem;
+        border-radius: 0.5rem 0 0 0.5rem;
+        border: 1px solid #5F209E;
+        outline: 0;
+    }
+
+    .searchbar button {        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        width: 2rem;
+        height: 2rem;
+
+        background-color: #5F209E;
+        border: unset;
+        border-radius: 0 0.5rem 0.5rem 0;
+
+        transition: 0.2s linear;
+    }
+
+    .searchbar button:hover {
+        box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+        -webkit-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75);
+    }
+    .searchbar button:active {
+        box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
+        -webkit-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
+        -moz-box-shadow: 5px 5px 4px 0px rgba(0,0,0,0.75) inset;
+    }
+
+    .searchbar button img {
         width: 1.5rem;
     }
 </style>
