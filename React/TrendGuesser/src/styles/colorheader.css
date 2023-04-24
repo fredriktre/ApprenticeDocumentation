@@ -1,0 +1,28 @@
+.h1-wrapper{
+    background-image: linear-gradient(to right, rgb(255, 0, 0), rgb(255, 0, 0), rgb(255, 0, 0), rgb(0, 255, 0), rgb(0, 255, 0), rgb(0, 0, 255), rgb(0, 0, 255), rgb(255, 0, 0), rgb(255, 0, 0), rgb(255, 0, 0));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-size: 400%;
+    animation-name: h1BGMover;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+}
+
+.landing .center .h1-wrapper h1 {
+    margin: 0;
+    font-weight: 700;
+}
+
+
+@keyframes h1BGMover {
+    from {
+        background-position: left;
+    }
+
+    to {
+        background-position: right;
+    }
+}
