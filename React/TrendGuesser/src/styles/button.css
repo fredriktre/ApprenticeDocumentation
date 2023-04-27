@@ -1,0 +1,129 @@
+.button {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 6rem;
+    width: 6rem;
+    
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.button a{
+    position: relative;
+    z-index: 3;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 95%;
+    height: 95%;
+
+    border-radius: 50%;
+    border: unset;
+    outline: unset;
+
+    text-decoration: none;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: var(--h4);
+
+    transition: 0.1s linear;
+}
+
+.button:hover a {
+    background-color: #222222;
+}
+.button:hover {
+    box-shadow: 0px 0px 5px 5px #000000;
+}
+.button:active {
+    box-shadow: 0 0 0 0 #000000;
+}
+.button:active a {
+    background-color: #111111;
+    box-shadow: 0px 0px 5px 5px #000000 inset;
+}
+
+
+.button .bg {
+    position: absolute;
+    z-index: 1;
+    width: 98%;
+    height: 98%;
+    
+    
+    border-radius: 50%;
+    background-image: linear-gradient(to bottom, rgb(255, 0, 0), rgb(0, 255, 0), rgb(0, 0, 255));
+
+    animation: buttonbgmove;
+    animation-duration: 5s;
+    animation-timing-function: linear;
+    animation-direction: backwards;
+    animation-fill-mode: backwards;
+    animation-iteration-count: infinite;
+}
+
+@keyframes buttonbgmove {
+    from {
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+.button .animation1 {
+    position: absolute;
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: #000000;
+
+    animation: buttonbgmove1;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+}
+.button .animation2 {
+    position: absolute;
+    z-index: 2;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: #000000;
+
+    animation: buttonbgmove2;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+}
+
+@keyframes buttonbgmove1 {
+    from {
+        transform: rotateZ(0deg) translateY(10%);
+    }
+
+    to {
+        transform: rotateZ(360deg) translateY(10%);
+    }
+}
+@keyframes buttonbgmove2 {
+    from {
+        transform: rotateZ(-180deg) translateY(10%);
+    }
+
+    to {
+        transform: rotateZ(180deg) translateY(10%);
+    }
+}

@@ -135,3 +135,47 @@ Other than that, I am really trying to push my coding to the next level. It's ha
 where I'm going.
 
 I am positive however. I think I will find a path further in the future.
+
+
+24.04.2023
+
+I feel kind of bad at this point.
+
+I feel like my learning has hit a wall, and that I'm wasting time. I guess a big reason for it is because I'm
+bad at setting good goals, so that should probably be something I learn in the future.
+
+for now though, the languages I've worked most with is:
+  1. React.js
+  2. Astro.js
+
+I have also started to look at Brain.js a bit, it's just for AI but it seems fun.
+Chart.js is also coming up.
+
+As for email stuff (what I actually do at my workplace), I have started looking
+at a framework called Maizzle. It's essentially React.js for email if I'm gonna explain it quickly.
+
+Found out yesterday when I started a small c# project that the visual part of the .NET winform is actually in
+Visual BASIC. So I might be able to say that I can code in that in the future, IF I actually make some projects in it
+and such that is...
+
+What I really want to do right now is:
+ 1. Learn more about React.js's hooks and general stuff (feel like my fundamental React understanding is lacking).
+ 2. Finish up my fathers Astro.js page. It requires some thinking when it comes to the family tree, and I haven't really been
+ doing that, to my own dissapointment...
+ 3. Start learning Next.js, and learn how to connect that to a SEQUEL (SQL) database, since using NoSQL databases isn't really smart
+ for every single project. Each project's got its own needs.
+ 4. To actually use more of my free time to program. I need to do something about my work ethic and my lack of motivation towards
+ anything that could potentially cause any level of frustration. I won't learn if I don't try right?
+
+There is now only 50 days until 13.06.2023. So I don't have many days left before I'm 19. Hopefully this year will be better on me.
+
+
+27.04.2023
+
+Miniupdate.
+Just finished my first next.js course the other day. And working hard on the second one.
+Next.js is actually rather nice :D . Of course, until trouble arises 😰.
+Other than that, I searched up what other languages I might have a use for as a web developer, and three it mentioned was python, java and rust.
+So I might take a little course on those, just to get a taste of them, see what's up.
+
+Anyway. Hopefully things will go smoothly until the 28.june.2023, since that's when my holiday starts :D .
