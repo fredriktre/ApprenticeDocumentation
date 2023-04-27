@@ -168,3 +168,14 @@ What I really want to do right now is:
  anything that could potentially cause any level of frustration. I won't learn if I don't try right?
 
 There is now only 50 days until 13.06.2023. So I don't have many days left before I'm 19. Hopefully this year will be better on me.
+
+
+27.04.2023
+
+Miniupdate.
+Just finished my first next.js course the other day. And working hard on the second one.
+Next.js is actually rather nice :D . Of course, until trouble arises 😰.
+Other than that, I searched up what other languages I might have a use for as a web developer, and three it mentioned was python, java and rust.
+So I might take a little course on those, just to get a taste of them, see what's up.
+
+Anyway. Hopefully things will go smoothly until the 28.june.2023, since that's when my holiday starts :D .
