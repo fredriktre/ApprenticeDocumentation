@@ -229,7 +229,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="relatve flex flex-col gap-10 justify-center items-center w-full h-full min-h-[50vh] text-white">
+        <section id="contact" className="relatve flex flex-col gap-10 justify-center items-center w-full h-full min-h-[60vh] py-10 text-white">
           <h1 className="text-center">Contact me!</h1>
           <div className="md:w-2/3 w-full mx-auto grid md:grid-cols-2 grid-cols-1 gap-4">
             <CardWrapper title="Information">
