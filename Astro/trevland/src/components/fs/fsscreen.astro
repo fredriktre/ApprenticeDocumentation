@@ -3,14 +3,48 @@
 ---
 
 <div>
-    <div class="tree">
-    
-        
 
-    </div>    
+
+
 </div>
 
 <style>
 
 
 </style>
+
+<script>
+import { getFamilyInfo } from '../../data/firebase';
+
+
+
+async function makeFamilyTree() {
+    const data = await getFamilyInfo()
+    const renderData = [];
+
+    let genLength = 0;
+
+    data.forEach(({gen}:any) => {
+        if (gen > genLength) {
+            genLength = gen
+        }        
+    });
+    console.log(genLength)
+    
+    for (let i = 0; i <= genLength; i++) {
+        const generation:any[] = []
+        const result = data.filter(({gen}:any) => gen === i);
+        result.forEach((element:any) => {
+            generation.push(element);
+        })
+        renderData.push(generation)
+    }
+
+    console.log(renderData)
+
+    
+}
+
+makeFamilyTree()
+
+</script>

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-app.js";
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
+import { getFirestore, setDoc, doc, getDocs, collection } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/9.18.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -71,4 +71,21 @@ export function handleContact(contactData) {
         content: contactData.content
     })
     return id;
+}
+
+export function getFamilyInfo() {
+    console.log("started")
+    return new Promise(resolve => {
+        getDocs(collection(db, "family"))
+            .then((results) => {
+                const data = []
+                results.forEach((result) => {
+                    data.push({
+                        ...result.data(),
+                        id: result.id,
+                    })
+                })
+                resolve(data)
+            })
+    })
 }
