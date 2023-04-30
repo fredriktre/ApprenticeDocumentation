@@ -18,7 +18,8 @@ const Editor = ({ data, onChange, holder }:Props) => {
         holder: holder,
         tools: EDITOR_JS_TOOLS,
         data,
-        async onChange(api, event) {
+        // event:any
+        async onChange(api:any) {
           const data = await api.saver.save();
           onChange(data);
         }
@@ -34,7 +35,7 @@ const Editor = ({ data, onChange, holder }:Props) => {
   }, [])
 
   return (
-    <div id={holder} className="md:max-w-3xl w-full bg-gray-950 rounded-md py-4"></div>
+    <div id={holder} className="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl min-h-[20rem] w-full bg-gray-100 rounded-md py-4"></div>
   )
 }
 
