@@ -2,7 +2,7 @@ const { model, Schema, models } = require("mongoose");
 
 const ContactSchema = new Schema({
     title: {type: String, required: true},
-    sent: {type: Date, required: true},
+    sent: {type: String, required: true},
     content: {type: String}
 })
 

@@ -3,6 +3,8 @@ import CardWrapper from "@/components/CardWrapper";
 import Layout from "@/components/Layout";
 import Skillcard from "@/components/Skillcard";
 import { useEffect, useState } from "react";
+import { SocialIcon } from "react-social-icons";
+import axios from "axios";
 
 export default function Home() {
 
@@ -104,14 +106,24 @@ export default function Home() {
     })
   }
 
-  function sendContact(ev:any) {
+  async function sendContact(ev:any) {
     ev.preventDefault();
+    const datenow = Date.now().toString();
+    const data = {
+      title: contactEmail,
+      sent: datenow,
+      content: contactContent
+    }
 
-    console.log(ev.target[0].value)
-    console.log(ev.target[1].value)
+    axios.post("/api/Contact", data).then((response:any) => {
+      console.log(`
+        status ${response.status}
+        comment: ${response.data.comment}
+        type: ${response.data.type}`)
+      setContactEmail('');
+      setContactContent('');
+    })
 
-    setContactEmail('');
-    setContactContent('');
   }
 
   return (
@@ -121,7 +133,7 @@ export default function Home() {
 
         <section aria-label="landing" className="relative flex justify-center items-center w-full min-h-[95vh] h-full text-white text-center">
 
-          <div className="h-4/5 aspect-square absolute z-0">
+          <div className="w-4/5 lg:h-4/5 aspect-square absolute z-0">
             <span className="absolute right-0 top-0 h-full w-3/4"></span>
             <svg className="w-full h-full text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               {currentWorld === 0 && (
@@ -146,13 +158,11 @@ export default function Home() {
           
         </section>
 
-
-
-        <section className="relatve flex flex-col gap-10 justify-center items-center w-full min-h-screen h-full text-white">
+        <section aria-label="about" className="relatve flex flex-col gap-10 justify-center items-center w-full min-h-screen h-full text-white">
 
           <h1>About me</h1>
 
-          <div className="grid gap-4 grid-cols-6">
+          <div className="grid gap-4 md:grid-cols-6 grid-cols-1">
             <CardWrapper title="Work Experience" className="col-span-2">
               <Card title="KGH">
                 <p className="text-sm">Title: Office Worker</p>
@@ -178,7 +188,7 @@ export default function Home() {
               </Card>
             </CardWrapper>
 
-            <CardWrapper title="Bio" className="col-span-3">
+            <CardWrapper title="Miscellenious" className="col-span-3">
               <Card title="Details">
                 <p className="text-sm">Place of residence: Sarpsborg - Viken - Norway</p>
                 <p className="text-sm">Born in: Fredrikstad - Viken - Norway</p>
@@ -219,9 +229,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relatve flex flex-col gap-10 justify-center items-center w-full h-full min-h-screen text-white">
+        <section id="contact" className="relatve flex flex-col gap-10 justify-center items-center w-full h-full min-h-[50vh] text-white">
           <h1 className="text-center">Contact me!</h1>
-          <div className="w-2/3 mx-auto grid grid-cols-2 gap-4">
+          <div className="md:w-2/3 w-full mx-auto grid md:grid-cols-2 grid-cols-1 gap-4">
             <CardWrapper title="Information">
               <Card title="Email">
                 <p className="text-sm">trevlandf0604@gmail.com</p>
@@ -229,17 +239,46 @@ export default function Home() {
               <Card title="Discord">
                 <p className="text-sm">ArcticWolf#8141</p>
               </Card>
+              <Card title="Public Discord Server">
+                <a href="https://discord.gg/m7hH3Ybdjd" target="_blank" className="text-sm underline underline-offset-4 decoration-white">Join here!</a>
+              </Card>
             </CardWrapper>
             <CardWrapper>
-              <form onSubmit={sendContact} className="flex flex-col gap-4">
-                <input className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500" type="text" placeholder="Your Email" onChange={ev => setContactEmail(ev.target.value)} value={contactEmail}  />
-                <textarea className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500 resize-none" placeholder="Email Content" onChange={ev => setContactContent(ev.target.value)} value={contactContent}/>
+              <form onSubmit={sendContact} className="flex flex-col gap-4 h-full">
+                <input className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500" type="email" placeholder="Your Email" onChange={ev => setContactEmail(ev.target.value)} value={contactEmail}  />
+                <textarea className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500 resize-none h-full" placeholder="Email Content" onChange={ev => setContactContent(ev.target.value)} value={contactContent}/>
                 <button type="submit" className="p-4 bg-gray-950 rounded-md hover:bg-gray-800 active:bg-black transition-all duration-75">Send</button>
               </form>
             </CardWrapper>                  
           </div>
         </section>
 
+        <footer className="relatve flex flex-col gap-10 justify-center items-center w-full py-10 bg-black text-white">
+          
+          <div className="text-center">
+            <h2>Need help with your project?</h2>
+            <p>Come talk to me, and we can work together to make your project a success!</p>
+            <div className="pt-5">
+              <button onClick={() => {
+                const pos = document.getElementById("contact")?.offsetTop
+                window.scrollTo({
+                  top: pos,
+                  left: 0,
+                  behavior: "smooth"
+                })
+              }} className="p-4 bg-gray-950 rounded-md hover:bg-gray-800 active:bg-black transition-all duration-75 text-white">Contact</button>
+            </div>
+          </div>
+
+          {/* <div className="py-5 w-1/2">
+
+            <a className="p-4 bg-gray-950 rounded-md hover:bg-gray-800 active:bg-black transition-all duration-75"></a>
+
+            <SocialIcon url=""/>
+          </div> */}
+
+        </footer>
+        {/* https://www.instagram.com/fredrikst_dev/ */}
     </Layout>
 
   )
