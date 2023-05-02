@@ -6,9 +6,10 @@ type Props = {
   data? : OutputData;
   onChange(val: OutputData): void;
   holder: string;
+  mode: boolean
 }
 
-const Editor = ({ data, onChange, holder }:Props) => {
+const Editor = ({ data, onChange, holder, mode }:Props) => {
 
   const ref = useRef<EditorJS>();
 
@@ -35,7 +36,7 @@ const Editor = ({ data, onChange, holder }:Props) => {
   }, [])
 
   return (
-    <div id={holder} className="md:max-w-2xl lg:max-w-3xl xl:max-w-4xl min-h-[20rem] w-full bg-gray-100 rounded-md py-4"></div>
+    <div id={holder} className={`mx-auto md:max-w-2xl lg:max-w-3xl xl:max-w-4xl w-full bg-gray-100 rounded-md py-4 ${mode ? "opacity-0" : "opacity-100"}`}></div>
   )
 }
 

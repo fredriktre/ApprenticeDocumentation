@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { useRouter } from "next/router";
+import { signIn } from "next-auth/react"
 
 const Navigation = () => {
     const router = useRouter();
@@ -15,6 +16,10 @@ const Navigation = () => {
             ? 'underline underline-offset-4 decoration-white decoration-2' 
             : 'underline underline-offset-4 decoration-transparent hover:decoration-white decoration-2 transition-all duration-150'}`}>
                 Posts</Link>
+            <button onClick={() => signIn()} className={`text-white text-xl ${router.pathname.includes('/auth') 
+            ? 'underline underline-offset-4 decoration-white decoration-2' 
+            : 'underline underline-offset-4 decoration-transparent hover:decoration-white decoration-2 transition-all duration-150'}`}>
+                Log in</button>
         </ul>
     </nav>
   )

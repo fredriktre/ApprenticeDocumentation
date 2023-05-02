@@ -21,3 +21,11 @@ h3 {
 p {
   @apply text-lg m-0
 }
+
+.codex-editor__redactor {
+  padding: 0 !important;
+}
+
+.centerimg img {
+  margin: 0 auto;
+}
