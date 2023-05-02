@@ -12,7 +12,7 @@ const Auth = () => {
     const handleSubmit:FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
         
-        await signIn("")
+        // await signIn("")
     }
 
     console.log(!!session)

@@ -62,17 +62,18 @@ const posts = () => {
 
           posts.map((post:any) => (
             <div 
-              onClick={() => {router.push(`/posts/${post._id}`)}}
-              key={post.updated} 
-              className="cursor-pointer flex justify-between gap-4 text-white p-4 bg-gray-950 hover:bg-gray-800 active:bg-black transition-all duration-100 rounded-md">
-                <div>
+            key={post.updated} 
+            className="cursor-pointer flex justify-between gap-4 text-white p-4 bg-gray-950 hover:bg-gray-800 active:bg-black transition-all duration-100 rounded-md">
+                <div className="w-full"
+                onClick={() => {router.push(`/posts/${post._id}`)}}
+                >
                   <h2>{post.title}</h2>
                   <p>{`${convertDate(post.updated)}`}</p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <button 
                     onClick={() => {router.push(`/posts/edit/${post._id}`)}}
-                    className="w-20 py-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 transition-all duration-75 font-bold rounded-md">Edit</button>
+                    className="relative w-20 py-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 transition-all duration-75 font-bold rounded-md">Edit</button>
                   <button 
                     onClick={() => {deleteHandler(post._id)}}
                     className={`${deleteCounter === 1 ? "bg-red-500 hover:bg-red-400 active:bg-red-600" : "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"} w-20 py-2 transition-all duration-75 font-bold rounded-md`}>Delete</button>
