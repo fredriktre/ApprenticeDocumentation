@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Contact } from '@/models/Contact'
-import { mongooseConnect } from '@/lib/mongoose';
+import { mongooseConnect } from '@/lib/db/mongoose';
 
 interface Data {
     type: string,

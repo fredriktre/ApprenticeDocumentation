@@ -1,4 +1,4 @@
-import { mongooseConnect } from '@/lib/mongoose';
+import { mongooseConnect } from '@/lib/db/mongoose';
 import { Post } from '@/models/Post';
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -27,7 +27,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             content: body
         })
 
-        res.status(200).json("Published")
+        res.status(201).json("Published")
     }
 
     if (method === "PUT") {
@@ -40,13 +40,13 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             content: body
         });
 
-        res.status(200).json("Published");
+        res.status(201).json("Published");
     }
 
     if (method === "DELETE") {
         if (req.query?.id) {
             await Post.deleteOne({_id:req.query.id})
-            res.json("Deleted");
+            res.status(202).json("Deleted");
         }
     }
 

@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import CardWrapper from "@/components/CardWrapper";
 import Layout from "@/components/Layout";
 import Skillcard from "@/components/Skillcard";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { IoIosAirplane, IoMdSchool } from "react-icons/io";
 import { IoCodeSlash } from "react-icons/io5";
@@ -11,7 +11,7 @@ export default function Home() {
 
   const [showTitle, setShowTitle] = useState('');
   const [status, setStatus] = useState(0);
-  const [skills, setSkills] = useState<Array<{name: string, skill: number}>>([]);
+  const [skills, setSkills] = useState<Array<{}>>([]);
   const [age, setAge] = useState(0)
   const [contactEmail, setContactEmail] = useState('');
   const [contactContent, setContactContent] = useState('');
@@ -31,33 +31,48 @@ export default function Home() {
 
     setSkills([
       {
-        name: 'HTML',
-        skill: 4
+        title: "Web-Dev Basics",
+        content: [
+          {
+            name: 'HTML',
+            skill: 4
+          },
+          {
+            name: 'CSS',
+            skill: 4
+          },
+          {
+            name: 'Javascript',
+            skill: 3
+          },
+        ]
       },
       {
-        name: 'HTML Email',
-        skill: 5
+        title: "Javascript Frameworks",
+        content: [
+          {
+            name: 'React.js',
+            skill: 3
+          },
+          {
+            name: 'Next.js',
+            skill: 2
+          },
+          {
+            name: 'Vue.js',
+            skill: 1
+          },
+        ]
       },
       {
-        name: 'CSS',
-        skill: 4
-      },
-      {
-        name: 'Javascript',
-        skill: 3
-      },
-      {
-        name: 'React.js',
-        skill: 2
-      },
-      {
-        name: 'Next.js',
-        skill: 2
-      },
-      {
-        name: 'Vue.js',
-        skill: 1
-      },
+        title: "Misc Coding",
+        content: [
+          {
+            name: 'HTML Email',
+            skill: 4
+          },
+        ]
+      }
     ])
   }, [])
 
@@ -176,10 +191,24 @@ export default function Home() {
               </Card>
             </CardWrapper>
               
-            <CardWrapper title="Skills" className="col-span-2">
-              {skills.map(({name, skill}) => (
-                <Skillcard key={name} name={name} skill={skill} />
-              ))}
+            <CardWrapper title="Skills" className="col-span-2 overflow-hidden relative">
+              <div className="absolute -top-14 hover:top-0 left-0 w-full bg-black p-4 rounded-lg opacity-0 hover:opacity-100 transition-all">
+                <p>This is based on my confidence level in my different skills.</p>
+              </div>
+              <div className="flex flex-col gap-4" style={{
+                minHeight: '30rem'
+              }}>
+                {
+                  skills.map(({title, content}:any) => (
+                    <Card key={title} title={title} className={`transition-all duration-500 max-h-[3.2rem] hover:max-h-full overflow-y-hidden hover:h-auto`}>
+                      {content.map(({name, skill}:any) => (
+                        <Skillcard key={name} name={name} skill={skill} />
+                        ))}
+                    </Card>
+
+                  ))
+                }
+              </div>
             </CardWrapper>
 
             <CardWrapper title="Licenses and certifications" className="col-span-2">
@@ -209,13 +238,10 @@ export default function Home() {
             </CardWrapper>
 
             <CardWrapper title="Education" className="col-span-3">
-              <Card title="Lande Barneskole">
-                <p className="text-sm">Type: Elementary school</p>
-                <p className="text-sm">From: August 2010 | To: June 2017</p>
-              </Card>
-              <Card title="Kruseløkka Ungdomskole">
-                <p className="text-sm">Type: Middle school</p>
-                <p className="text-sm">From: August 2017 | To: June 2020</p>
+              <Card title="Primary School">
+                <p className="text-sm">Elementary school: Lande Barneskole</p>
+                <p className="text-sm">Middle school: Kruseløkka Ungdomskole</p>
+                <p className="text-sm">From: August 2010 | To: June 2020</p>
               </Card>
               <Card title="Halden Videregående Skole - Porsnes Avd.">
                 <p className="text-sm">Type: High school</p>
@@ -224,6 +250,10 @@ export default function Home() {
               <Card title="Glemmen Videregående skole">
                 <p className="text-sm">Type: High school</p>
                 <p className="text-sm">From: August 2021 | To: June 2022</p>
+              </Card>
+              <Card title="Opplæringssenteret for visuell kommunikasjon">
+                <p className="text-sm">Type: Apprentice</p>
+                <p className="text-sm">From: August 2022 | To: August 2024</p>
               </Card>
             </CardWrapper>              
           </div>
