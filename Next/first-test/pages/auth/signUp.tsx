@@ -14,10 +14,7 @@ const signUp = () => {
         event.preventDefault();
 
         setLoading(true)
-        axios.post("/api/auth/login", {
-            ...userInfo,
-            action: "register"
-        }).then((response:any) => {
+        axios.post("/api/auth/register", userInfo).then((response:any) => {
             console.log(response);
             setLoading(false)
             router.push("/")

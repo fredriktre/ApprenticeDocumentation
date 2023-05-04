@@ -18,10 +18,7 @@ const Auth = () => {
         console.log("start")
         setLoading(true)
 
-        axios.post("/api/auth/login", {
-            ...userInfo,
-            action: "login"
-        }).then((response:any) => {
+        axios.post("/api/auth/login", userInfo).then((response:any) => {
             console.log(response);
             setLoading(false)
             router.push("/")

@@ -9,7 +9,7 @@ type User = {
     admin: boolean
 }
 
-export const sessionOptions: IronSessionOptions = {
+export const sessionOptions:IronSessionOptions = {
     password: process.env.COOKIEPASS as string,
     cookieName: "fredfolio_user_cookie",
     cookieOptions: {

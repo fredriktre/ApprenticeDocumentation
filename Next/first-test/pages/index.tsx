@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import CardWrapper from "@/components/CardWrapper";
 import Layout from "@/components/Layout";
 import Skillcard from "@/components/Skillcard";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { IoIosAirplane, IoMdSchool } from "react-icons/io";
 import { IoCodeSlash } from "react-icons/io5";
