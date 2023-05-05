@@ -12,21 +12,18 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
 
     const {email, fullName, password} = req.body
 
-    const userData = User.findOne({email});
-
-    if (!userData.email) {
+    const userData = await User.findOne({email});
+    console.log(userData);
+    if (!userData) {
 
         const hashed = await crypt.hash(password, 10);
 
-        const data = {
+        User.create({
             email,
             fullName,
             passcode:hashed,
             securityLevel: "none"
-        }
-
-        User.create(data).then((response:any) => {
-            console.log(response)
+        }).then((response:any) => {
             let checkAdmin = true;
             if (response.securityLevel !== "admin") {
                 checkAdmin = false;
@@ -48,15 +45,6 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
     } else {
         console.log(userData)
     }
-
-    // req.session.user = {
-    //     id: 
-    //     data: {
-    //         email: string,
-    //         fullName: string,
-    //     }
-    //     admin: boolean
-    // }
 }
 
 export default withSessionRoute(registerRoute);
