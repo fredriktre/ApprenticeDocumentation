@@ -2,7 +2,8 @@ import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
 import {
     GetServerSidePropsContext,
     GetServerSidePropsResult,
-    NextApiHandler
+    NextApiHandler,
+    GetServerSideProps
 } from "next"
 import { sessionOptions } from "./session";
 
@@ -18,3 +19,11 @@ P extends { [key: string]: unknown } = { [key: string]: unknown }>(
 ) {
     return withIronSessionSsr(handler, sessionOptions)
 }
+// export function withSessionSsr<
+// P extends { [key: string]: unknown } = { [key: string]: unknown }>(
+//     handler: (
+//         context: GetServerSidePropsContext,
+//     ) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
+// ) {
+//     return withIronSessionSsr(handler, sessionOptions)
+// }

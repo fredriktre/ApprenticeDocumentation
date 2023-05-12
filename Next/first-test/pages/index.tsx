@@ -1,28 +1,129 @@
-import Card from "@/components/Card";
-import CardWrapper from "@/components/CardWrapper";
 import Layout from "@/components/Layout";
-import Skillcard from "@/components/Skillcard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IoIosAirplane, IoMdSchool } from "react-icons/io";
-import { IoCodeSlash } from "react-icons/io5";
+// import { withSessionSsr } from "@/lib/auth/withSession";
+import { getIronSession } from "iron-session";
+import useUserStore from "@/store/userstore";
+import Link from "next/link";
+import Card from "@/components/Card";
+import Image from 'next/image'
+import { GetServerSideProps } from 'next'
+import { sessionOptions } from "@/lib/auth/session";
 
-export default function Home() {
+// export const getServerSideProps = withSessionSsr(
+//   async function getServerSideProps({req}) {
+//     const user = req.session.user;
 
+//     if (!user) {
+//       return {
+//         props: {
+//           user: {}
+//         }
+//       }
+//     }
+
+//     return {
+//       props: { 
+//         user
+//       }
+//     }
+//   }
+// )
+
+export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
+  const session = await getIronSession(req, res, sessionOptions);
+  const { user } = session;
+
+  return {
+    props: {
+      user: user || null,
+    }
+  }
+}
+
+interface Props {
+  user: {
+    id: string
+    data: {
+      email: string
+      fullName: string
+    }
+    admin: boolean
+  } | null,
+}
+
+export default function Home({ user }:Props) {
+  const store = useUserStore();
   const [showTitle, setShowTitle] = useState('');
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState("Studying");
   const [skills, setSkills] = useState<Array<{}>>([]);
   const [age, setAge] = useState(0)
   const [contactEmail, setContactEmail] = useState('');
   const [contactContent, setContactContent] = useState('');
-  const titles = ['Web-Developer', 'UI-Designer'];
+  const [timeofday, setTimeofday] = useState(true);
+  const [weather, setWeather] = useState<any>({
+    dataSarp: [],
+    dataOslo: [],
+  });
+  const titles = ['Welcome', 'Velkommen', 'ようこぞ'];
   let k = 0;
+  const weatherCodes = [
+    {
+      code: "clearsky",
+      content: ["clearsky"]
+    },
+    {
+      code: "cloudy",
+      content: ["cloudy", "partlycloudy","fair"]
+    },
+    {
+      code: "rain",
+      content: ["rain", "rainshowers", "sleet", "lightrain", "lightsleet", "lightrainshowers", "lightsleetshowers"]
+    },
+    {
+      code: "snow",
+      content: ["snow", "heavysnow", "heavysnowandthunder", 
+      "heavysnowshowers", "heavysnowshowersandthunder", "snowandthunder", 
+      "snowshowers", "snowshowersandthunder", "lightsnow", "lightsnowandthunder",
+      "lightsnowshowers", "lightsnowshowersandthunder", "heavysnow"]
+    },
+    {
+      code: "heavyrain",
+      content: ["heavyrain", "heavysleet", "heavysleetshowers", "heavyrainshowers"]
+    },
+    {
+      code: "rainthunder",
+      content: ["rainandthunder", "rainshowersandthunder", "lightsleetandthunder", 
+      "lightssleetshowersandthunder", "lightrainshowersandthunder", "lightrainandthunder",
+      "heavyrainandthunder", "heavyrainshowersandthunder", "heavysleetandthunder", 
+      "heavysleetshowersandthunder"]
+    },
+    {
+      code: "fogcloud",
+      content: ["fog"]
+    },
+  ]
+  
 
   useEffect(() => {
+    if (user != null) {
+      console.log(user.admin)
+      store.setUser(user)
+    }
+
+    getWeather()
+
     if (k > 0) {
       controlText(0)
     }
     k++;
+
+    const today = new Date();
+    if (today.getHours() >= 6 && today.getHours() <= 22) {
+      setTimeofday(true)
+    } else {
+      setTimeofday(false)
+    }
 
     const dob = new Date("06/13/2004");
     const month_diff = Date.now() - dob.getTime();
@@ -75,6 +176,35 @@ export default function Home() {
       }
     ])
   }, [])
+
+  async function getWeather() {
+    try {
+        const responseSarp = await axios.get("https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.283041839978246&lon=11.107144565259663&altitude=4150") 
+        const dataSarp = []
+        for (let i = 0; i < 10; i++) {
+          const sarpWeatherRaw = responseSarp.data.properties.timeseries[i].data.next_1_hours.summary.symbol_code.split("_");
+          let sarpWeather;
+          let osloWeather;
+          weatherCodes.forEach((weathercode:{code:string, content:string[]}) => {
+            if (weathercode.content.includes(sarpWeatherRaw[0])) {
+              sarpWeather = weathercode.code
+            }
+          })
+          const d = new Date(responseSarp.data.properties.timeseries[i].time)
+          dataSarp.push({
+            airtemp: responseSarp.data.properties.timeseries[i].data.instant.details.air_temperature,
+            humidity: responseSarp.data.properties.timeseries[i].data.instant.details.relative_humidity,
+            weather: sarpWeather,
+            hour: d.getHours()
+          })
+        }
+        setWeather({
+          dataSarp,
+        })
+    } catch (error){
+      console.log(error)
+    }
+  }
 
   function controlText(current:number) {
     addText(current).then(() => {
@@ -138,7 +268,6 @@ export default function Home() {
       setContactEmail('');
       setContactContent('');
     })
-
   }
 
   return (
@@ -146,159 +275,98 @@ export default function Home() {
     <Layout description="This is a portfolio website" Keywords="Portfolio, Web-Development, Design, UI, UX, Web">
 
 
-        <section aria-label="landing" className="relative flex justify-center items-center w-full min-h-[95vh] h-full text-white text-center">
+        <section aria-label="landing" 
+        className="relative flex flex-col justify-center gap-10 items-center w-full min-h-[95vh] h-full text-center p-10">
 
-          <div className="w-4/5 lg:h-4/5 aspect-square absolute z-0">
-            {status === 0 && (
-              <IoCodeSlash className="w-full h-full text-gray-900" />
-            )}
-            {status === 1 && (
-              <IoIosAirplane className="w-full h-full text-gray-900" />
-            )}
-            {status === 2 && (
-              <IoMdSchool className="w-full h-full text-gray-900" />
-            )}
-            {status > 2 && (
-              <IoCodeSlash className="w-full h-full text-gray-900" />
-            )}
-            
-
-          </div>
-
-          <div className="relative z-1">
+          <Card bg="bg-cyan-800" bordercolor="border-cyan-300" className="h-28 sm:w-4/5 w-60">
             <h1 className="font-bruno">{showTitle}|</h1>
-            <h3 className="font-normal mt-2 underline decoration-2 underline-offset-8">Fredrik Sjøli Trevland</h3>
-            <h3 className="font-normal">Converting ideas to software</h3>
-          </div>
-          
-        </section>
+          </Card>
 
-        <section aria-label="about" className="relatve flex flex-col gap-10 justify-center items-center w-full min-h-screen h-full text-white">
-
-          <h1>About me</h1>
-
-          <div className="grid gap-4 md:grid-cols-6 grid-cols-1">
-            <CardWrapper title="Work Experience" className="col-span-2">
-              <Card title="KGH">
-                <p className="text-sm">Title: Office Worker</p>
-                <p className="text-sm">From: 20.06.2022 | To: 12.08.2022</p>
-                <p className="text-sm">Time: 3 months</p>
+          <div className="sm:w-4/5 w-60 flex lg:flex-row flex-col  justify-between gap-10">
+            <div className="w-full flex flex-col gap-5">
+              <Link href={"/about"}>
+                <Card 
+                bg="bg-cyan-800" 
+                bordercolor="border-cyan-300" 
+                className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
+                  <p className="text-white sm:text-lg text-md font-bruno">About</p>
+                </Card>
+              </Link>
+              <Link href={"/portfolio"}>
+                <Card 
+                bg="bg-cyan-800" 
+                bordercolor="border-cyan-300" 
+                className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
+                  <p className="text-white sm:text-lg text-md font-bruno">Portfolio</p>
+                </Card>
+              </Link>
+              <Link href={"/posts"}>
+                <Card 
+                bg="bg-cyan-800" 
+                bordercolor="border-cyan-300" 
+                className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
+                  <p className="text-white sm:text-lg text-md font-bruno">Posts</p>
+                </Card>
+              </Link>
+              <Link href={"/contact"}>
+                <Card 
+                bg="bg-cyan-800" 
+                bordercolor="border-cyan-300" 
+                className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
+                  <p className="text-white sm:text-lg text-md font-bruno">Contact</p>
+                </Card>
+              </Link>
+              <Link href={"/merch"}>
+                <Card 
+                bg="bg-cyan-800" 
+                bordercolor="border-cyan-300" 
+                className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
+                  <p className="text-white sm:text-lg text-md font-bruno">Merch</p>
+                </Card>
+              </Link>
+            </div>
+            <div className="w-full flex flex-col gap-5">
+              {
+                store.user.id.length > 0
+                ? <Link href={"/user"}>
+                  <Card bg="bg-gray-800" bordercolor="border-gray-300">
+                    <p className="font-bruno text-md sm:text-lg">{store.user.data.fullName}</p>
+                  </Card>
+                </Link>
+                : <Link href={"/signIn"}>
+                  <Card bg="bg-gray-800" bordercolor="border-gray-300">
+                    <p className="font-bruno text-md sm:text-lg">Sign in</p>
+                  </Card>
+                </Link>
+              }              
+              <Card bg="bg-gray-800" bordercolor="border-gray-300" className="font-bruno">
+                <h2><span className="sm:inline hidden">Status:</span> {status}</h2>
               </Card>
-              <Card title="Bas Kommunikasjon">
-                <p className="text-sm">Title: Front-end Developer</p>
-                <p className="text-sm">From: 15.08.2022 | To: 15.08.2024</p>
-                <p className="text-sm">Time: ongoing...</p>
-              </Card>
-            </CardWrapper>
-              
-            <CardWrapper title="Skills" className="col-span-2 overflow-hidden relative">
-              <div className="absolute -top-14 hover:top-0 left-0 w-full bg-black p-4 rounded-lg opacity-0 hover:opacity-100 transition-all">
-                <p>This is based on my confidence level in my different skills.</p>
-              </div>
-              <div className="flex flex-col gap-4" style={{
-                minHeight: '30rem'
-              }}>
+              <Card bg="bg-gray-800" bordercolor="border-gray-300" className="h-full flex flex-col justify-center items-center gap-10">
                 {
-                  skills.map(({title, content}:any) => (
-                    <Card key={title} title={title} className={`transition-all duration-500 max-h-[3.2rem] hover:max-h-full overflow-y-hidden hover:h-auto`}>
-                      {content.map(({name, skill}:any) => (
-                        <Skillcard key={name} name={name} skill={skill} />
-                        ))}
+                  weather.dataSarp.length > 0 &&
+                  <Link href={"/sarpsborg"} className="w-full">
+                    <Card bg="bg-gray-700" bordercolor="border-gray-300" className="hover:bg-gray-600
+                     active:bg-gray-900 transition-colors duration-300 flex justify-center">
+                      <p className="flex justify-center items-center gap-5 text-md sm:text-lg font-bruno">
+                        <span className="sm:inline hidden">Sarpsborg</span> <Image 
+                          alt="sarpsborg" 
+                          width={"64"} 
+                          height={"64"}
+                          src={`/weathericons/${weather.dataSarp[0].weather != "clearsky" 
+                          ? `${weather.dataSarp[0].weather}` : `${timeofday ? 'day' : 'moon'}`}.svg`} />
+                      </p>
                     </Card>
-
-                  ))
+                  </Link>
                 }
-              </div>
-            </CardWrapper>
-
-            <CardWrapper title="Licenses and certifications" className="col-span-2">
-              <Card title="Agillic - Basic Configurator">
-                <p className="text-sm">Recieved: 22.08.2022</p>
               </Card>
-            </CardWrapper>
-
-            <CardWrapper title="Miscellenious" className="col-span-3">
-              <Card title="Details">
-                <p className="text-sm">Place of residence: Sarpsborg - Viken - Norway</p>
-                <p className="text-sm">Born in: Fredrikstad - Viken - Norway</p>
-                <p className="text-sm">Birthdate: 13.06.2004</p>
-                <p className="text-sm">Age: {age}</p>
-              </Card>
-              <Card title="Likes">
-                <p className="text-sm">When code works :D</p>
-                <p className="text-sm">Anime & Manga</p>
-                <p className="text-sm">Games in the genres: Management, Strategy, Realistic FPS</p>
-                <p className="text-sm">Music</p>
-              </Card>
-              <Card title="Disikes">
-                <p className="text-sm">When code doesn't works D:</p>
-                <p className="text-sm">Outlook</p>
-                <p className="text-sm">Shallots and Licorice</p>
-              </Card>
-            </CardWrapper>
-
-            <CardWrapper title="Education" className="col-span-3">
-              <Card title="Primary School">
-                <p className="text-sm">Elementary school: Lande Barneskole</p>
-                <p className="text-sm">Middle school: Kruseløkka Ungdomskole</p>
-                <p className="text-sm">From: August 2010 | To: June 2020</p>
-              </Card>
-              <Card title="Halden Videregående Skole - Porsnes Avd.">
-                <p className="text-sm">Type: High school</p>
-                <p className="text-sm">From: August 2020 | To: June 2021</p>
-              </Card>
-              <Card title="Glemmen Videregående skole">
-                <p className="text-sm">Type: High school</p>
-                <p className="text-sm">From: August 2021 | To: June 2022</p>
-              </Card>
-              <Card title="Opplæringssenteret for visuell kommunikasjon">
-                <p className="text-sm">Type: Apprentice</p>
-                <p className="text-sm">From: August 2022 | To: August 2024</p>
-              </Card>
-            </CardWrapper>              
-          </div>
-        </section>
-
-        <section id="contact" className="relatve flex flex-col gap-10 justify-center items-center w-full h-full min-h-[60vh] py-10 text-white">
-          <h1 className="text-center">Contact me!</h1>
-          <div className="md:w-2/3 w-full mx-auto grid md:grid-cols-2 grid-cols-1 gap-4">
-            <CardWrapper title="Information">
-              <Card title="Email">
-                <p className="text-sm">trevlandf0604@gmail.com</p>
-              </Card>
-              <Card title="Discord">
-                <p className="text-sm">ArcticWolf#8141</p>
-              </Card>
-              <Card title="Public Discord Server">
-                <a href="https://discord.gg/m7hH3Ybdjd" target="_blank" className="text-sm underline underline-offset-4 decoration-white">Join here!</a>
-              </Card>
-            </CardWrapper>
-            <CardWrapper>
-              <form onSubmit={sendContact} className="flex flex-col gap-4 h-full">
-                <input className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500" type="email" placeholder="Your Email" onChange={ev => setContactEmail(ev.target.value)} value={contactEmail}  />
-                <textarea className="p-4 bg-gray-950 rounded-md placeholder:text-white outline-none border-2 border-transparent focus:border-blue-500 resize-none h-full" placeholder="Email Content" onChange={ev => setContactContent(ev.target.value)} value={contactContent}/>
-                <button type="submit" className="p-4 bg-gray-950 rounded-md hover:bg-gray-800 active:bg-black transition-all duration-75">Send</button>
-              </form>
-            </CardWrapper>                  
-          </div>
-        </section>
-
-        <footer className="relatve flex flex-col gap-10 justify-center items-center w-full py-10 bg-black text-white">
-          
-          <div className="text-center">
-            <h2>Need help with your project?</h2>
-            <p>Come talk to me, and we can work together to make your project a success!</p>
-            <div className="pt-5">
-              <button onClick={() => {
-                const pos = document.getElementById("contact")?.offsetTop
-                window.scrollTo({
-                  top: pos,
-                  left: 0,
-                  behavior: "smooth"
-                })
-              }} className="p-4 bg-blue-500 rounded-md hover:bg-blue-400 active:bg-blue-600 transition-all duration-75 text-white">Contact</button>
             </div>
           </div>
+          
+        </section>
+
+        <footer className="relatve flex flex-col gap-10 justify-center items-center w-full py-10  text-white">
+          
 
         </footer>
         {/* https://www.instagram.com/fredrikst_dev/ */}

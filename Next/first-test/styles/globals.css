@@ -1,25 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Bruno+Ace&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: 'PT Sans', sans-serif;
+  font-family: 'Barlow Condensed', sans-serif;
 }
 
 h1 {
-  @apply text-3xl font-bold m-0;
+  @apply text-lg sm:text-xl m-0;
 }
 
 h2 {
-  @apply text-2xl font-bold m-0
-}
-
-h3 {
-  @apply text-xl font-bold m-0
+  @apply text-md sm:text-lg m-0
 }
 
 p {
-  @apply text-lg m-0
+  @apply text-sm sm:text-md m-0
 }
 
 .codex-editor__redactor {
@@ -28,4 +25,28 @@ p {
 
 .centerimg img {
   margin: 0 auto;
+}
+
+/* width */
+.sb::-webkit-scrollbar.sw-4 {
+  @apply w-4
+}
+
+.sb::-webkit-scrollbar.sh-4 {
+  @apply h-4
+}
+
+/* Track */
+.sb::-webkit-scrollbar-track {
+  @apply bg-cyan-600 rounded-lg
+}
+
+/* Handle */
+.sb::-webkit-scrollbar-thumb {
+  @apply bg-cyan-300 rounded-lg
+}
+
+/* Handle on hover */
+.sb::-webkit-scrollbar-thumb:hover {
+  @apply bg-cyan-500
 }

@@ -13,7 +13,7 @@ const loginRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse
     const { email, password } = req.body
 
     const userData = await User.findOne({email});
-
+    console.log(email)
     if (userData) {
 
         const hashMatch = await crypt.compare(password, userData.passcode)
@@ -21,7 +21,7 @@ const loginRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse
         if (hashMatch) {
 
             let admin = true
-            if (userData.securityLevel != "admin") {
+            if (userData.securityLevel !== "admin") {
                 admin = false;
             }
 

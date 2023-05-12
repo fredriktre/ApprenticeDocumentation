@@ -15,6 +15,12 @@ module.exports = {
     },
     fontFamily: {
       bruno: ['Bruno Ace', 'cursive']
+    },
+    fontSize: {
+      sm: '12.36px',
+      md: '20px',
+      lg: '32.36px',
+      xl: '52.36px'
     }
   },
   plugins: [],

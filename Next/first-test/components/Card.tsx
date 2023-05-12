@@ -1,19 +1,17 @@
 import { ReactNode } from "react"
 
 interface Props {
-    title?: string
-    children?: ReactNode,
+    children?: ReactNode 
     className?: string
+    bg: string
+    bordercolor: string
 }
-
-const Card = ({title, children, className}:Props) => {
+const Card = ({children, className, bg, bordercolor}: Props) => {
   return (
-
-    <div className={`p-4 bg-gray-950 rounded-md ${className}`}>
-        {title && <p>{title}</p>}
+    <div 
+     className={`py-5 px-10 flex justify-start items-center rounded-lg text-white border-2 ${className} ${bg} ${bordercolor}`}>
         {children}
     </div>
-
   )
 }
 

@@ -33,7 +33,7 @@ const editPost = () => {
   }, [id])
 
   return (
-    <Layout>
+    <Layout UseNav={true}>
       
       {
         getData && <EditorSystem data={getData} />

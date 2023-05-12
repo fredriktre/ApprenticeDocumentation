@@ -6,12 +6,13 @@ interface Props {
   children?: ReactNode
   description?: string
   Keywords?: string
+  UseNav?: boolean
 }
 
-const Layout = ({children, description, Keywords}:Props) => {
+const Layout = ({children, description, Keywords, UseNav}:Props) => {
 
   return (
-    <>
+    <div className="bg-gradient-to-br from-gray-950 to-cyan-950">
         <Head>
             <meta name="Author" content="Fredrik Sjøli Trevland" />
             <meta name="Description" content={description} />
@@ -21,11 +22,11 @@ const Layout = ({children, description, Keywords}:Props) => {
             <link href="https://fonts.googleapis.com/css2?family=Bruno+Ace&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
         </Head>
 
-        <Navigation />
-        <main className="min-h-screen h-fit w-full bg-gray-800">
+        { UseNav && <Navigation /> }
+        <main className="min-h-screen h-fit w-full">
           {children}
         </main>
-    </>
+    </div>
   )
 }
 
