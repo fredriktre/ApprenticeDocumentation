@@ -69,16 +69,16 @@ const postPage = () => {
     <Layout UseNav={true}>
       <div className="w-4/5 mx-auto pt-10 flex flex-col gap-10">
         <Card
-          bg="bg-cyan-800"
-          bordercolor="border-cyan-300">
+          bg="cyan-800"
+          bordercolor="cyan-300">
           <div className="text-white">
             <h1 className="font-bruno">{title}</h1>
             <p>{updated}</p>
           </div>
         </Card>
         <Card
-          bg="bg-cyan-800"
-          bordercolor="border-cyan-300">
+          bg="cyan-800"
+          bordercolor="cyan-300">
           <div className="text-white centerimg flex flex-col gap-2">
             {
               html &&

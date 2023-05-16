@@ -17,10 +17,10 @@ module.exports = {
       bruno: ['Bruno Ace', 'cursive']
     },
     fontSize: {
-      sm: '12.36px',
-      md: '20px',
-      lg: '32.36px',
-      xl: '52.36px'
+      sm: '20px',
+      md: '25px',
+      lg: '31.25px',
+      xl: '39.86px'
     }
   },
   plugins: [],

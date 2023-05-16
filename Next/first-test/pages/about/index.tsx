@@ -15,7 +15,6 @@ const about = () => {
         if (imageCard.current) {
             if (imageCard.current != null) {
                 const curr = imageCard.current
-                console.log(curr.offsetWidth)
                 if (curr.offsetWidth <= 480) {
                     setWidth(curr.offsetWidth)
                     setHeight(curr.offsetWidth * 0.5)
@@ -29,45 +28,44 @@ const about = () => {
 
     return (
       <Layout UseNav={true}>
-
-          <div className="w-4/5 mx-auto flex lg:flex-row flex-col gap-5">
+          <section aria-label="about" className="w-4/5 mx-auto flex lg:flex-row flex-col gap-5">
               <div className="w-full flex flex-col gap-5">
                 <Link href={"/about/education"} onMouseEnter={() => setCurrHover(1)} onMouseLeave={() => setCurrHover(0)}>
                   <Card 
-                  bg="bg-cyan-800" 
-                  bordercolor="border-cyan-300" 
+                  bg="cyan-800" 
+                  bordercolor="cyan-300" 
                   className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                     <p className="text-white sm:text-lg text-md font-bruno">Education</p>
                   </Card>
                 </Link>
                 <Link href={"/about/experience"} onMouseEnter={() => setCurrHover(2)} onMouseLeave={() => setCurrHover(0)}>
                   <Card 
-                  bg="bg-cyan-800" 
-                  bordercolor="border-cyan-300" 
+                  bg="cyan-800" 
+                  bordercolor="cyan-300" 
                   className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                     <p className="text-white sm:text-lg text-md font-bruno">Experience</p>
                   </Card>
                 </Link>
                 <Link href={"/about/skills"} onMouseEnter={() => setCurrHover(3)} onMouseLeave={() => setCurrHover(0)}>
                   <Card 
-                  bg="bg-cyan-800" 
-                  bordercolor="border-cyan-300" 
+                  bg="cyan-800" 
+                  bordercolor="cyan-300" 
                   className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                     <p className="text-white sm:text-lg text-md font-bruno">Skills</p>
                   </Card>
                 </Link>
                 <Link href={"/about/bio"} onMouseEnter={() => setCurrHover(4)} onMouseLeave={() => setCurrHover(0)}>
                   <Card 
-                  bg="bg-cyan-800" 
-                  bordercolor="border-cyan-300" 
+                  bg="cyan-800" 
+                  bordercolor="cyan-300" 
                   className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                     <p className="text-white sm:text-lg text-md font-bruno">Bio</p>
                   </Card>
                 </Link>
                 <Link href={"/about/plans"} onMouseEnter={() => setCurrHover(5)} onMouseLeave={() => setCurrHover(0)}>
                   <Card 
-                  bg="bg-cyan-800" 
-                  bordercolor="border-cyan-300" 
+                  bg="cyan-800" 
+                  bordercolor="cyan-300" 
                   className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                     <p className="text-white sm:text-lg text-md font-bruno">Future plans</p>
                   </Card>
@@ -75,8 +73,8 @@ const about = () => {
               </div>
               <div className="w-full flex flex-col gap-5" ref={imageCard}>
                   <Card
-                  bg="bg-gray-800"
-                  bordercolor="border-gray-300">
+                  bg="gray-800"
+                  bordercolor="gray-300">
                       <Image 
                       src={"/test.jpg"} 
                       alt="me" 
@@ -85,8 +83,8 @@ const about = () => {
                       height={height} />
                   </Card>   
                   <Card
-                  bg="bg-gray-800"
-                  bordercolor="border-gray-300"
+                  bg="gray-800"
+                  bordercolor="gray-300"
                   className="h-full">
                     { currHover === 0 && 
                         <svg xmlns="http://www.w3.org/2000/svg" className={`w-24 h-24 mx-auto`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -101,8 +99,7 @@ const about = () => {
                     }
                     { currHover === 2 && 
                         <p>
-                            Here you can read about my work experience and what jobs I have had.
-                            And also a bit about how I have experienced worklife.
+                            Here you can read about my experiences. Things like work, travelling, etc.
                         </p> 
                     }
                     { currHover === 3 && 
@@ -125,8 +122,7 @@ const about = () => {
                     }
                   </Card>
               </div>         
-          </div>
-
+          </section>
       </Layout>
     )
 }

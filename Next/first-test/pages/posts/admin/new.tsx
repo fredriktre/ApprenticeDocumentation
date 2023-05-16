@@ -4,7 +4,7 @@ import Layout from "@/components/Layout"
 const newPost = () => {
 
   return (
-    <Layout>
+    <Layout UseNav={true}>
       
       <EditorSystem />
 

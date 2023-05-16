@@ -5,14 +5,53 @@ import { useRouter } from 'next/router'
 import Card from "@/components/Card";
 import useUserStore from "@/store/userstore";
 import usePostStore, { Post } from "@/store/poststore";
+import { GetServerSideProps } from 'next'
+import { sessionOptions } from "@/lib/auth/session";
+import { getIronSession } from "iron-session";
 
-const posts = () => {
+interface Props {
+    user: {
+      id: string
+      data: {
+        email: string
+        fullName: string
+      }
+      admin: boolean
+    } | null,
+  }
+
+export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
+    const session = await getIronSession(req, res, sessionOptions);
+    const { user } = session;
+  
+    return {
+      props: {
+        user: user || null,
+      }
+    }
+  }
+
+const posts = ({ user }:Props) => {
   const userStore = useUserStore();
   const postStore = usePostStore();
   const [posts, setPosts] = useState<Post[]>();
   const [deleteCurr, setDeleteCurr] = useState("");
+  const [canEdit, setCanEdit] = useState(false);
   const router = useRouter();
   
+    useEffect(() => {
+        if (user != null && userStore.user.id.length <= 0) {
+            userStore.setUser(user)
+        }
+        console.log(userStore.user)
+    }, [])
+
+    useEffect(() => {
+        if (userStore.user.admin) {
+            setCanEdit(true)
+        }
+    }, [userStore.user])
+
   useEffect(() => {
     handlePosts()
 
@@ -75,8 +114,8 @@ const posts = () => {
           posts.map((post:any) => (
             <Card 
               key={post._id}
-              bg="bg-cyan-800" 
-              bordercolor="border-cyan-300" 
+              bg="cyan-800" 
+              bordercolor="cyan-300" 
               className="cursor-pointer">
 
                 <div
@@ -87,7 +126,7 @@ const posts = () => {
                 </div>
 
                 {
-                  userStore.user.admin &&
+                  canEdit &&
                   <div className="flex flex-col gap-2">
                     <button 
                       onClick={() => {router.push(`/posts/admin/edit/${post._id}`)}}
@@ -101,8 +140,8 @@ const posts = () => {
           ))
 
           : <Card 
-            bg="bg-cyan-800" 
-            bordercolor="border-cyan-300"
+            bg="cyan-800" 
+            bordercolor="cyan-300"
             className="col-span-2">
             <h1>No Posts yet</h1>
           </Card>

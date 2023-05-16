@@ -5,9 +5,9 @@ import Link from 'next/link'
 const contact = () => {
   return (
     <Layout UseNav={true}>
+      <section aria-label="Contact">
 
-        
-
+      </section>
     </Layout>
   )
 }

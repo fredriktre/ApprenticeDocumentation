@@ -9,26 +9,8 @@ import Card from "@/components/Card";
 import Image from 'next/image'
 import { GetServerSideProps } from 'next'
 import { sessionOptions } from "@/lib/auth/session";
+import { weatherCodes } from "@/lib/weather";
 
-// export const getServerSideProps = withSessionSsr(
-//   async function getServerSideProps({req}) {
-//     const user = req.session.user;
-
-//     if (!user) {
-//       return {
-//         props: {
-//           user: {}
-//         }
-//       }
-//     }
-
-//     return {
-//       props: { 
-//         user
-//       }
-//     }
-//   }
-// )
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -62,52 +44,19 @@ export default function Home({ user }:Props) {
   const [contactContent, setContactContent] = useState('');
   const [timeofday, setTimeofday] = useState(true);
   const [weather, setWeather] = useState<any>({
-    dataSarp: [],
-    dataOslo: [],
+    place: "",
+    data: [],
   });
+  const [changeWeather, setChangeWeather] = useState({
+    lat: 59.283041839978246,
+    long: 11.107144565259663,
+    place: "Sarpsborg"
+})
   const titles = ['Welcome', 'Velkommen', 'ようこぞ'];
-  let k = 0;
-  const weatherCodes = [
-    {
-      code: "clearsky",
-      content: ["clearsky"]
-    },
-    {
-      code: "cloudy",
-      content: ["cloudy", "partlycloudy","fair"]
-    },
-    {
-      code: "rain",
-      content: ["rain", "rainshowers", "sleet", "lightrain", "lightsleet", "lightrainshowers", "lightsleetshowers"]
-    },
-    {
-      code: "snow",
-      content: ["snow", "heavysnow", "heavysnowandthunder", 
-      "heavysnowshowers", "heavysnowshowersandthunder", "snowandthunder", 
-      "snowshowers", "snowshowersandthunder", "lightsnow", "lightsnowandthunder",
-      "lightsnowshowers", "lightsnowshowersandthunder", "heavysnow"]
-    },
-    {
-      code: "heavyrain",
-      content: ["heavyrain", "heavysleet", "heavysleetshowers", "heavyrainshowers"]
-    },
-    {
-      code: "rainthunder",
-      content: ["rainandthunder", "rainshowersandthunder", "lightsleetandthunder", 
-      "lightssleetshowersandthunder", "lightrainshowersandthunder", "lightrainandthunder",
-      "heavyrainandthunder", "heavyrainshowersandthunder", "heavysleetandthunder", 
-      "heavysleetshowersandthunder"]
-    },
-    {
-      code: "fogcloud",
-      content: ["fog"]
-    },
-  ]
-  
+  let k = 0;  
 
   useEffect(() => {
-    if (user != null) {
-      console.log(user.admin)
+    if (user != null && store.user.id.length <= 0) {
       store.setUser(user)
     }
 
@@ -179,27 +128,27 @@ export default function Home({ user }:Props) {
 
   async function getWeather() {
     try {
-        const responseSarp = await axios.get("https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.283041839978246&lon=11.107144565259663&altitude=4150") 
-        const dataSarp = []
+        const response = await axios.get(`https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${changeWeather.lat}&lon=${changeWeather.long}`) 
+        const data = []
         for (let i = 0; i < 10; i++) {
-          const sarpWeatherRaw = responseSarp.data.properties.timeseries[i].data.next_1_hours.summary.symbol_code.split("_");
-          let sarpWeather;
-          let osloWeather;
-          weatherCodes.forEach((weathercode:{code:string, content:string[]}) => {
-            if (weathercode.content.includes(sarpWeatherRaw[0])) {
-              sarpWeather = weathercode.code
+          const weatherRaw = response.data.properties.timeseries[i].data.next_1_hours.summary.symbol_code.split("_");
+          let weather;
+          weatherCodes.forEach((weathercode:{index:number, content:string[]}) => {
+            if (weathercode.content.includes(weatherRaw[0])) {
+              weather = weathercode.index
             }
           })
-          const d = new Date(responseSarp.data.properties.timeseries[i].time)
-          dataSarp.push({
-            airtemp: responseSarp.data.properties.timeseries[i].data.instant.details.air_temperature,
-            humidity: responseSarp.data.properties.timeseries[i].data.instant.details.relative_humidity,
-            weather: sarpWeather,
+          const d = new Date(response.data.properties.timeseries[i].time)
+          data.push({
+            airtemp: response.data.properties.timeseries[i].data.instant.details.air_temperature,
+            humidity: response.data.properties.timeseries[i].data.instant.details.relative_humidity,
+            weather: weather,
             hour: d.getHours()
           })
         }
         setWeather({
-          dataSarp,
+            place: changeWeather.place,   
+            data,
         })
     } catch (error){
       console.log(error)
@@ -278,98 +227,108 @@ export default function Home({ user }:Props) {
         <section aria-label="landing" 
         className="relative flex flex-col justify-center gap-10 items-center w-full min-h-[95vh] h-full text-center p-10">
 
-          <Card bg="bg-cyan-800" bordercolor="border-cyan-300" className="h-28 sm:w-4/5 w-60">
+          <Card bg="cyan-800" bordercolor="cyan-300" className="h-28 sm:w-4/5 w-60 overflow-hidden">
             <h1 className="font-bruno">{showTitle}|</h1>
           </Card>
 
-          <div className="sm:w-4/5 w-60 flex lg:flex-row flex-col  justify-between gap-10">
+          <div className="sm:w-4/5 w-60 flex lg:flex-row flex-col justify-between gap-10">
             <div className="w-full flex flex-col gap-5">
               <Link href={"/about"}>
                 <Card 
-                bg="bg-cyan-800" 
-                bordercolor="border-cyan-300" 
+                bg="cyan-800" 
+                bordercolor="cyan-300" 
                 className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                   <p className="text-white sm:text-lg text-md font-bruno">About</p>
                 </Card>
               </Link>
               <Link href={"/portfolio"}>
                 <Card 
-                bg="bg-cyan-800" 
-                bordercolor="border-cyan-300" 
+                bg="cyan-800" 
+                bordercolor="cyan-300" 
                 className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                   <p className="text-white sm:text-lg text-md font-bruno">Portfolio</p>
                 </Card>
               </Link>
               <Link href={"/posts"}>
                 <Card 
-                bg="bg-cyan-800" 
-                bordercolor="border-cyan-300" 
+                bg="cyan-800" 
+                bordercolor="cyan-300" 
                 className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                   <p className="text-white sm:text-lg text-md font-bruno">Posts</p>
                 </Card>
               </Link>
               <Link href={"/contact"}>
                 <Card 
-                bg="bg-cyan-800" 
-                bordercolor="border-cyan-300" 
+                bg="cyan-800" 
+                bordercolor="cyan-300" 
                 className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                   <p className="text-white sm:text-lg text-md font-bruno">Contact</p>
                 </Card>
               </Link>
               <Link href={"/merch"}>
                 <Card 
-                bg="bg-cyan-800" 
-                bordercolor="border-cyan-300" 
+                bg="cyan-800" 
+                bordercolor="cyan-300" 
                 className="hover:bg-cyan-700 active:bg-cyan-900 transition-colors duration-300">
                   <p className="text-white sm:text-lg text-md font-bruno">Merch</p>
                 </Card>
               </Link>
             </div>
             <div className="w-full flex flex-col gap-5">
+              <Card bg="gray-800" bordercolor="gray-300" className="font-bruno">
+                <h2><span className="sm:inline hidden">Status:</span> {status}</h2>
+              </Card>
+
               {
                 store.user.id.length > 0
                 ? <Link href={"/user"}>
-                  <Card bg="bg-gray-800" bordercolor="border-gray-300">
+                  <Card bg="gray-800" bordercolor="gray-300" 
+                  className="hover:bg-gray-700 active:bg-gray-900 transition-colors duration-300">
                     <p className="font-bruno text-md sm:text-lg">{store.user.data.fullName}</p>
                   </Card>
                 </Link>
-                : <Link href={"/signIn"}>
-                  <Card bg="bg-gray-800" bordercolor="border-gray-300">
+                : <Link href={"/auth"}>
+                  <Card bg="gray-800" bordercolor="gray-300"
+                  className="hover:bg-gray-700 active:bg-gray-900 transition-colors duration-300">
                     <p className="font-bruno text-md sm:text-lg">Sign in</p>
                   </Card>
                 </Link>
-              }              
-              <Card bg="bg-gray-800" bordercolor="border-gray-300" className="font-bruno">
-                <h2><span className="sm:inline hidden">Status:</span> {status}</h2>
-              </Card>
-              <Card bg="bg-gray-800" bordercolor="border-gray-300" className="h-full flex flex-col justify-center items-center gap-10">
+              }          
+              
+              <Link href={"/weather"} className="w-full">
+                <Card bg="gray-800" bordercolor="gray-300" 
+                className="w-full h-full flex flex-col justify-center items-center 
+                gap-5 hover:bg-gray-700 active:bg-gray-900 transition-colors duration-300">
                 {
-                  weather.dataSarp.length > 0 &&
-                  <Link href={"/sarpsborg"} className="w-full">
-                    <Card bg="bg-gray-700" bordercolor="border-gray-300" className="hover:bg-gray-600
-                     active:bg-gray-900 transition-colors duration-300 flex justify-center">
-                      <p className="flex justify-center items-center gap-5 text-md sm:text-lg font-bruno">
-                        <span className="sm:inline hidden">Sarpsborg</span> <Image 
-                          alt="sarpsborg" 
-                          width={"64"} 
-                          height={"64"}
-                          src={`/weathericons/${weather.dataSarp[0].weather != "clearsky" 
-                          ? `${weather.dataSarp[0].weather}` : `${timeofday ? 'day' : 'moon'}`}.svg`} />
-                      </p>
-                    </Card>
-                  </Link>
+                  weather.data.length > 0 &&
+                    <p className="mr-auto flex justify-center items-center gap-5 font-bruno">
+                      <span className="sm:inline hidden">Weather in {weather.place}:</span> 
+                      <span className="flex items-center gap-2">{weatherCodes[weather.data[0].weather].name} <Image 
+                        alt="sarpsborg" 
+                        width={"32"} 
+                        height={"32"}
+                        src={`/weathericons/${weatherCodes[weather.data[0].weather].code != "clearsky" 
+                        ? `${weatherCodes[weather.data[0].weather].code}` : `${timeofday ? 'day' : 'moon'}`}.svg`} /></span>
+                    </p>
                 }
+                </Card>
+              </Link>
+
+              <Card
+              bg="gray-800"
+              bordercolor="gray-300">
+              <p className="text-left">My name is Fredrik Sjøli Trevland, and this is my personal website!<br />
+                  I mainly do email & web-development, but I am working on my design skills as well.<br />
+                  My goal is to make functional, beautiful websites. And to get as good as I can at that task.</p>
               </Card>
             </div>
           </div>
           
         </section>
-
-        <footer className="relatve flex flex-col gap-10 justify-center items-center w-full py-10  text-white">
-          
-
-        </footer>
         {/* https://www.instagram.com/fredrikst_dev/ */}
+        {/* <p className="text-left">My name is Fredrik Sjøli Trevland, and this is my personal website!<br />
+                  I mainly do email & web-development, but I am working on my design skills as well.<br />
+                  My goal is to make functional, beautiful websites. And to get as good as I can at that task.</p> */}
     </Layout>
 
   )

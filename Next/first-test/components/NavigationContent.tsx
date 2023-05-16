@@ -4,28 +4,16 @@ import useUserStore from "@/store/userstore";
 import { useEffect, useState } from "react";
 
 const NavigationContent = () => {
-    const store = useUserStore();
     const router = useRouter();  
     const [loading, setLoading] = useState(true)
-    const [canEdit, setCanEdit] = useState(false)    
-    const [statusIn, setStatusIn] = useState(false)    
     const [paths, setPath] = useState<string[]>([])
 
   useEffect(() => {
-    if (router.pathname === '/posts') {
-        if (store.user.admin) {
-            setCanEdit(true)
-        } else {
-            setCanEdit(false)
-        }
-    }
-
+    if (!router.isReady) return
     const rawpath = router.asPath.split("/")
     setPath(rawpath.splice(1, rawpath.length))
-
     setLoading(false)
-
-}, [store.status])
+}, [router.isReady])
 
   if (!loading) {
 
@@ -36,42 +24,54 @@ const NavigationContent = () => {
                 home</Link>
             {
               paths.map((path:string, index:number) => {
-                let text;
-                let truepath = "";
-                if (path.length > 12) {
-                  if (router.pathname.includes("/posts") || router.pathname.includes("/edit")) {
-                    text = "post"
-                  }
-                } else {
-                  text = path
+                let text:string = "";
+                let truepath:string = "";
+                let skip:boolean = false
+
+                if (path === "admin" || path === "edit") {
+                  skip = true;
                 }
 
-                if (paths.length > 1) {
-                  const notPath = paths.filter(not => not !== path);
-                  notPath.forEach((not:string) => {
-                    const notIndex = notPath.findIndex(find => find === not)
-                    if (index !== 0) {
-                      truepath = `${truepath}/`
+                if (!skip) {
+
+                  if (path.length > 12) {
+                    if (router.pathname.includes("/posts")) {
+                      text = "post"
                     }
-                    console.log(notIndex < index, index)
-                    if (notIndex < index) {
-                      truepath = `${truepath}${not}/${path}`
-                      console.log(truepath)
-                    } else {
-                      truepath = `${truepath}${path}`
+                    if (router.pathname.includes("/edit")) {
+                      text = "edit"
                     }
-                  })
+                  } else {
+                    text = path
+                  }
+                  
+                  if (paths.length > 1) {
+                    const notPath = paths.filter(not => not !== path);
+                    let count = index
+                    notPath.forEach((not:string, index:number) => {
+                      // const notIndex = notPath.findIndex(find => find === not)
+                      if (index < count) {
+                        truepath = `${truepath}/${not}`
+                      }
+                    })
+                    truepath = `${truepath}/${path}`
+                    console.log(truepath)
+                  } else {
+                    truepath = `${path}`
+                  }
+
+                  return(
+                    <p key={path} className="text-white text-md sm:text-lg">
+                      / <Link href={`${truepath}`} 
+                      className={`hover:text-gray-300 transition-colors duration-150`}
+                      >{text}</Link>
+                    </p>
+                  )
+
                 } else {
-                  truepath = `${path}`
+                  console.log("skip: " + skip)
                 }
-                
-                return(
-                  <p key={path} className="text-white text-md sm:text-lg">
-                    / <Link href={`/${truepath}`} 
-                    className={`hover:text-gray-300 transition-colors duration-150`}
-                    >{text}</Link>
-                  </p>
-                )
+
               })
             }
       </ul>

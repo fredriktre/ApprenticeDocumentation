@@ -19,8 +19,21 @@ p {
   @apply text-sm sm:text-md m-0
 }
 
+input {
+  @apply text-sm sm:text-md
+}
+
+.w-full-cardx {
+  width: calc(100% - 2.5rem);
+}
+
 .codex-editor__redactor {
   padding: 0 !important;
+}
+
+.hoverarrow:hover .arrow{
+  opacity: 1;
+  margin-left: 1.25rem;
 }
 
 .centerimg img {

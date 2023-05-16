@@ -12,7 +12,7 @@ interface Props {
 const Layout = ({children, description, Keywords, UseNav}:Props) => {
 
   return (
-    <div className="bg-gradient-to-br from-gray-950 to-cyan-950">
+    <div className="bg-gradient-to-br from-gray-950 to-cyan-950 py-10">
         <Head>
             <meta name="Author" content="Fredrik Sjøli Trevland" />
             <meta name="Description" content={description} />
