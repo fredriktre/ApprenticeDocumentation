@@ -38,7 +38,7 @@ const admin = () => {
             bg="gray-800" 
             bordercolor="gray-300" 
             className={`absolute w-full ${extraMenuOpen === 0 && "h-[29rem]"} 
-            left-0 ${extraMenuOpen === 1 && "h-[36rem]"} ${extraMenuOpen === 2 && "h-[22rem]"}
+            left-0 ${extraMenuOpen === 1 && "h-[29rem]"} ${extraMenuOpen === 2 && "h-[22rem]"}
             ${menuOpen ? "top-40 opacity-100" : "top-0 opacity-0 pointer-events-none"} 
             overflow-hidden z-30 flex-col gap-5 transition-all duration-300`}>
                 <div className={`absolute top-5 w-full-cardx flex flex-col gap-5 ${extraMenuOpen === 0 ? "left-5 opacity-100" : "-left-full opacity-0"} transition-all duration-300`}>
@@ -105,14 +105,6 @@ const admin = () => {
                         bordercolor="gray-300" 
                         className={`w-full hover:bg-gray-600 active:bg-gray-900 transition-colors duration-300`}>
                         <p className="text-white sm:text-lg text-md font-bruno">Education</p>
-                        </Card>
-                    </Link>
-                    <Link href={"/admin/about/experience"} className="w-full">
-                        <Card 
-                        bg="gray-700" 
-                        bordercolor="gray-300" 
-                        className={`w-full hover:bg-gray-600 active:bg-gray-900 transition-colors duration-300`}>
-                        <p className="text-white sm:text-lg text-md font-bruno">Experience</p>
                         </Card>
                     </Link>
                     <Link href={"/admin/about/skills"} className="w-full">

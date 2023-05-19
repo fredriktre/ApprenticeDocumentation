@@ -1,10 +1,7 @@
 import Layout from "@/components/Layout"
 import Card from '@/components/Card'
 import { useEffect, useState } from "react"
-import useLicenceStore from "@/store/licencestore";
 import { GetServerSideProps } from 'next'
-import { sessionOptions } from "@/lib/auth/session";
-import { weatherCodes } from "@/lib/weather";
 import type { Licence } from "@/store/licencestore"
 
 interface Props {

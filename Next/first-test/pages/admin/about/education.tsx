@@ -64,8 +64,6 @@ const ADaboutEducation = ({licences}:Props) => {
 
   useEffect(() => {
     setCurrentLicences(licenceStore.licences)
-    console.log(licenceStore.licences)
-    console.log("changes")
   }, [licenceStore.licences])
 
   async function handleLicenceSubmit (ev:any) {

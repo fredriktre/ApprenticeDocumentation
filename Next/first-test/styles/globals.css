@@ -19,7 +19,7 @@ p {
   @apply text-sm sm:text-md m-0
 }
 
-input {
+input,select {
   @apply text-sm sm:text-md
 }
 
