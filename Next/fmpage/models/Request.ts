@@ -10,8 +10,8 @@ const RequestSchema = new Schema({
     father: {type: String},
     mother: {type: String},
     extrainfo: {type: String},
-    children: {type: Array}
-
+    children: {type: Array},
+    imageIds: {type: Array}
 })
 
 export const Request = models.Request || model('Request', RequestSchema);

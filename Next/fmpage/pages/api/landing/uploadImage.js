@@ -4,7 +4,9 @@ import fs from 'fs'
 import mime from 'mime-types'
 
 export default async function handle(req,res) {
-
+    let alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '*', '-', '_', '.', '(', ')', "'"]
     const form = new multiparty.Form();
     const bucket = "fmpage"
 
@@ -23,10 +25,29 @@ export default async function handle(req,res) {
         }
     });
 
+    const folderID = await new Promise(resolve => {
+        let response = ""
+        
+        for (let i = 0; i < 6; i++) {
+            response = `${response}${alphabet[Math.floor(Math.random() * alphabet.length - 1)]}`
+        }
+
+        resolve(response)
+    })
+
     const links = [];
     for (const file of files.file) {
+        const id = await new Promise(resolve => {
+            let response = ""
+            
+            for (let i = 0; i < 6; i++) {
+                response = `${response}${alphabet[Math.floor(Math.random() * alphabet.length - 1)]}`
+            }
+    
+            resolve(response)
+        })
         const ext = file.originalFilename.split('.').pop();
-        const newFilename = Date.now() + '.' + ext;
+        const newFilename = `${folderID}/${id}-${Date.now()}.${ext}`;
         await client.send(new PutObjectCommand({
             Bucket: bucket,
             Key: newFilename,
@@ -37,7 +58,7 @@ export default async function handle(req,res) {
         links.push(link)
     }
 
-    return res.json(links)
+    return res.status(200).json({message:"success", data:{folderId: folderID, content:[...links]}})
 }
 
 export const config = {

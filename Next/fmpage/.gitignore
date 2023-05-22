@@ -18,15 +18,16 @@
 # misc
 .DS_Store
 *.pem
+sessionOptions.ts
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel

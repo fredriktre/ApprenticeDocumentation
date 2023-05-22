@@ -85,28 +85,35 @@ export default function Home() {
 
   async function handleFamSubmit(ev:FormEvent<HTMLFormElement>) {
     ev.preventDefault();
-    console.log(familyInputs);
-    console.log(inputChildren);
-    console.log(files);
 
     try {
-      // const uIres = await axios.post("/api/landing/uploadImage", files)
+      let uIres
+      if (files.length > 0) {
 
-      // try {
+        const data = new FormData();
 
-        await axios.post("/api/landing/uploadFamily", {
+        files.forEach(file => data.append('file', file));
+        uIres = await axios.post("/api/landing/uploadImage", data)
+      }
+      try {
+        
+        const res = await axios.post("/api/landing/uploadFamily", {
           ...familyInputs,
           children: inputChildren,
-          // imageIds: uIres
+          imageIds: uIres?.data.data
         })
 
-        setFamSuccess(true)
+        console.log(res)
 
-      // } catch (error) {
-        // if (error instanceof AxiosError) {
-          // console.error(error)
-        // }
-      // }
+        if (res.status === 200) {
+          setFamSuccess(true)
+        }
+
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error(error)
+        }
+      }
 
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -201,7 +208,7 @@ export default function Home() {
               content: ev.target.value,
             })}/>
             <button type="submit" className="button-style-1">Send</button>
-            {conSuccess && <p>Successfully sent!</p>}
+            {conSuccess && <p className="text-green-800 bg-white rounded-lg py-2 px-4">Successfully sent!</p>}
           </form>
 
           <form id="family-contact-form" onSubmit={handleFamSubmit} className="bg-green-800 w-full h-fit rounded-lg flex flex-col gap-5 p-4 border-green-300 border-4">
@@ -430,7 +437,7 @@ export default function Home() {
               })}
             />
             <button type="submit" className="button-style-1">Send</button>
-            {famSuccess && <p>Successfully sent information. Thank you for your contribution!</p>}
+            {famSuccess && <p className="text-green-800 bg-white rounded-lg py-2 px-4">Successfully sent information. Thank you for your contribution!</p>}
           </form>
 
         </div>
