@@ -1,0 +1,28 @@
+const animals = [
+    'Lion',
+    'Elephant',
+    'Giraffe',
+    'Tiger',
+    'Gorilla',
+    'Dolphin',
+    'Penguin',
+    'Kangaroo',
+    'Cheetah',
+    'Zebra',
+    'Polar bear',
+    'Koala',
+    'Wolf',
+    'Chimpanzee',
+    'Orangutan',
+    'Hippopotamus',
+    'Panda',
+    'Rhinoceros',
+    'Leopard',
+    'Sloth',
+    'Ostrich',
+    'Crocodile',
+    'Eagle',
+    'Octopus',
+    'Jaguar'
+];
+export default animals  

@@ -2,11 +2,9 @@ import multiparty from 'multiparty'
 import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3'
 import fs from 'fs'
 import mime from 'mime-types'
+import alphabet from '@/lib/alphabet'
 
 export default async function handle(req,res) {
-    let alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '*', '-', '_', '.', '(', ')', "'"]
     const form = new multiparty.Form();
     const bucket = "fmpage"
 
