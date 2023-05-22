@@ -1,9 +1,13 @@
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import dynamic from 'next/dynamic';
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import axios, { AxiosError } from 'axios'
+import { getIronSession } from "iron-session";
+import { GetServerSideProps } from "next";
+import { sessionOptions } from "@/lib/auth/sessionOptions";
+import useUserStore from "@/store/userstore";
 const SelectCountry = dynamic(() => import('@/components/SelectCountry'))
 
 type famInputs = {
@@ -28,7 +32,30 @@ type childInput = {
   name: string
 }
 
-export default function Home() {
+export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
+  const session = await getIronSession(req, res, sessionOptions);
+  const { user } = session;
+
+  return {
+    props: {
+      user: user || null,
+    }
+  }
+}
+
+interface Props {
+  user: {
+    id: string
+    data: {
+      email: string
+      name: string
+    }
+    admin: boolean
+    avatarURI: string
+  } | null,
+}
+
+export default function Home({ user }:Props) {
   const [inputChildren, setInputChildren] = useState<childInput[]>([]);
   const [changes, setChanges] = useState<Boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -51,6 +78,17 @@ export default function Home() {
   });
   const [famSuccess, setFamSuccess] = useState<Boolean>(false);
   const [conSuccess, setConSuccess] = useState<Boolean>(false);
+  const userStore = useUserStore();
+
+  useEffect(() => {
+    if (!user) return
+
+    if (!userStore.status) {
+      userStore.setUser(user)
+    }
+  
+  }, [user])
+  
 
   function addChild() {
     setInputChildren((oldState:any) => {

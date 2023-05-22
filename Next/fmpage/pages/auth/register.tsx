@@ -6,6 +6,7 @@ import { FormEvent, useState } from 'react'
 
 const register = () => {
   const router = useRouter();
+  const [nameHover, setNameHover] = useState<Boolean>(false);
   const [showPass, setShowPass] = useState<Boolean>(false);
   const [input, setInput] = useState({
     email: "",
@@ -41,11 +42,19 @@ const register = () => {
             name: input.name,
             password: input.password,
           })} type="email" required placeholder="Email" />
-          <input value={input.name} onChange={ev => setInput({
-            email: input.email,
-            name: ev.target.value,
-            password: input.password,
-          })} type="text" placeholder="Username" />
+          <div className='w-full relative'>
+            <input value={input.name} onChange={ev => setInput({
+              email: input.email,
+              name: ev.target.value,
+              password: input.password,
+            })} type="text" placeholder="Username" className='w-full'
+            onMouseEnter={() => setNameHover(true)} onMouseLeave={() => setNameHover(false)}/>
+            <span className={`absolute -bottom-full left-0 px-4 py-2 bg-green-800 border-2 border-green-300 
+            rounded-lg text-white pointer-events-none ${nameHover ? "opacity-100" : "opacity-0"} transition-opacity
+            duration-150`}>
+              <p>If you leave this empty, we will make a name for you!</p>
+            </span>
+          </div>
           <div className='w-full flex items-stretch gap-5'>
             <input className='w-full' 
             value={input.password} 

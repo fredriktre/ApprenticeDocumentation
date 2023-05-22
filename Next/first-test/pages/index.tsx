@@ -1,7 +1,6 @@
 import Layout from "@/components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
-// import { withSessionSsr } from "@/lib/auth/withSession";
 import { getIronSession } from "iron-session";
 import useUserStore from "@/store/userstore";
 import Link from "next/link";

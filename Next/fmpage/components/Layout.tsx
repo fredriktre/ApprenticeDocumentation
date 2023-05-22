@@ -1,6 +1,8 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
 import Head from "next/head"
+import useUserStore from "@/store/userstore"
+import { User } from "@/lib/auth/session"
 
 interface Props {
     children:ReactNode
@@ -9,6 +11,15 @@ interface Props {
 
 const Layout = ({children, title}:Props) => {
     const [secondMenuOpen, setSecondMenuOpen] = useState(false);
+    const store = useUserStore();
+    const [user, setUser] = useState<User>();
+
+    useEffect(() => {
+        if (!store.status) return;
+
+        setUser(store.user);
+
+    }, [store.status])
 
   return (
     <>
@@ -17,7 +28,7 @@ const Layout = ({children, title}:Props) => {
         </Head>
         <div className="h-full min-h-screen flex flex-col">        
             <nav className="fixed top-0 z-50 w-full text-md bg-green-800 text-white">
-                    <div className="relative bg-green-800 py-4 z-50 flex justify-center gap-5">
+                    <div className="relative bg-green-800 py-4 z-50 flex justify-center items-center gap-5">
                         <Link className="underline decoration-2 underline-offset-2 
                         decoration-transparent hover:decoration-white transition-colors 
                         duration-100" href={'/'}>Home</Link>
@@ -35,8 +46,10 @@ const Layout = ({children, title}:Props) => {
                             </svg>
                         </button>
                         <Link className="underline decoration-2 underline-offset-2 
-                        decoration-transparent hover:decoration-white transition-colors 
-                        duration-100" href={'/auth/login'}>Log in</Link>
+                        decoration-transparent hover:decoration-white transition-all 
+                        duration-100" href={`/auth/${user ? "user" : "login"}`}>{
+                            user ? <img src={user.avatarURI} className="w-6 aspect-square" /> : "Log in"
+                        }</Link>
                     </div>
                     <div className={`absolute bg-green-900 p-4 z-40 ${secondMenuOpen ? "top-full" : "-top-full"} 
                 left-1/2 -translate-x-1/2 flex justify-center gap-5 transition-all duration-500 rounded-b-lg border-4 border-green-800`}>

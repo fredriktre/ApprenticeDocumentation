@@ -5,8 +5,8 @@ import { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import animals from "@/lib/samples/animals";
 import { withSessionRoute } from "@/lib/auth/session";
 import { createAvatar } from '@dicebear/core'
-import { lorelei } from '@dicebear/collection'
-const crypt = require('bcryptjs')
+import { initials } from '@dicebear/collection'
+import { hash } from "bcryptjs";
 
 const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
 
@@ -28,7 +28,7 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
                     Math.random() * animals.length - 1
                 )
             ]
-        }`
+        }-`
         for (let i = 0; i < 6; i++) {
             name = `${name}${
                 alphabet[
@@ -40,10 +40,12 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
         }
     }
 
-    const avatar = createAvatar(lorelei)
+    const avatar = createAvatar(initials, {
+        seed: `${name}`
+    })
     const avatarURI:string = await (await avatar.toDataUri()).toString();
 
-    const hashpass:string = await crypt.hash(password)
+    const hashpass = await hash(password, 10)
 
     const response:any = await User.create({
         email,
@@ -59,7 +61,8 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
             email: response.email,
             name: response.name,
         },
-        admin: response.admin
+        admin: response.admin,
+        avatarURI: response.avatarURI
     }
     await req.session.save()
     return res.status(200).json({message: "successfull registration"})

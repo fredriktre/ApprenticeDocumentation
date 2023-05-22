@@ -1,19 +1,41 @@
 import Layout from '@/components/Layout'
+import axios, { AxiosError } from 'axios'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { FormEvent, useState } from 'react'
 
 const login = () => {
+  const router = useRouter();
   const [showPass, setShowPass] = useState(false)
   const [input, setInput] = useState({
     email: "",
     password: "",
   })
+
+  async function handleSubmit(event:FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+
+      const response = await axios.post('/api/auth/login', input);
+
+      if (response.status === 200) {
+        router.push("/");
+      }
+
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error(error)
+      }
+    }
+  }
+
   return (
     <Layout>
         
       <div className='w-full h-screen flex justify-center items-center'>
 
-        <form className="bg-green-800 w-4/5 mx-auto h-fit rounded-lg flex flex-col gap-5 p-4 border-green-300 border-4">
+        <form onSubmit={handleSubmit} className="bg-green-800 w-4/5 mx-auto h-fit rounded-lg flex flex-col gap-5 p-4 border-green-300 border-4">
         <input value={input.email} onChange={ev => setInput({
             email: ev.target.value,
             password: input.password,

@@ -9,13 +9,14 @@ export function withSessionRoute(handler: NextApiHandler) {
     return withIronSessionApiRoute(handler, sessionOptions);
 }
 
-type User = {
+export type User = {
     id: string
     data: {
         email: string,
         name: string,
     }
-    admin: boolean
+    admin: boolean,
+    avatarURI: string,
 }
 
 declare module "iron-session" {
