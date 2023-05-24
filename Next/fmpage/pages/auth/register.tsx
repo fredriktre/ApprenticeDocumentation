@@ -18,7 +18,7 @@ const register = () => {
     event.preventDefault();
 
     try {
-
+      console.log("try")
       const response = await axios.post('/api/auth/register', input);
 
       if (response.status === 200) {

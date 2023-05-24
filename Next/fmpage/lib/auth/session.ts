@@ -16,7 +16,7 @@ export type User = {
         name: string,
     }
     admin: boolean,
-    avatarURI: string,
+    avatar: string
 }
 
 declare module "iron-session" {

@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import { withSessionRoute } from "@/lib/auth/session";
 import { compare, hash } from "bcryptjs";
 
-const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
+const loginRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
 
     if (req.method !== "POST") return res.status(405).json({error: "Invalid Method"})
     
@@ -27,11 +27,11 @@ const registerRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
             name: UD.name,
         },
         admin: UD.admin,
-        avatarURI: UD.avatarURI
+        avatar: UD.avatar
     }
     await req.session.save()
     return res.status(200).json({message: "successfull login"})
 
 }
 
-export default withSessionRoute(registerRoute);
+export default withSessionRoute(loginRoute);

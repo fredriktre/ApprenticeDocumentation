@@ -1,14 +1,23 @@
 import { create } from 'zustand'
-import { User } from '@/lib/auth/session'
+
+export type StoreUser = {
+    id: string
+    data: {
+        email: string,
+        name: string,
+    }
+    admin: boolean,
+    avatar: string
+}
 
 type Store = {
-    user: User
+    user: StoreUser
     status: boolean
-    setUser: (input:User) => void
+    setUser: (input:StoreUser) => void
     logOut: () => void
 }
 
-const useUserStore = create<Store>((set) => ({
+const useStoreUserStore = create<Store>((set) => ({
     user: {
         id: "",
         data: {
@@ -16,7 +25,7 @@ const useUserStore = create<Store>((set) => ({
             name: "",
         },
         admin: false,
-        avatarURI: "",
+        avatar: "",
     },
     status: false,
     setUser(input) {
@@ -28,7 +37,7 @@ const useUserStore = create<Store>((set) => ({
                     name: input.data.name,
                 },
                 admin: input.admin,
-                avatarURI: input.avatarURI,
+                avatar: input.avatar,
             },
             status: true
         }));
@@ -43,10 +52,10 @@ const useUserStore = create<Store>((set) => ({
                     name: "",
                 },
                 admin: false,
-                avatarURI: "",
+                avatar: "",
             }
         }))
     }
 }))
 
-export default useUserStore;
+export default useStoreUserStore;

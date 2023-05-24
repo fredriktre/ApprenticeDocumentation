@@ -1,8 +1,7 @@
 import { ReactNode, useEffect, useState } from "react"
 import Link from "next/link"
 import Head from "next/head"
-import useUserStore from "@/store/userstore"
-import { User } from "@/lib/auth/session"
+import useUserStore, { StoreUser } from "@/store/userstore"
 
 interface Props {
     children:ReactNode
@@ -12,11 +11,10 @@ interface Props {
 const Layout = ({children, title}:Props) => {
     const [secondMenuOpen, setSecondMenuOpen] = useState(false);
     const store = useUserStore();
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<StoreUser>();
 
     useEffect(() => {
         if (!store.status) return;
-
         setUser(store.user);
 
     }, [store.status])
@@ -48,7 +46,12 @@ const Layout = ({children, title}:Props) => {
                         <Link className="underline decoration-2 underline-offset-2 
                         decoration-transparent hover:decoration-white transition-all 
                         duration-100" href={`/auth/${user ? "user" : "login"}`}>{
-                            user ? <img src={user.avatarURI} className="w-6 aspect-square" /> : "Log in"
+                            user ? 
+                            <div className="p-1 bg-white rounded-lg hover:bg-gray-300 
+                            active:bg-gray-600 transition-colors duration-150">
+                                <img src={user.avatar} className="w-6 aspect-square" /> 
+                            </div>
+                            : "Log in"
                         }</Link>
                     </div>
                     <div className={`absolute bg-green-900 p-4 z-40 ${secondMenuOpen ? "top-full" : "-top-full"} 

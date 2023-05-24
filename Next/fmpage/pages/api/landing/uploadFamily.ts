@@ -13,6 +13,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             fullname: req.body.fullname,
             gender: req.body.gender,
             birthdate: req.body.birthdate,
+            deathdate: req.body.deathdate,
             bornin: req.body.bornin,
             diedin: req.body.diedin,
             father: req.body.father,

@@ -1,7 +1,6 @@
 const { model, Schema, models } = require("mongoose");
 
-const RequestSchema = new Schema({
-    email: {type: String, required: true},
+const MembersSchema = new Schema({
     fullname: {type: String, required: true},
     gender: {type: String, required: true},
     birthdate: {type: String},
@@ -15,4 +14,4 @@ const RequestSchema = new Schema({
     imageIds: {type: Object}
 })
 
-export const Request = models.Request || model('Request', RequestSchema);
+export const Members = models.Members || model('Members', MembersSchema);

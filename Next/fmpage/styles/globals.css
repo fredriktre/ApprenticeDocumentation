@@ -23,6 +23,58 @@ input, textarea, select {
   rounded-lg p-2 focus:border-green-300
 }
 
+textarea::-webkit-scrollbar {
+  width: 10px;
+}
+
+textarea::-webkit-scrollbar-track {
+  @apply bg-gray-300
+}
+textarea:focus::-webkit-scrollbar-track {
+  @apply bg-green-300
+}
+
+textarea::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-lg
+}
+textarea:focus::-webkit-scrollbar-thumb {
+  @apply bg-green-600 rounded-lg
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-800 rounded-lg
+}
+textarea:focus::-webkit-scrollbar-thumb:hover {
+  @apply bg-green-800 rounded-lg
+}
+
+.scollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scollbar::-webkit-scrollbar-track {
+  @apply bg-gray-300
+}
+.scollbar:focus::-webkit-scrollbar-track {
+  @apply bg-green-300
+}
+
+.scollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-lg
+}
+.scollbar:focus::-webkit-scrollbar-thumb {
+  @apply bg-green-600 rounded-lg
+}
+
+.scollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-800 rounded-lg
+}
+.scollbar:focus::-webkit-scrollbar-thumb:hover {
+  @apply bg-green-800 rounded-lg
+}
+
+
+
 input::-webkit-file-upload-button { cursor:pointer; }
 
 .button-style-1 {
