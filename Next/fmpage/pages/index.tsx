@@ -10,11 +10,12 @@ import { sessionOptions } from "@/lib/auth/sessionOptions";
 import useUserStore from "@/store/userstore";
 const SelectCountry = dynamic(() => import('@/components/SelectCountry'))
 
-type famInputs = {
+export type famInputs = {
   email: string
   fullname: string
   gender: string
   birthdate: string
+  deathdate: string
   bornin: string
   diedin: string
   father: string
@@ -28,8 +29,12 @@ type conInputs = {
   content: string
 }
 
-type childInput = {
-  name: string
+export async function getAvatar(ID:string) {
+  try {
+    return await axios.post("/api/getAvatar", {id:ID})
+  } catch(error) {
+    if (error instanceof AxiosError) console.error(error)
+  }
 }
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
@@ -51,12 +56,12 @@ interface Props {
       name: string
     }
     admin: boolean
-    avatarURI: string
+    avatar: string
   } | null,
 }
 
 export default function Home({ user }:Props) {
-  const [inputChildren, setInputChildren] = useState<childInput[]>([]);
+  const [inputChildren, setInputChildren] = useState<string[]>([]);
   const [changes, setChanges] = useState<Boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
   const [hovering, setHovering] = useState<Boolean>(false);
@@ -65,6 +70,7 @@ export default function Home({ user }:Props) {
     fullname: "",
     gender: "",
     birthdate: "",
+    deathdate: "",
     bornin: "",
     diedin: "",
     father: "",
@@ -82,19 +88,25 @@ export default function Home({ user }:Props) {
 
   useEffect(() => {
     if (!user) return
-
     if (!userStore.status) {
-      userStore.setUser(user)
+      getAvatar(user.avatar).then((response:any) => {
+        userStore.setUser({
+          id: user.id,
+          data: {
+              email: user.data.email,
+              name: user.data.name,
+          },
+          admin: user.admin,
+          avatar: response.data.data,
+        })
+      })
     }
   
   }, [user])
-  
 
   function addChild() {
     setInputChildren((oldState:any) => {
-      return [...oldState, {
-        name: "",
-      }]
+      return [...oldState,  "",]
     })
   }
 
@@ -125,33 +137,40 @@ export default function Home({ user }:Props) {
     ev.preventDefault();
 
     try {
-      let uIres
       if (files.length > 0) {
 
         const data = new FormData();
 
         files.forEach(file => data.append('file', file));
-        uIres = await axios.post("/api/landing/uploadImage", data)
-      }
-      try {
-        
-        const res = await axios.post("/api/landing/uploadFamily", {
-          ...familyInputs,
-          children: inputChildren,
-          imageIds: uIres?.data.data
+        await axios.post("/api/landing/uploadImage", data).then((response:any) => {
+                  
+          console.log(response)
+            axios.post("/api/landing/uploadFamily", {
+              ...familyInputs,
+              children: inputChildren,
+              imageIds: {
+                folderId: response.data.data.folderId,
+                content: response.data.data.content
+              }
+            }).then(() => {
+              setFamSuccess(true)
+              setFamilyInputs({
+                email: "",
+                fullname: "",
+                gender: "",
+                birthdate: "",
+                deathdate: "",
+                bornin: "",
+                diedin: "",
+                father: "",
+                mother: "",
+                extrainfo: ""
+              });
+              setFiles([]);
+              setInputChildren([]);
+            })
         })
-
-        console.log(res)
-
-        if (res.status === 200) {
-          setFamSuccess(true)
-        }
-
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          console.error(error)
-        }
-      }
+      }      
 
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -261,6 +280,7 @@ export default function Home({ user }:Props) {
                 fullname: familyInputs.fullname,
                 gender: familyInputs.gender,
                 birthdate: familyInputs.birthdate,
+                deathdate: familyInputs.deathdate,
                 bornin: familyInputs.bornin,
                 diedin: familyInputs.diedin,
                 father: familyInputs.father,
@@ -280,6 +300,7 @@ export default function Home({ user }:Props) {
                   fullname: ev.target.value,
                   gender: familyInputs.gender,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: familyInputs.bornin,
                   diedin: familyInputs.diedin,
                   father: familyInputs.father,
@@ -295,6 +316,7 @@ export default function Home({ user }:Props) {
                   fullname: familyInputs.fullname,
                   gender: ev.target.value,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: familyInputs.bornin,
                   diedin: familyInputs.diedin,
                   father: familyInputs.father,
@@ -307,25 +329,49 @@ export default function Home({ user }:Props) {
                 <option value={"female"}>Female</option>
               </select>
             </div>
-            <div className="w-full">
-              <label htmlFor="bd" className="text-white">Birthdate</label>
-              <input 
-                id="bd" 
-                type="date" 
-                className="w-full" 
-                value={familyInputs.birthdate} 
-                onChange={(ev:any) => setFamilyInputs({
-                  email: familyInputs.email,
-                  fullname: familyInputs.fullname,
-                  gender: familyInputs.gender,
-                  birthdate: ev.target.value,
-                  bornin: familyInputs.bornin,
-                  diedin: familyInputs.diedin,
-                  father: familyInputs.father,
-                  mother: familyInputs.mother,
-                  extrainfo: familyInputs.extrainfo
-                })}
-              />
+            <div className="w-full flex gap-5">
+              <div className="w-full">
+                <label htmlFor="bd" className="text-white">Birthdate</label>
+                <input 
+                  id="bd" 
+                  type="date" 
+                  className="w-full" 
+                  value={familyInputs.birthdate} 
+                  onChange={(ev:any) => setFamilyInputs({
+                    email: familyInputs.email,
+                    fullname: familyInputs.fullname,
+                    gender: familyInputs.gender,
+                    birthdate: ev.target.value,
+                    deathdate: familyInputs.deathdate,
+                    bornin: familyInputs.bornin,
+                    diedin: familyInputs.diedin,
+                    father: familyInputs.father,
+                    mother: familyInputs.mother,
+                    extrainfo: familyInputs.extrainfo
+                  })}
+                />
+              </div>
+              <div className="w-full">
+                <label htmlFor="dd" className="text-white">Deathdate (Leave empty if alive)</label>
+                <input 
+                  id="dd" 
+                  type="date" 
+                  className="w-full" 
+                  value={familyInputs.deathdate} 
+                  onChange={(ev:any) => setFamilyInputs({
+                    email: familyInputs.email,
+                    fullname: familyInputs.fullname,
+                    gender: familyInputs.gender,
+                    birthdate: familyInputs.birthdate,
+                    deathdate: ev.target.value,
+                    bornin: familyInputs.bornin,
+                    diedin: familyInputs.diedin,
+                    father: familyInputs.father,
+                    mother: familyInputs.mother,
+                    extrainfo: familyInputs.extrainfo
+                  })}
+                />
+              </div>
             </div>
             <div className="flex gap-5 w-full">
               <SelectCountry 
@@ -336,6 +382,7 @@ export default function Home({ user }:Props) {
                   fullname: familyInputs.fullname,
                   gender: familyInputs.gender,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: ev.target.value,
                   diedin: familyInputs.diedin,
                   father: familyInputs.father,
@@ -351,6 +398,7 @@ export default function Home({ user }:Props) {
                   fullname: familyInputs.fullname,
                   gender: familyInputs.gender,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: familyInputs.bornin,
                   diedin: ev.target.value,
                   father: familyInputs.father,
@@ -370,6 +418,7 @@ export default function Home({ user }:Props) {
                   fullname: familyInputs.fullname,
                   gender: familyInputs.gender,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: familyInputs.bornin,
                   diedin: familyInputs.diedin,
                   father: ev.target.value,
@@ -387,6 +436,7 @@ export default function Home({ user }:Props) {
                   fullname: familyInputs.fullname,
                   gender: familyInputs.gender,
                   birthdate: familyInputs.birthdate,
+                  deathdate: familyInputs.deathdate,
                   bornin: familyInputs.bornin,
                   diedin: familyInputs.diedin,
                   father: familyInputs.father,
@@ -410,10 +460,10 @@ export default function Home({ user }:Props) {
                       className="w-full" 
                       type="text" 
                       placeholder="Child's name" 
-                      value={inputChildren[index].name}
+                      value={inputChildren[index]}
                       onChange={ev => setInputChildren((oldState) => {
                         const data = oldState
-                        data[index].name = ev.target.value
+                        data[index] = ev.target.value
                         setChanges(!changes)
                         return data
                       })}
@@ -467,6 +517,7 @@ export default function Home({ user }:Props) {
                 fullname: familyInputs.fullname,
                 gender: familyInputs.gender,
                 birthdate: familyInputs.birthdate,
+                deathdate: familyInputs.deathdate,
                 bornin: familyInputs.bornin,
                 diedin: familyInputs.diedin,
                 father: familyInputs.father,
