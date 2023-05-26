@@ -34,7 +34,7 @@ export type Request = {
   extrainfo: string,
   children: Array<string>,
   imageIds: {
-    folderID: string,
+    folderId: string,
     content: []
   }
 }
@@ -70,13 +70,23 @@ const login = ({requestsData, membersData}:Props) => {
       setMembers(membersData)
     }, [membersData])
 
-    const handleAccept = async (data:Request) => {
+    const handleAccept = async (data:Request, imagesToDelete:string[]) => {
       try {
         const notData = requests.filter((request:Request) => request._id != data._id)
-        console.log(notData)
         setRequests(notData)
         
         const response = await axios.post('/api/admin/requests', {body: data, type: "ACCEPT"})
+
+        if (imagesToDelete.length > 0) {
+          try {
+            const response = await axios.post("/api/deleteImage", {data: imagesToDelete})
+            console.log(response)
+          } catch (error) {
+              if (error instanceof AxiosError) {
+                  console.log(error)
+              }
+          }
+        }        
       } catch (error) {
         if (error instanceof AxiosError) {
           console.error(error)
@@ -84,13 +94,23 @@ const login = ({requestsData, membersData}:Props) => {
       }
     }
     
-    const handleDelete = async (id:string) => {
+    const handleDelete = async (id:string, imagesToDelete:string[]) => {
       try {
   
-        const thisRequest = requests.find((request:Request) => request._id === id)
-        console.log(thisRequest)
-        // const response = await axios.post('/api/admin/requests', {body: request, type: "DELETE"})
-
+        const notData = requests.filter((request:Request) => request._id != id)
+        setRequests(notData)
+        const response = await axios.post('/api/admin/requests', {body: {_id: id}, type: "DELETE"})
+        
+        if (imagesToDelete.length > 0){
+          try {
+            const response = await axios.post("/api/deleteImage", {data: imagesToDelete})
+            console.log(response)
+          } catch (error) {
+              if (error instanceof AxiosError) {
+                  console.log(error)
+              }
+          }
+        }        
       } catch (error) {
         if (error instanceof AxiosError) {
           console.error(error)

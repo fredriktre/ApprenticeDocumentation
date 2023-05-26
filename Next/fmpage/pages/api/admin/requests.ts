@@ -43,8 +43,9 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
         } else if (req.body.type === "DELETE") {
             await mongooseConnect();
 
-            Members.DeleteOne({_id:req.body.body._id})
+            const res = await Request.findOneAndDelete({_id:req.body.body._id})
 
+            return res.status(200).json({message: "successfully deleted data"})
         }
 
     } else {

@@ -135,42 +135,49 @@ export default function Home({ user }:Props) {
 
   async function handleFamSubmit(ev:FormEvent<HTMLFormElement>) {
     ev.preventDefault();
-
+    
     try {
+      console.log(ev)
+      let response
       if (files.length > 0) {
-
         const data = new FormData();
-
         files.forEach(file => data.append('file', file));
-        await axios.post("/api/landing/uploadImage", data).then((response:any) => {
-                  
-          console.log(response)
-            axios.post("/api/landing/uploadFamily", {
-              ...familyInputs,
-              children: inputChildren,
-              imageIds: {
-                folderId: response.data.data.folderId,
-                content: response.data.data.content
-              }
-            }).then(() => {
-              setFamSuccess(true)
-              setFamilyInputs({
-                email: "",
-                fullname: "",
-                gender: "",
-                birthdate: "",
-                deathdate: "",
-                bornin: "",
-                diedin: "",
-                father: "",
-                mother: "",
-                extrainfo: ""
-              });
-              setFiles([]);
-              setInputChildren([]);
-            })
-        })
+        response = await axios.post("/api/uploadImage", data)
       }      
+      if (response === undefined) {
+        response = {
+          data: {
+            data: {
+              folderId: "",
+              content: []
+            }
+          }
+        }
+      }
+      axios.post("/api/landing/uploadFamily", {
+        ...familyInputs,
+        children: inputChildren,
+        imageIds: {
+          folderId: response.data.data.folderId,
+          content: response.data.data.content
+        }
+      }).then(() => {
+        setFamSuccess(true)
+        setFamilyInputs({
+          email: "",
+          fullname: "",
+          gender: "",
+          birthdate: "",
+          deathdate: "",
+          bornin: "",
+          diedin: "",
+          father: "",
+          mother: "",
+          extrainfo: ""
+        });
+        setFiles([]);
+        setInputChildren([]);
+      })
 
     } catch (error) {
       if (error instanceof AxiosError) {

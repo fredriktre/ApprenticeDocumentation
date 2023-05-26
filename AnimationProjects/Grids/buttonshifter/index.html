@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>buttonshifter</title>
+
+    <style>
+
+        html,body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+
+            background-color: black;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+
+            background-color: white;
+
+            width: 80%;
+            height: fit-content;
+        }
+
+        .item {
+            position: relative;
+            width: 100%;
+
+            overflow: hidden;
+            
+            animation-name: move;
+            animation-duration: 0.5s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            animation-direction: normal;
+        }
+
+        @keyframes move {
+            from {
+                grid-column-start: var(--placementOX);
+                grid-column-end: var(--placementOX);
+
+                grid-row-start:var(--placementOY);
+                grid-row-end:var(--placementOY);
+            }
+            to {
+                grid-column-start: var(--placementX);
+                grid-column-end: var(--placementX);
+
+                grid-row-start:var(--placementY);
+                grid-row-end:var(--placementY);
+            }
+        }
+
+        .item img{
+            width: 100%;
+            height: 100%;
+        }
+
+        .item .front-filter {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            pointer-events: none;
+            opacity: 0;
+
+            transition: 0.2s;
+
+            color: white;
+        }
+
+        .item:hover .front-filter {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+        .item .front-filter div {
+            margin: 10px
+        }
+        
+        .item .front-filter div h3,.item .front-filter div p, .item .front-filter div a {
+            position: relative;
+            z-index: 20;
+        }
+
+        .front-filter div a {
+            padding: 0.5rem 1rem;
+            background-color: white;
+            color: black;
+            border-radius: 15px;
+        }
+
+        .item .front-filter span{
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+        }
+    </style>
+
+</head>
+<body>
+    
+    <div class="grid" id="g"></div>
+
+</body>
+<script>
+    const g = document.getElementById("g");
+    const projects = [
+        {
+            image: "./1.jpg",
+            title: "page 1",
+            desc: "this is a description",
+            link: "https://vg.no"
+        },
+        {
+            image: "./2.jpg",
+            title: "page 2",
+            desc: "this is a description",
+            link: "https://vg.no"
+        },
+        {
+            image: "./3.jpg",
+            title: "page 3",
+            desc: "this is a description",
+            link: "https://vg.no"
+        },
+        {
+            image: "./4.jpg",
+            title: "page 4",
+            desc: "this is a description",
+            link: "https://vg.no"
+        },
+        {
+            image: "./5.jpg",
+            title: "page 5",
+            desc: "this is a description",
+            link: "https://vg.no"
+        }        
+    ]
+    const rows = 1;
+    const columns = 5;
+
+    async function generateImages () {
+        return new Promise(resolve => {
+            projects.forEach((project, index) => {
+                let d = document.createElement("div");
+                let img = document.createElement("img");
+                let d2 = document.createElement("div");
+                let d3 = document.createElement("div");
+                let h3 = document.createElement("h3");
+                let p = document.createElement("p");
+                let a = document.createElement("a");
+                let span = document.createElement("span");
+                
+                h3.innerText = project.title
+                p.innerText = project.desc
+                a.href = project.link
+                a.innerText = "Go to page"
+                d3.appendChild(h3)
+                d3.appendChild(p)
+                d3.appendChild(a)
+                d2.appendChild(d3)
+                d2.appendChild(span)
+                img.src = project.image
+                d2.classList.add("front-filter")
+                d.classList.add("item")
+                d.id = `item-${index}`
+                d.style = `--placementX:${index + 1}; --placementY:${rows}; --placementOX:${index + 1}; --placementOY:${rows}`
+                d.dataset.placeX = `${index + 1}`
+                d.dataset.placeY = `${rows}`
+                d.dataset.placeOX = `${index + 1}`
+                d.dataset.placeOY = `${rows}`
+                d.appendChild(img)
+                d.appendChild(d2)
+                g.appendChild(d)
+            })  
+            resolve("done")
+        })
+    }
+
+    window.addEventListener("load", () => {
+        generateImages().then(() => {
+            animation()
+        })
+    })
+
+
+    const animation = () => {
+        let count = 0;
+
+        projects.forEach((project, index) => {
+            count += 1;
+        })
+        const switch1 = Math.floor(Math.random() * count)
+        const switch2 = Math.floor(Math.random() * 2)
+
+        let item1 
+        let item2 
+        let type = 0;
+
+        if (switch2 === 0) {
+            if (switch1 > 0) {
+                item1 = document.getElementById(`item-${switch1}`)
+                item2 = document.getElementById(`item-${switch1 - 1}`)
+                type = 1;
+            } else {
+                item1 = document.getElementById(`item-${switch1}`)
+                item2 = document.getElementById(`item-${switch1 + 1}`)
+                type = 2;
+            }
+        } else if (switch2 === 1) {
+            if(switch1 < count - 1) {
+                item1 = document.getElementById(`item-${switch1}`)
+                item2 = document.getElementById(`item-${switch1 + 1}`)
+                type = 3;
+            } else {
+                item1 = document.getElementById(`item-${switch1}`)
+                item2 = document.getElementById(`item-${switch1 - 1}`)
+                type = 4;
+            }
+        }
+
+        const place1X = item1.dataset.placeX
+        const place2X = item2.dataset.placeX
+        const place1OX = item1.dataset.placeOX
+        const place2OX = item2.dataset.placeOX
+        item1.dataset.placeOX = place1X
+        item1.dataset.placeX = place2X
+        item1.style = `--placementX:${place2X}; --placementY:${rows}; --placementOX:${place1OX}; --placementOY:${rows}`
+        item2.dataset.placeOX = place2X
+        item2.dataset.placeX = place1X
+        item2.style = `--placementX:${place1X}; --placementY:${rows}; --placementOX:${place2OX}; --placementOY:${rows}`
+        
+        
+        setTimeout(() => {
+            animation()
+        }, 1000)
+    }
+</script>
+</html>

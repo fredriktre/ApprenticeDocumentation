@@ -2,6 +2,7 @@ import Link from "next/link"
 import { useEffect, useRef, useState, DragEvent, Children } from "react"
 import { Request } from "@/pages/admin"
 import SelectCountry from "./SelectCountry"
+import axios, { AxiosError } from "axios"
 
 type Inputs = {
     fullname: string,
@@ -21,9 +22,15 @@ interface Props {
     deleteFunction:any
 }
 
+interface Person {
+    fullname: string,
+    data: Request[]|null
+}
+
 const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
 
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<string[]>([]);
+    const [itemsToDelete, setItemsToDelete] = useState<string[]>([]);
     const [itemOver, setItemOver] = useState<number|null>(null);
     const [itemDelete, setItemDelete] = useState<number|null>(null);
     const [changes, setChanges] = useState<boolean>(false)
@@ -39,6 +46,19 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
         extrainfo: "",
     });
     const [inputChildren, setInputChildren] = useState<string[]>([]);
+    const [potentialFathers, setPotentialFathers ] = useState<Person>({
+        fullname: "",
+        data: null
+    });
+    const [potentialMothers, setPotentialMothers ] = useState<Person>({
+        fullname: "",
+        data: null
+    });
+    const [potentialChildren, setPotentialChildren ] = useState<Person[]>([]);
+    const [fatherCustom, setFatherCustom] = useState<string>("0");
+    const [motherCustom, setMotherCustom] = useState<string>("0");
+    const [childCustom, setChildCustom] = useState<string[]>([]);
+    const [checkFoundData, setCheckFoundData] = useState<Request|null>(null);
 
     useEffect(() => {
         if (!request) return
@@ -54,8 +74,46 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
             mother: request.mother,
             extrainfo: request.extrainfo,
         })
+        setInputChildren(request.children)
         setItems(request.imageIds.content)
+
+        getPotentials(request.father, request.mother, request.children);
+
     }, [request])
+
+    useEffect(() => {
+        if (potentialChildren) {
+            setChildCustom((oldState:string[]) => ([...oldState, "0"]))
+        }
+
+        return () => {
+            setChildCustom([]);
+        }
+    }, [potentialChildren])
+
+    async function getPotentials(father:string, mother:string, children:string[]) {
+
+        try {
+            const response = await axios.post("/api/admin/members", {
+                type: "POTENTIALS",
+                data: {
+                    father,
+                    mother,
+                    children
+                }
+            })
+
+            setPotentialChildren(response.data.data.children)
+            setPotentialFathers(response.data.data.father)
+            setPotentialMothers(response.data.data.mother)
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+            }
+        }
+
+    }
 
     const dragItem = useRef<any>(null)
     const dragOverItem = useRef<any>(null)
@@ -78,27 +136,86 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
         setItemOver(index)
     }
 
-    const handleDelete = (index:number) => {
+    const handleDelete = async (index:number) => {
         const _items = items.filter((item:string) => item != items[index])
         setItems(_items)
+        setItemsToDelete((oldState:string[]) => {return([...oldState, items[index]])})
+    }
+
+    function handleAcceptData () {
+
+        const children = []
+        potentialChildren.forEach((child:Person, index:number) => {
+            
+        })
+
+        return {
+
+        }
     }
 
   return (
+    <>
+    <div className={`fixed top-0 left-0 z-[100] w-full h-full 
+    ${checkFoundData ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+    transition-all duration-300`}>
+        <div className=" w-full h-full relative flex justify-center items-center">
+            <button onClick={() => setCheckFoundData(null)} 
+            className="button-style-1 absolute z-[110] right-5 top-5">X</button>
+            <div className='bg-green-800 border-2 border-green-300 flex flex-col gap-5
+            p-4 rounded-lg w-4/5 absolute z-[105]'>
+                <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">
+                    Name: {checkFoundData?.fullname}
+                </p>
+                <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">
+                    Gender: {checkFoundData?.gender}
+                </p>
+                <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">
+                    Birthdate: {checkFoundData?.birthdate}
+                </p>
+                {
+                    checkFoundData?.deathdate &&
+                    checkFoundData?.deathdate.length > 0 &&
+                    <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Deathdate: {checkFoundData?.deathdate}</p>
+                }
+                <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Country of birth: {checkFoundData?.bornin}</p>
+                {
+                    checkFoundData?.diedin &&
+                    checkFoundData?.diedin.length > 0 &&
+                    <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Country of death: {checkFoundData?.diedin}</p>
+                }
+                <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Father: {checkFoundData?.father}</p>
+                                  <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Mother: {checkFoundData?.mother}</p>
+                {
+                    checkFoundData?.children.map((child:any, index:number) => (
+                        <p key={index} className="outline-none border-4 border-transparent
+                        rounded-lg p-2 focus:border-green-300 bg-white">Child-{index}: {child}</p>
+                    ))
+                }
+                {
+                    checkFoundData?.extrainfo &&
+                    checkFoundData?.extrainfo.length > 0 &&
+                    <p className="outline-none border-4 border-transparent
+                    rounded-lg p-2 focus:border-green-300 bg-white">Extra info: {checkFoundData?.extrainfo}</p>
+                }
+            </div>
+            <span className="absoulute top-0 left-0 bg-black opacity-40 w-full h-full block"></span>
+        </div>
+    </div>
     <div key={request._id} className='bg-green-700 border-2 border-green-300 flex flex-col gap-10
     p-4 rounded-lg w-full'>
         <div className="flex gap-5">
             <Link href={`mailto:${request.email}`} className='button-style-1'>{request.email}</Link>
-            <button onClick={() => acceptFunction({
-                _id: request._id,
-                __v: request.__v,
-                ...inputs,
-                children: inputChildren,
-                imageIds: {
-                    content: items,
-                    folderID: request.imageIds.folderID
-                }
-            })} className="button-style-1">Accept</button>
-            <button onClick={() => deleteFunction(request._id)} className="button-style-1">Delete</button>
+            <button onClick={() => acceptFunction(handleAcceptData(), itemsToDelete)} className="button-style-1">Accept</button>
+            <button onClick={() => deleteFunction(request._id, [...items, ...itemsToDelete])} className="button-style-1">Delete</button>
         </div>
       <div className='w-full flex lg:flex-row flex-col gap-5'>
         <div className='w-full h-fit flex flex-col gap-5'>
@@ -185,39 +302,62 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                     })}/>
                 }
             </div>
-            <input type={"text"} placeholder="Father" value={inputs.father} onChange={(ev) => setInputs({
-                fullname: inputs.fullname,
-                gender: inputs.gender,
-                birthdate: inputs.birthdate,
-                deathdate: inputs.deathdate,
-                bornin: inputs.bornin,
-                diedin: inputs.diedin,
-                father: ev.target.value,
-                mother: inputs.mother,
-                extrainfo: inputs.extrainfo
-            })} />
-            <input type={"text"} placeholder="Mother" value={inputs.mother} onChange={(ev) => setInputs({
-                fullname: inputs.fullname,
-                gender: inputs.gender,
-                birthdate: inputs.birthdate,
-                deathdate: inputs.deathdate,
-                bornin: inputs.bornin,
-                diedin: inputs.diedin,
-                father: inputs.father,
-                mother: ev.target.value,
-                extrainfo: inputs.extrainfo
-            })} />
-            {
-                inputChildren.map((child:any, index:number) => (
-                    <input type={"text"} placeholder="Mother" value={inputs.mother} 
-                    onChange={(ev) => setInputChildren((oldState) => {
-                        const data = oldState
-                        data[index] = ev.target.value
-                        setChanges(!changes)
-                        return data
-                    })} />
-                ))
-            }
+            
+                {
+                    inputChildren.length > 0 &&
+                    inputChildren.map((child:string, index:number) => {
+                        
+                        if (potentialChildren.length > 0) {
+                            const PCData = potentialChildren[index].data as Request[]
+                            if (PCData.length > 0) {
+                                return(
+                                    <div className="flex gap-5">
+                                        <select onChange={(ev) => setChildCustom((oldState:string[]) => {
+                                            const data = oldState
+                                            data[index] = ev.target.value
+                                            setChanges(!changes)
+                                            return (data)
+                                        })} className={`${childCustom[index] === "custom" ? "w-1/6" : "w-full"}`}>
+                                            {
+                                                PCData.map((pchild:Request, index:number) => {
+                                                    return(
+                                                        <option value={`${index}`}>{index} - {pchild.fullname}</option>
+                                                    )
+                                                })
+                                            }
+                                            <option value={"custom"}>Custom</option>
+                                        </select>
+                                        {
+                                            childCustom[index] === "custom" ?
+                                            <input type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
+                                                (OldState:string[]) => {
+                                                    const data = OldState
+                                                    data[index] = ev.target.value
+                                                    return (data)
+                                                }
+                                            )}/>
+                                            :<button onClick={() => setCheckFoundData(PCData[parseInt(childCustom[index])])} 
+                                            className="button-style-1 whitespace-nowrap">Check Data</button>
+                                        }
+                                    </div>
+                                )                                
+                            } else {
+                                return (
+                                    <input type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
+                                        (OldState:string[]) => {
+                                            const data = OldState
+                                            data[index] = ev.target.value
+                                            return (data)
+                                        }
+                                    )}/>
+                                )
+                            }
+
+                        }
+
+                    })
+                }
+
             <textarea 
               placeholder="Extra information" 
               className="resize-none" 
@@ -238,6 +378,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
         </div>
         <div className="scollbar lg:w-full w-fit h-fit max-h-full overflow-y-auto grid md:grid-cols-2 grid-cols-1 gap-5">
             {
+                items.length > 0 ?
                 items.map((item:any, index:number) => (
                     <div key={index}
                         draggable="true" 
@@ -264,10 +405,13 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                         ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>Delete</button>
                     </div>
                 ))
+                : <p className={`relative w-fit flex justify-center  items-center px-4 py-2 bg-white 
+                rounded-lg outline-none border-none`}>No Images Imported</p>
             }
         </div>        
       </div>
     </div>
+    </>
   )
 }
 
