@@ -49,7 +49,7 @@ const Layout = ({children, title}:Props) => {
                             user ? 
                             <div className="p-1 bg-white rounded-lg hover:bg-gray-300 
                             active:bg-gray-600 transition-colors duration-150">
-                                <img src={user.avatar} className="w-6 aspect-square" /> 
+                                <img src={user.avatar} className="w-6 aspect-square" alt="avatar" /> 
                             </div>
                             : "Log in"
                         }</Link>

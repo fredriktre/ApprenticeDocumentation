@@ -2,7 +2,7 @@ const { model, Schema, models } = require("mongoose");
 
 const MembersSchema = new Schema({
     fullname: {type: String, required: true},
-    gender: {type: String, required: true},
+    gender: {type: String},
     birthdate: {type: String},
     deathdate: {type: String},
     bornin: {type: String},

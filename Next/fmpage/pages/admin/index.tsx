@@ -35,7 +35,7 @@ export type Request = {
   children: Array<string>,
   imageIds: {
     folderId: string,
-    content: []
+    content: string[]
   }
 }
 
@@ -94,12 +94,40 @@ const login = ({requestsData, membersData}:Props) => {
       }
     }
     
+    const handleSave = async () => {
+
+    }
+    
     const handleDelete = async (id:string, imagesToDelete:string[]) => {
       try {
   
         const notData = requests.filter((request:Request) => request._id != id)
         setRequests(notData)
         const response = await axios.post('/api/admin/requests', {body: {_id: id}, type: "DELETE"})
+        
+        if (imagesToDelete.length > 0){
+          try {
+            const response = await axios.post("/api/deleteImage", {data: imagesToDelete})
+            console.log(response)
+          } catch (error) {
+              if (error instanceof AxiosError) {
+                  console.log(error)
+              }
+          }
+        }        
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          console.error(error)
+        }
+      }
+    }
+
+    const handleDeleteMember = async (id:string, imagesToDelete:string[]) => {
+      try {
+  
+        const notData = requests.filter((request:Request) => request._id != id)
+        setRequests(notData)
+        const response = await axios.post('/api/admin/members', {body: {_id: id}, type: "DELETE"})
         
         if (imagesToDelete.length > 0){
           try {
@@ -164,8 +192,8 @@ const login = ({requestsData, membersData}:Props) => {
                 <MemberCard 
                   key={member._id} 
                   member={member} 
-                  acceptFunction={handleAccept} 
-                  deleteFunction={handleDelete} /> 
+                  saveFunction={handleSave} 
+                  deleteFunction={handleDeleteMember} /> 
               ))
               :
               <p className='text-white'>No Members right now!</p>

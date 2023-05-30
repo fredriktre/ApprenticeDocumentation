@@ -55,8 +55,8 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
         data: null
     });
     const [potentialChildren, setPotentialChildren ] = useState<Person[]>([]);
-    const [fatherCustom, setFatherCustom] = useState<string>("0");
-    const [motherCustom, setMotherCustom] = useState<string>("0");
+    const [fatherCustom, setFatherCustom] = useState<string>("custom");
+    const [motherCustom, setMotherCustom] = useState<string>("custom");
     const [childCustom, setChildCustom] = useState<string[]>([]);
     const [checkFoundData, setCheckFoundData] = useState<Request|null>(null);
 
@@ -83,11 +83,22 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
 
     useEffect(() => {
         if (potentialChildren) {
-            setChildCustom((oldState:string[]) => ([...oldState, "0"]))
-        }
-
-        return () => {
-            setChildCustom([]);
+            if (childCustom.length > 0) return
+            const data:any = []
+            potentialChildren.forEach((child:any, index:number) => {
+                if (child.data.length > 0 && child.data !== null) {
+                    data.push("0")
+                } else {
+                    data.push("custom")
+                }
+            })
+            setChildCustom((oldState:string[]) => {
+                return ([...data])
+            })
+        } else {
+            setChildCustom((oldState:string[]) => {
+                return ([...oldState])
+            }) 
         }
     }, [potentialChildren])
 
@@ -114,7 +125,6 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
         }
 
     }
-
     const dragItem = useRef<any>(null)
     const dragOverItem = useRef<any>(null)
 
@@ -144,13 +154,109 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
 
     function handleAcceptData () {
 
-        const children = []
+        const children:Request[] = []
         potentialChildren.forEach((child:Person, index:number) => {
-            
+            if (childCustom[index] === "custom") {
+                const newChild:Request = {
+                    _id: "",
+                    __v: 0,
+                    email: "",
+                    fullname: inputChildren[index],
+                    gender: "",
+                    birthdate: "",
+                    deathdate: "",
+                    bornin: "",
+                    diedin: "",
+                    father: "",
+                    mother: "",
+                    extrainfo: "",
+                    children: [],
+                    imageIds: {
+                        folderId: "",
+                        content: [],
+                    }
+                }
+                children.push(newChild)
+            } else {
+                const cdarr = child.data as Request[]
+                const value = parseInt(childCustom[index])
+                const chosenChild = cdarr[value]
+                children.push(chosenChild)
+            }
         })
-
+        let father = {}
+        if (fatherCustom === "custom") {
+            const newFather:Request = {
+                _id: "",
+                __v: 0,
+                email: "",
+                fullname: inputs.father,
+                gender: "male",
+                birthdate: "",
+                deathdate: "",
+                bornin: "",
+                diedin: "",
+                father: "",
+                mother: "",
+                extrainfo: "",
+                children: [],
+                imageIds: {
+                    folderId: "",
+                    content: [],
+                }
+            }
+            father = newFather
+        } else {
+            const fdarr = potentialFathers.data as Request[]
+            const value = parseInt(fatherCustom)
+            father = fdarr[value]
+        }
+        let mother = {}
+        if (motherCustom === "custom") {
+            const newMother:Request = {
+                _id: "",
+                __v: 0,
+                email: "",
+                fullname: inputs.mother,
+                gender: "female",
+                birthdate: "",
+                deathdate: "",
+                bornin: "",
+                diedin: "",
+                father: "",
+                mother: "",
+                extrainfo: "",
+                children: [],
+                imageIds: {
+                    folderId: "",
+                    content: [],
+                }
+            }
+            mother = newMother
+        } else {
+            const mdarr = potentialMothers.data as Request[]
+            const value = parseInt(motherCustom)
+            mother = mdarr[value]
+        }
+        
         return {
-
+            _id: request._id,
+            __v: request.__v,
+            email: request.email,
+            fullname: inputs.fullname,
+            gender: inputs.gender,
+            birthdate: inputs.birthdate,
+            deathdate: inputs.deathdate,
+            bornin: inputs.bornin,
+            diedin: inputs.diedin,
+            father: father,
+            mother: mother,
+            extrainfo: inputs.extrainfo,
+            children: [...children],
+            imageIds: {
+                folderId: request.imageIds.folderId,
+                content: [...items],
+            }
         }
     }
 
@@ -302,7 +408,102 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                     })}/>
                 }
             </div>
-            
+                {
+                    inputs.father.length > 0 &&
+                    potentialFathers.data !== null &&
+                    potentialFathers.data.length > 0
+                    ?<div className="flex gap-5">
+                            <select onChange={(ev) => setFatherCustom(ev.target.value)} 
+                            className={`${fatherCustom === "custom" ? "w-1/6" : "w-full"}`}>
+                                {
+                                    potentialFathers.data.map((pchild:Request, index:number) => {
+                                        return(
+                                            <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
+                                        )
+                                    })
+                                }
+                                <option value={"custom"}>Custom</option>
+                            </select>
+                            {
+                                fatherCustom === "custom" ?
+                                <input type={"text"} className="w-full" value={inputs.father} onChange={(ev) => setInputs({
+                                    fullname: inputs.fullname,
+                                    gender: inputs.gender,
+                                    birthdate: inputs.birthdate,
+                                    deathdate: inputs.deathdate,
+                                    bornin: inputs.bornin,
+                                    diedin: inputs.diedin,
+                                    father: ev.target.value,
+                                    mother: inputs.mother,
+                                    extrainfo: inputs.extrainfo
+                                })}/>
+                                : <button onClick={() => {
+                                    const pdata = potentialFathers.data as Request[]
+                                    setCheckFoundData(pdata[parseInt(fatherCustom)])
+                                }} 
+                                className="button-style-1 whitespace-nowrap">Check Data</button>
+                            }
+                        </div>
+                    :   <input type={"text"} className="w-full" value={inputs.father} onChange={(ev) => setInputs({
+                           fullname: inputs.fullname,
+                           gender: inputs.gender,
+                           birthdate: inputs.birthdate,
+                           deathdate: inputs.deathdate,
+                           bornin: inputs.bornin,
+                           diedin: inputs.diedin,
+                           father: ev.target.value,
+                           mother: inputs.mother,
+                           extrainfo: inputs.extrainfo
+                        })}/>
+                }
+                {
+                    inputs.mother.length > 0 &&
+                    potentialMothers.data !== null &&
+                    potentialMothers.data.length > 0
+                    ?<div className="flex gap-5">
+                            <select onChange={(ev) => setMotherCustom(ev.target.value)} 
+                            className={`${motherCustom === "custom" ? "w-1/6" : "w-full"}`}>
+                                {
+                                    potentialMothers.data.map((pchild:Request, index:number) => {
+                                        return(
+                                            <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
+                                        )
+                                    })
+                                }
+                                <option value={"custom"}>Custom</option>
+                            </select>
+                            {
+                                motherCustom === "custom" ?
+                                <input type={"text"} className="w-full" value={inputs.mother} onChange={(ev) => setInputs({
+                                    fullname: inputs.fullname,
+                                    gender: inputs.gender,
+                                    birthdate: inputs.birthdate,
+                                    deathdate: inputs.deathdate,
+                                    bornin: inputs.bornin,
+                                    diedin: inputs.diedin,
+                                    father: inputs.father,
+                                    mother: ev.target.value,
+                                    extrainfo: inputs.extrainfo
+                                })}/>
+                                : <button onClick={() => {
+                                    const pdata = potentialMothers.data as Request[]
+                                    setCheckFoundData(pdata[parseInt(motherCustom)])
+                                }} 
+                                className="button-style-1 whitespace-nowrap">Check Data</button>
+                            }
+                        </div>
+                    :   <input type={"text"} className="w-full" value={inputs.mother} onChange={(ev) => setInputs({
+                           fullname: inputs.fullname,
+                           gender: inputs.gender,
+                           birthdate: inputs.birthdate,
+                           deathdate: inputs.deathdate,
+                           bornin: inputs.bornin,
+                           diedin: inputs.diedin,
+                           father: inputs.father,
+                           mother: ev.target.value,
+                           extrainfo: inputs.extrainfo
+                        })}/>
+                }
                 {
                     inputChildren.length > 0 &&
                     inputChildren.map((child:string, index:number) => {
@@ -311,7 +512,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                             const PCData = potentialChildren[index].data as Request[]
                             if (PCData.length > 0) {
                                 return(
-                                    <div className="flex gap-5">
+                                    <div key={child} className="flex gap-5">
                                         <select onChange={(ev) => setChildCustom((oldState:string[]) => {
                                             const data = oldState
                                             data[index] = ev.target.value
@@ -321,7 +522,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                             {
                                                 PCData.map((pchild:Request, index:number) => {
                                                     return(
-                                                        <option value={`${index}`}>{index} - {pchild.fullname}</option>
+                                                        <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
                                                     )
                                                 })
                                             }
@@ -333,6 +534,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                                 (OldState:string[]) => {
                                                     const data = OldState
                                                     data[index] = ev.target.value
+                                                    setChanges(!changes)
                                                     return (data)
                                                 }
                                             )}/>
@@ -343,10 +545,11 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                 )                                
                             } else {
                                 return (
-                                    <input type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
+                                    <input key={child} type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
                                         (OldState:string[]) => {
                                             const data = OldState
                                             data[index] = ev.target.value
+                                            setChanges(!changes)
                                             return (data)
                                         }
                                     )}/>

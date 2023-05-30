@@ -212,10 +212,11 @@ export default function Home({ user }:Props) {
             </div>  
             <div className="relative z-30 w-full bg-green-200 border-green-200 border-r-8 border-b-8 rounded-tl-3xl rounded-br-3xl">
               <Image className="relative -top-2 -left-2 rounded-tl-3xl rounded-br-3xl" 
-              loading="eager"
-              src={'/media/images/landingImageOne.webp'} 
-              width={1000} 
-              height={1000} 
+              loading="lazy"
+              priority={false}
+              src={'/media/images/landingImageOneV2.webp'} 
+              width={595} 
+              height={447} 
               alt={"image"} />
             </div>                       
           </div>
