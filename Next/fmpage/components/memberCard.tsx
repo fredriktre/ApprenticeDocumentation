@@ -46,25 +46,101 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
         mother: "",
         extrainfo: "",
     });
-    const [inputChildren, setInputChildren] = useState<string[]>([]);
+    const [familyInfo, setFamilyInfo] = useState({
+        father: {},
+        mother: {},
+        children: [],
+    })
+    const [inputChildren, setInputChildren] = useState<Person[]>([]);
+    const [potentialFathers, setPotentialFathers ] = useState<Person>({
+        fullname: "",
+        data: null
+    });
+    const [potentialMothers, setPotentialMothers ] = useState<Person>({
+        fullname: "",
+        data: null
+    });
+    const [potentialChildren, setPotentialChildren ] = useState<Person[]>([]);
 
     useEffect(() => {
         if (!member) return
-
-        setInputs({
-            fullname: member.fullname,
-            gender: member.gender,
-            birthdate: member.birthdate,
-            deathdate: member.deathdate,
-            bornin: member.bornin,
-            diedin: member.diedin,
-            father: member.father,
-            mother: member.mother,
-            extrainfo: member.extrainfo,
+        
+        getSpecific(member.father, member.mother, member.children).then((response:any) => {
+            setInputs({
+                fullname: member.fullname,
+                gender: member.gender,
+                birthdate: member.birthdate,
+                deathdate: member.deathdate,
+                bornin: member.bornin,
+                diedin: member.diedin,
+                father: response.father.fullname,
+                mother: response.mother.fullname,
+                extrainfo: member.extrainfo,
+            })
+            setInputChildren(response.children)
+            setItems(member.imageIds.content)
+            setFamilyInfo({
+                father: response.father,
+                mother: response.mother,
+                children: response.children
+            })
+            if (Object.keys(response.father).length > 0 && Object.keys(response.mother).length > 0 && response.children.length > 0) {
+                const childrenNames:string[] = []
+                response.children.forEach((child:Person) => {
+                    childrenNames.push(child.fullname)
+                })
+                getPotentials(response.father.fullname, response.mother.fullname, childrenNames)
+            }
         })
-        setInputChildren(member.children)
-        setItems(member.imageIds.content)
+    
     }, [member])
+
+    async function getSpecific(father:string, mother:string, children:string[]) {
+        try {
+            const response = await axios.post("/api/admin/members", {
+                type: "SPECIFIC",
+                data: {
+                    father,
+                    mother,
+                    children
+                }
+            })
+
+            return {
+                father: response.data.data.father, 
+                mother: response.data.data.mother, 
+                children: response.data.data.children,
+            }
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+            }
+        }
+    }
+
+    async function getPotentials(father:string, mother:string, children:string[]) {
+
+        try {
+            const response = await axios.post("/api/admin/members", {
+                type: "POTENTIALS",
+                data: {
+                    father,
+                    mother,
+                    children
+                }
+            })
+
+            setPotentialChildren(response.data.data.children)
+            setPotentialFathers(response.data.data.father)
+            setPotentialMothers(response.data.data.mother)
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+            }
+        }
+    }
 
     const dragItem = useRef<any>(null)
     const dragOverItem = useRef<any>(null)
@@ -95,7 +171,7 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
 
     const handleSave = async () => {
         console.log("save")
-        console.log(member)
+        console.log(inputs)
         setEditActive(false)
     }
 
@@ -144,7 +220,7 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                                 <option value={"female"}>Female</option>
                             </select>
                             <div>
-                                <label className="text-white" htmlFor="bornin">Country of birth</label>
+                                <label className="text-white" htmlFor="bornin">Date of Birth</label>
                                 <input id="bornin" type={"date"} className="w-full" value={inputs.birthdate} onChange={(ev) => setInputs({
                                     fullname: inputs.fullname,
                                     gender: inputs.gender,
@@ -158,7 +234,7 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                                     })}/>
                             </div>
                             <div>
-                                <label className="text-white" htmlFor="diedin">Country of death</label>
+                                <label className="text-white" htmlFor="diedin">Date if Death</label>
                                 <input id="diedin" type={"date"} className="w-full" value={inputs.deathdate} onChange={(ev) => setInputs({
                                     fullname: inputs.fullname,
                                     gender: inputs.gender,
@@ -193,158 +269,11 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                                 mother: inputs.mother,
                                 extrainfo: inputs.extrainfo
                             })}/>
-                            {/* {
-                                inputs.father.length > 0 &&
-                                potentialFathers.data !== null &&
-                                potentialFathers.data.length > 0
-                                ?<div className="flex gap-5">
-                                        <select onChange={(ev) => setFatherCustom(ev.target.value)} 
-                                        className={`${fatherCustom === "custom" ? "w-1/6" : "w-full"}`}>
-                                            {
-                                                potentialFathers.data.map((pchild:Request, index:number) => {
-                                                    return(
-                                                        <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
-                                                    )
-                                                })
-                                            }
-                                            <option value={"custom"}>Custom</option>
-                                        </select>
-                                        {
-                                            fatherCustom === "custom" ?
-                                            <input type={"text"} className="w-full" value={inputs.father} onChange={(ev) => setInputs({
-                                                fullname: inputs.fullname,
-                                                gender: inputs.gender,
-                                                birthdate: inputs.birthdate,
-                                                deathdate: inputs.deathdate,
-                                                bornin: inputs.bornin,
-                                                diedin: inputs.diedin,
-                                                father: ev.target.value,
-                                                mother: inputs.mother,
-                                                extrainfo: inputs.extrainfo
-                                            })}/>
-                                            : <button onClick={() => {
-                                                const pdata = potentialFathers.data as Request[]
-                                                setCheckFoundData(pdata[parseInt(fatherCustom)])
-                                            }} 
-                                            className="button-style-1 whitespace-nowrap">Check Data</button>
-                                        }
-                                    </div>
-                                :   <input type={"text"} className="w-full" value={inputs.father} onChange={(ev) => setInputs({
-                                       fullname: inputs.fullname,
-                                       gender: inputs.gender,
-                                       birthdate: inputs.birthdate,
-                                       deathdate: inputs.deathdate,
-                                       bornin: inputs.bornin,
-                                       diedin: inputs.diedin,
-                                       father: ev.target.value,
-                                       mother: inputs.mother,
-                                       extrainfo: inputs.extrainfo
-                                    })}/>
-                            }
+
                             {
-                                inputs.mother.length > 0 &&
-                                potentialMothers.data !== null &&
-                                potentialMothers.data.length > 0
-                                ?<div className="flex gap-5">
-                                        <select onChange={(ev) => setMotherCustom(ev.target.value)} 
-                                        className={`${motherCustom === "custom" ? "w-1/6" : "w-full"}`}>
-                                            {
-                                                potentialMothers.data.map((pchild:Request, index:number) => {
-                                                    return(
-                                                        <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
-                                                    )
-                                                })
-                                            }
-                                            <option value={"custom"}>Custom</option>
-                                        </select>
-                                        {
-                                            motherCustom === "custom" ?
-                                            <input type={"text"} className="w-full" value={inputs.mother} onChange={(ev) => setInputs({
-                                                fullname: inputs.fullname,
-                                                gender: inputs.gender,
-                                                birthdate: inputs.birthdate,
-                                                deathdate: inputs.deathdate,
-                                                bornin: inputs.bornin,
-                                                diedin: inputs.diedin,
-                                                father: inputs.father,
-                                                mother: ev.target.value,
-                                                extrainfo: inputs.extrainfo
-                                            })}/>
-                                            : <button onClick={() => {
-                                                const pdata = potentialMothers.data as Request[]
-                                                setCheckFoundData(pdata[parseInt(motherCustom)])
-                                            }} 
-                                            className="button-style-1 whitespace-nowrap">Check Data</button>
-                                        }
-                                    </div>
-                                :   <input type={"text"} className="w-full" value={inputs.mother} onChange={(ev) => setInputs({
-                                       fullname: inputs.fullname,
-                                       gender: inputs.gender,
-                                       birthdate: inputs.birthdate,
-                                       deathdate: inputs.deathdate,
-                                       bornin: inputs.bornin,
-                                       diedin: inputs.diedin,
-                                       father: inputs.father,
-                                       mother: ev.target.value,
-                                       extrainfo: inputs.extrainfo
-                                    })}/>
+
                             }
-                            {
-                                inputChildren.length > 0 &&
-                                inputChildren.map((child:string, index:number) => {
-                                    
-                                    if (potentialChildren.length > 0) {
-                                        const PCData = potentialChildren[index].data as Request[]
-                                        if (PCData.length > 0) {
-                                            return(
-                                                <div key={child} className="flex gap-5">
-                                                    <select onChange={(ev) => setChildCustom((oldState:string[]) => {
-                                                        const data = oldState
-                                                        data[index] = ev.target.value
-                                                        setChanges(!changes)
-                                                        return (data)
-                                                    })} className={`${childCustom[index] === "custom" ? "w-1/6" : "w-full"}`}>
-                                                        {
-                                                            PCData.map((pchild:Request, index:number) => {
-                                                                return(
-                                                                    <option key={index} value={`${index}`}>{index} - {pchild.fullname}</option>
-                                                                )
-                                                            })
-                                                        }
-                                                        <option value={"custom"}>Custom</option>
-                                                    </select>
-                                                    {
-                                                        childCustom[index] === "custom" ?
-                                                        <input type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
-                                                            (OldState:string[]) => {
-                                                                const data = OldState
-                                                                data[index] = ev.target.value
-                                                                setChanges(!changes)
-                                                                return (data)
-                                                            }
-                                                        )}/>
-                                                        :<button onClick={() => setCheckFoundData(PCData[parseInt(childCustom[index])])} 
-                                                        className="button-style-1 whitespace-nowrap">Check Data</button>
-                                                    }
-                                                </div>
-                                            )                                
-                                        } else {
-                                            return (
-                                                <input key={child} type={"text"} className="w-full" value={inputChildren[index]} onChange={(ev) => setInputChildren(
-                                                    (OldState:string[]) => {
-                                                        const data = OldState
-                                                        data[index] = ev.target.value
-                                                        setChanges(!changes)
-                                                        return (data)
-                                                    }
-                                                )}/>
-                                            )
-                                        }
-                                    
-                                    }
-                                
-                                })
-                            } */}
+
                             <textarea 
                                 placeholder="Extra information" 
                                 className="resize-none" 
@@ -367,38 +296,59 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                                 <p className="bg-white p-4 rounded-lg">Name</p>
                                 <p className="bg-white p-4 rounded-lg">{inputs.fullname}</p>
                             </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Gender</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.gender}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Birthdate</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.birthdate}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Country of birth</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.bornin}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Deathdate</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.deathdate}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Country of death</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.diedin}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Father</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.father}</p>
-                            </div>
-                            <div className="flex gap-5">
-                                <p className="bg-white p-4 rounded-lg">Mother</p>
-                                <p className="bg-white p-4 rounded-lg">{inputs.mother}</p>
-                            </div>
+                            {
+                                inputs.gender &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Gender</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.gender}</p>
+                                </div>
+                            }
+                            {
+                                inputs.birthdate &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Birthdate</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.birthdate}</p>
+                                </div>
+                            }
+                            {
+                                inputs.bornin &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Country of birth</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.bornin}</p>
+                                </div>
+                            }
+                            {
+                                inputs.deathdate &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Deathdate</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.deathdate}</p>
+                                </div>
+                            }
+                            {
+                                inputs.diedin &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Country of death</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.diedin}</p>
+                                </div>
+                            }
+                            {
+                                inputs.father &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Father</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.father}</p>
+                                </div>
+                            }
+                            {
+                                inputs.mother &&
+                                <div className="flex gap-5">
+                                    <p className="bg-white p-4 rounded-lg">Mother</p>
+                                    <p className="bg-white p-4 rounded-lg">{inputs.mother}</p>
+                                </div>
+                            }
                             {
                                 inputChildren.map((child:any, index:number) => (
                                     <div className="flex gap-5">
-                                        <p className="bg-white p-4 rounded-lg">Child - {index}</p>
+                                        <p className="bg-white p-4 rounded-lg">Child - {index + 1}</p>
                                         <p className="bg-white p-4 rounded-lg">{child.fullname}</p>
                                     </div>
                                 ))

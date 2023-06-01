@@ -99,7 +99,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
                 }
             }
 
-            console.log({ 
+            const res1 = await Members.create({ 
                 fullname,
                 gender,
                 birthdate,
@@ -113,21 +113,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
                 imageIds
             })
 
-            // const res1 = await Members.create({ 
-            //     fullname,
-            //     gender,
-            //     birthdate,
-            //     deathdate ,
-            //     bornin,
-            //     diedin,
-            //     father: fatherID,
-            //     mother: motherID,
-            //     extrainfo,
-            //     children: childrenIds,
-            //     imageIds
-            // })
-
-            // const res2 = await Request.findOneAndDelete({_id:req.body.body._id})
+            const res2 = await Request.findOneAndDelete({_id:req.body.body._id})
 
             return res.status(200).json({message: "successfully moved data"})
 
