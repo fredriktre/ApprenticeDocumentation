@@ -23,10 +23,17 @@ const PublicLayout = ({children, layoutClass}:Props) => {
 
         <div className="relative w-1/2 h-full">
           <div className="relative z-20 w-full h-full flex items-center gap-5 justify-end bg-white">
-            <Link onMouseEnter={() => setNavMenuOpen("products")} onMouseLeave={() => setNavMenuOpen("")} href={"/products"}>Products</Link>
-            <Link onMouseEnter={() => setNavMenuOpen("doc")} onMouseLeave={() => setNavMenuOpen("")} href={"/documentation"}>Documentation</Link>
-            <Link onMouseEnter={() => setNavMenuOpen("pricing")} onMouseLeave={() => setNavMenuOpen("")} href={"/pricing"}>Pricing</Link>
-            <Link href={"/login"}>Log In</Link>
+            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
+            onMouseEnter={() => setNavMenuOpen("products")} onMouseLeave={() => setNavMenuOpen("")} 
+            href={"/products"}>Products</Link>
+            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
+            onMouseEnter={() => setNavMenuOpen("doc")} onMouseLeave={() => setNavMenuOpen("")} 
+            href={"/documentation"}>Documentation</Link>
+            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
+            onMouseEnter={() => setNavMenuOpen("pricing")} onMouseLeave={() => setNavMenuOpen("")} 
+            href={"/pricing"}>Pricing</Link>
+            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
+            href={"/login"}>Log In</Link>
           </div>
 
           <div
