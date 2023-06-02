@@ -63,9 +63,12 @@ function App() {
   const analytics = getAnalytics(app);
   
   useEffect(() => {
-    logEvent(analytics, 'page_view', {
-      language: navigator.language
+    logEvent(analytics, "page_view", {
+      language: navigator.language,
+      page_title: "avatarmaker",
+      page_location: "https://avatarmaker.web.app/"
     })
+    console.log("log")
     changeTheme();
   }, [])
 
@@ -425,20 +428,27 @@ function App() {
     for (let i = 0; i < 10; i++) {
       id = `${i > 0 ? id : ""}${alphabet[Math.floor(Math.random() * 61)]}`
     } 
-
-    
     
     if (filetype === "png") {
       const png = await avatar.png()
       png.toFile(id)
+      logEvent(analytics, "file_download", {
+        content_type: "png",
+        page_title: "avatarmaker",
+        page_location: "https://avatarmaker.web.app/"
+      })
     }
     if (filetype === "jpeg") {
       const jpeg = await avatar.jpeg()
       jpeg.toFile(id)
+      logEvent(analytics, "file_download", {
+        content_type: "jpeg",
+        page_title: "avatarmaker",
+        page_location: "https://avatarmaker.web.app/"
+      })
     }
 
   }
-
 
 
   return (

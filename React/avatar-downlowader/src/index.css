@@ -76,6 +76,7 @@ select, input {
 
   border-radius: 1rem;
   outline: unset;
+  border: unset;
 
   font-size: 1rem;
   transition: 0.25s;
@@ -124,21 +125,27 @@ button.mt-4 {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 2rem);
   background-color: #222222;
   border: 1rem solid #333333;
   border-radius: 2rem;
   overflow: hidden;
 }
 
-
 @media (max-width: 814px) {
   .btn-wrapper {
     flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  nav {
+    flex-direction: column !important;
+    padding: 2rem 0;
   }
 
   .content-div {
     flex-direction: column;
+    padding-top: 15rem
   }
 }
 
