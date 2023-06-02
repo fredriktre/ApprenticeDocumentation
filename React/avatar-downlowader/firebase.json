@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "fbdir",
+    "site": "avatarmaker",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
