@@ -271,7 +271,7 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                             })}/>
 
                             {
-
+                                
                             }
 
                             <textarea 
