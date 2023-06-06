@@ -12,6 +12,8 @@ html, body {
 }
 
 .page-wrapper {
+    position: relative;
+
     width: 100%;
     height: 100%;
     background: linear-gradient(to bottom right, rgb(242, 248, 241), rgb(182, 188, 181));
@@ -157,10 +159,10 @@ button.content-row-cell:active {
 }
 
 .primary-btn:hover {
-    background-color: #783e7e;
+    background-color: #924d9a;
 }
 .primary-btn:active {
-    background-color: #5d3062;
+    background-color: #3e2041;
 }
 
 .secondary-btn {
@@ -181,4 +183,51 @@ button.content-row-cell:active {
 }
 .secondary-btn:active {
     background-color: #e7cceb;
+}
+
+.task-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(rgba(5, 10, 5,0.5), rgba(5, 10, 5,0.5));
+
+    width: 100%;
+    height: 100%;
+}
+
+.task-modal-content {   
+    position: relative; 
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    width: 80%;
+    height: 80%;
+
+    border-radius: 0.5rem;
+    border: 2px solid #050a05;
+
+    padding: 1rem;
+
+    background-color: #e7cceb;
+}
+
+.task-modal-content .exit-btn {
+    position: absolute;
+
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+}
+
+.task-modal-content-desc {
+    padding: 1rem;
+    background-color: #f2f8f1;
+    border-radius: 0.5rem;
 }

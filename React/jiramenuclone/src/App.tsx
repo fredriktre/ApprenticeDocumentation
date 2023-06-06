@@ -8,6 +8,7 @@ type Task = {
 }
 
 function App() {
+  const [openedModal, setOpenedModal] = useState<Task|null>(null)
   const [addIssueModalOpen, setAddIssueModalOpen] = useState<boolean>(false)
   const [currentFilter, setCurrentFilter] = useState<string>("");
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -64,7 +65,7 @@ function App() {
     const priorityNum = Math.floor(Math.random() * 5);
     const tasktitle = `${randomSamples.tasktype[tasktypeNum].titlepiece} ${randomSamples.endpiece[endpieceNum]}`
     const d = new Date();
-    const currDate = `${d.getUTCDate()}/${d.getUTCMonth()}/${d.getUTCFullYear()}`
+    const currDate = `${d.getUTCDate()}/${d.getUTCMonth() + 1}/${d.getUTCFullYear()}`
     const currTime = `${days[d.getUTCDay() - 1]} - ${d.getUTCHours()}:${d.getMinutes()}`
 
     const task:Task = {
@@ -134,7 +135,7 @@ function App() {
 
                 return (
                   <div key={index} className='content-row'>
-                    <button className='content-row-cell'><p>{task.title}</p></button>
+                    <button onClick={() => setOpenedModal(task)} className='content-row-cell'><p>{task.title}</p></button>
                     <div className='content-row-cell'><p>{priorities[task.priority]}</p></div>
                   </div>
                 )
@@ -142,6 +143,23 @@ function App() {
             }
         </div>
       </div>
+      {
+        openedModal != null &&
+        <div className='task-modal'>
+          <div className='task-modal-content'>
+            <button onClick={() => setOpenedModal(null)} className='exit-btn primary-btn'>X</button>
+            <h2>{openedModal.title}</h2>
+            <div className='task-modal-content-desc'>
+              <h3>Description</h3>
+              <p>{openedModal.desc}</p>
+            </div>
+            <div className='task-modal-content-desc'>
+              <h3>Priority</h3>
+              <p>{priorities[openedModal.priority]}</p>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   )
 }
