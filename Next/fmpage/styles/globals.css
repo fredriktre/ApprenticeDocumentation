@@ -73,7 +73,9 @@ textarea:focus::-webkit-scrollbar-thumb:hover {
   @apply bg-green-800 rounded-lg
 }
 
-
+.screen-mt-20 {
+  min-height: calc(100vh - 5rem);
+}
 
 input::-webkit-file-upload-button { cursor:pointer; }
 
