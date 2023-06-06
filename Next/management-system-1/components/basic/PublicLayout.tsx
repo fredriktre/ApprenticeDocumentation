@@ -3,8 +3,8 @@ import Image from 'next/image'
 import Link from "next/link"
 
 interface Props {
-  children: ReactNode
-  layoutClass: string
+  children?: ReactNode
+  layoutClass?: string
 }
 
 const PublicLayout = ({children, layoutClass}:Props) => {
@@ -13,7 +13,7 @@ const PublicLayout = ({children, layoutClass}:Props) => {
   return (
     <div>
       
-      <nav className="w-full px-8 h-14 flex items-center">
+      <nav className="w-full px-8 h-14 flex items-center bg-teal-100">
 
         <div className="w-1/2">
           <Link href={"/"}>
@@ -22,7 +22,7 @@ const PublicLayout = ({children, layoutClass}:Props) => {
         </div>
 
         <div className="relative w-1/2 h-full">
-          <div className="relative z-20 w-full h-full flex items-center gap-5 justify-end bg-white">
+          <div className="relative z-20 w-full h-full flex items-center gap-5 justify-end bg-teal-100">
             <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
             onMouseEnter={() => setNavMenuOpen("products")} onMouseLeave={() => setNavMenuOpen("")} 
             href={"/products"}>Products</Link>
