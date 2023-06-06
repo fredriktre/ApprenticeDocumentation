@@ -50,7 +50,11 @@ const login = () => {
                     </div>
                 </form>
                 <div className={`bg-blue w-full max-w-md rounded-lg overflow-hidden`}>
-                    <Image src={"/media/images/placeholder.jpg"} alt={"image"} width={500} height={800} />
+                    <Image 
+                    src={"/media/images/placeholder.jpg"} 
+                    alt={"image"} 
+                    width={500} 
+                    height={800} />
                 </div>                
             </div>
         </div>

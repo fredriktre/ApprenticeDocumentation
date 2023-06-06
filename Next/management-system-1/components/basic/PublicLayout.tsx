@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react"
 import Image from 'next/image'
 import Link from "next/link"
+import logo from "@/public/badlogoinv.png"
 
 interface Props {
   children?: ReactNode
@@ -8,57 +9,48 @@ interface Props {
 }
 
 const PublicLayout = ({children, layoutClass}:Props) => {
-  const [navMenuOpen, setNavMenuOpen] = useState("");
+  const [navOpen, setNavOpen] = useState<boolean>(false)
 
   return (
     <div>
       
-      <nav className="w-full px-8 h-14 flex items-center bg-teal-100">
+      <nav className="fixed z-50 w-full px-8 h-14 flex justify-between items-center">
 
-        <div className="w-1/2">
-          <Link href={"/"}>
-            <Image src={"next.svg"} width={100} height={100} alt="logo" />
+        <div className="w-fit">
+          <Link href={"/"} className="w-fit bg-teal-100 hover:bg-teal-200 px-4 border-r-2 flex gap-2 items-center
+          py-2 rounded-lg border-b-2 border-teal-500 hover:border-teal-800 transition-all duration-150">
+            <Image src={logo} width={30} height={30} alt="logo" /> <span className="lg:inline hidden">Collaroid</span>
           </Link>
         </div>
 
-        <div className="relative w-1/2 h-full">
-          <div className="relative z-20 w-full h-full flex items-center gap-5 justify-end bg-teal-100">
-            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
-            onMouseEnter={() => setNavMenuOpen("products")} onMouseLeave={() => setNavMenuOpen("")} 
-            href={"/products"}>Products</Link>
-            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
-            onMouseEnter={() => setNavMenuOpen("doc")} onMouseLeave={() => setNavMenuOpen("")} 
-            href={"/documentation"}>Documentation</Link>
-            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
-            onMouseEnter={() => setNavMenuOpen("pricing")} onMouseLeave={() => setNavMenuOpen("")} 
-            href={"/pricing"}>Pricing</Link>
-            <Link className="border-b-2 border-transparent hover:border-black transition-colors duration-150" 
+        <div className="relative h-full">
+          <div onMouseEnter={() => setNavOpen(true)} onMouseLeave={() => setNavOpen(false)} 
+          className={`md:relative absolute md:bg-transparent bg-teal-900 md:p-0 p-4 md:top-1/2 md:-translate-y-1/2 
+          ${navOpen ? "top-0" : "-top-64"} transition-all duration-150 right-0 z-20 w-fit md:h-full flex md:flex-row 
+          flex-col md:items-center items-end gap-5 justify-end rounded-lg`}>
+            <Link className="w-fit bg-teal-100 hover:bg-teal-200 px-4 py-2 rounded-lg border-b-2 border-r-2
+            border-teal-500 hover:border-teal-800 transition-all duration-150"
+            href={"/products"}>Products</Link> 
+            <Link className="w-fit bg-teal-100 hover:bg-teal-200 px-4 py-2 rounded-lg border-b-2 border-r-2
+            border-teal-500 hover:border-teal-800 transition-all duration-150"
+            href={"/documentation"}>Documentation</Link> 
+            <Link className="w-fit bg-teal-100 hover:bg-teal-200 px-4 py-2 rounded-lg border-b-2 border-r-2
+            border-teal-500 hover:border-teal-800 transition-all duration-150"
+            href={"/pricing"}>Pricing</Link> 
+            <Link className="w-fit bg-teal-100 hover:bg-teal-200 px-4 py-2 rounded-lg border-b-2 border-r-2
+            border-teal-500 hover:border-teal-800 transition-all duration-150"
             href={"/login"}>Log In</Link>
-          </div>
-
-          <div
-          onMouseEnter={() => setNavMenuOpen("products")} onMouseLeave={() => setNavMenuOpen("")} 
-          className={`absolute z-10 ${navMenuOpen === "products" ? "top-14 opacity-100" : "-top-full opacity-0"} 
-          left-0 w-full h-20 transition-all duration-300 delay-150 bg-gray-100 p-4 rounded-b-lg`}>
-            <h2 className="text-lg">Products</h2>
-          </div>
-          <div 
-          onMouseEnter={() => setNavMenuOpen("doc")} onMouseLeave={() => setNavMenuOpen("")}
-          className={`absolute z-10 ${navMenuOpen === "doc" ? "top-14 opacity-100" : "-top-full opacity-0"} 
-          left-0 w-full h-20 transition-all duration-300 delay-150 bg-gray-100 p-4 rounded-b-lg`}>
-            <h2 className="text-lg">Documentation</h2>
-          </div>
-          <div 
-          onMouseEnter={() => setNavMenuOpen("pricing")} onMouseLeave={() => setNavMenuOpen("")}
-          className={`absolute z-10 ${navMenuOpen === "pricing" ? "top-14 opacity-100" : "-top-full opacity-0"} 
-          left-0 w-full h-20 transition-all duration-300 delay-150 bg-gray-100 p-4 rounded-b-lg`}>
-            <h2 className="text-lg">Pricing</h2>
+            <div className="absolute md:hidden flex justify-center items-center -bottom-10 right-0 bg-teal-900 w-full h-10 text-white">
+              <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
+              </svg>
+            </div>
           </div>
         </div>
 
       </nav>
 
-      <main className={`${layoutClass} w-full h-[95vh]`}>
+      <main className={`${layoutClass} w-full h-screen`}>
         {children}
       </main>
     </div>

@@ -3,9 +3,19 @@ import Link from "next/link";
 import { FormEvent, useState } from "react"
 import Image from "next/image";
 
+type Input = {
+    email: string,
+    username: string,
+    password: string
+}
+
 const register = () => {
     const [showPass, setShowPass] = useState<boolean>(false);
-    
+    const [input, setInput] = useState<Input>({
+        email: "",
+        username: "",
+        password: "",
+    })
     
     const handleSubmit = async (event:FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -21,13 +31,36 @@ const register = () => {
                 <form onSubmit={handleSubmit}
                 className={`w-full p-4 flex flex-col gap-5`}>
 
-                    <input type="email" className="w-full px-4 py-2 bg-white transition-colors duration-300 outline-none border-b-2 border-r-2 border-black rounded-lg" 
+                    <input type="email" 
+                    className="w-full px-4 py-2 bg-white transition-colors duration-300 outline-none border-b-2 border-r-2 border-black rounded-lg" 
+                    onChange={(ev) => setInput({
+                        email: ev.target.value,
+                        username: input.username,
+                        password: input.password
+                    })}
+                    value={input.email}
                     placeholder="Email" />
-                    <input type="text" className="w-full px-4 py-2 bg-white transition-colors duration-300 outline-none border-b-2 border-r-2 border-black rounded-lg" 
+                    <input type="text" 
+                    className="w-full px-4 py-2 bg-white transition-colors duration-300 outline-none border-b-2 border-r-2 border-black rounded-lg" 
+                    onChange={(ev) => setInput({
+                        email: input.email,
+                        username: ev.target.value,
+                        password: input.password
+                    })}
+                    value={input.username}
                     placeholder="Username" />
                     <div className="flex gap-5">
-                        <input type={`${showPass ? "text" : "password"}`} className="w-full px-4 py-2 bg-white border-b-2 border-r-2 border-black rounded-lg
-                        transition-colors duration-300 outline-none" placeholder="Password" />
+                        <input 
+                        type={`${showPass ? "text" : "password"}`} 
+                        className="w-full px-4 py-2 bg-white border-b-2 border-r-2 border-black rounded-lg
+                        transition-colors duration-300 outline-none" 
+                        onChange={(ev) => setInput({
+                            email: input.email,
+                            username: input.username,
+                            password: ev.target.value
+                        })}
+                        value={input.password}
+                        placeholder="Password" />
                         <button type="button" onClick={() => setShowPass(!showPass)} className="p-2 bg-teal-950 hover:bg-teal-800
                         transition-colors duration-300 rounded-xl outline-none text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

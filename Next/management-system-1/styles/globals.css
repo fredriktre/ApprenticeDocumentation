@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.rg-dot {
+    background: radial-gradient(circle at center, rgba(17, 94, 89, 1), transparent, transparent);
+    border-radius: 50%;
+}
