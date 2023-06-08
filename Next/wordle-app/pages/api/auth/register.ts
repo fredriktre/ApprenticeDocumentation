@@ -79,11 +79,11 @@ async function makeAvatar() {
     const r = Math.floor(Math.random() * 256) 
     const g = Math.floor(Math.random() * 256) 
     const b = Math.floor(Math.random() * 256) 
-    const rgb = `${r}${g}${b}`
-    
+    const hex = `${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+
     const avatar = createAvatar(botttsNeutral, {
         seed:seed,
-        backgroundColor: [rgb]
+        backgroundColor: [`${hex}`]
     })
 
     const avatarURI = await avatar.toDataUri()

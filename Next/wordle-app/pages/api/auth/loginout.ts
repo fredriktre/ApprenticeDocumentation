@@ -40,6 +40,8 @@ const loginRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse
 
             req.session.destroy();
 
+            res.status(200).json({message: "loggedout"})
+
         } else {
             return res.status(404).json({error: "type invalid"})
         }

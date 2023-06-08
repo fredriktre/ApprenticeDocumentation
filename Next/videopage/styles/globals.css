@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.line-under-link {
+    position: relative;
+}
+
+.line-under-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    /* transform: translateX(-50%); */
+    
+    width: 0;
+    height: 2px;
+    background-color: #fcfdfc;
+
+    transition: 0.3s;
+}
+
+.line-under-link:hover::before {
+    width: 100%;
+}
+
+.active.line-under-link::before  {
+    width: 100%;
+}
