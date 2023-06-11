@@ -9,7 +9,7 @@ interface Props {
 
 const Layout = ({children, title}:Props) => {
   return (
-    <div className="w-full h-screen flex font-standard">
+    <div className="w-full h-full min-h-screen font-standard min-w-[286px] bg-c-background">
         <Head>
             <meta name="developer" content="https://github.com/fredriktre" />
             <meta name="author" content="Fredrik Sjøli Trevland" />
@@ -20,8 +20,8 @@ const Layout = ({children, title}:Props) => {
 
         <Navigation />
 
-        <main className="w-full h-full bg-c-background">
-            {children}
+        <main className="w-full h-full h-screen-wnav md:pl-64 pl-0 md:pt-0 pt-[10rem]">
+          {children}
         </main>
 
     </div>

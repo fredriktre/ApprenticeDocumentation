@@ -27,3 +27,74 @@
 .active.line-under-link::before  {
     width: 100%;
 }
+
+.shadow-accent {
+    box-shadow: 0 10px 10px 5px rgba(120, 59, 79, 0.5);
+}
+
+.wone {
+    animation-name: woneAni;
+    animation-timing-function: linear;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-play-state: running;
+}
+.wtwo {
+    animation-name: wtwoAni;
+    animation-timing-function: linear;
+    animation-duration: 8s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-play-state: running;
+}
+.wtree {
+    animation-name: woneAni;
+    animation-timing-function: linear;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-play-state: running;
+}
+
+@media (prefers-reduced-motion) {
+    .wone {
+        animation-play-state: paused;
+    }
+    .wtwo {
+        animation-play-state: paused;
+    }
+    .wtree {
+        animation-play-state: paused;
+    }
+    
+}
+
+@keyframes woneAni {
+    from {
+        top: 0
+    }
+    to {
+        top: -150%
+    }
+}
+@keyframes wtwoAni {
+    from {
+        top: -150%
+    }
+    to {
+        top: 0
+    }
+}
+
+.bg-c-accent-with-opacity-gradient {
+    background: linear-gradient(to right, rgba(120, 59, 79, 1) 90%, rgba(120, 59, 79, 0.9));
+}
+
+.h-screen-wnav {
+    min-height: calc(100vh - 10rem);
+}
+
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+    cursor: pointer; 
+}

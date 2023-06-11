@@ -21,6 +21,10 @@ module.exports = {
       },
       colors: {
         "c-text": "#fcfefb;",
+        "c-background": "#050505;",
+        "c-p-button": "#793947;",
+        "c-s-button": "#cfeddd;",
+        "c-accent": "#783b4f;",
       },
       fontFamily: {
         'covered': ["Flow Circular", ...defaultTheme.fontFamily.sans],
