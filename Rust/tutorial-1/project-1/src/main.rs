@@ -19,4 +19,18 @@ fn main() {
 
         println!("{}", int_input + 2);
     }
+    {
+        let food = "cookie";
+
+        if food == "cookie" {
+            println!("is cookie");
+        } else if food == "fruit" {
+            println!("is fruit")
+        } else {
+            println!("{} is not cookie or fruit", food)
+        }
+    }
+    {
+        
+    }
 }
