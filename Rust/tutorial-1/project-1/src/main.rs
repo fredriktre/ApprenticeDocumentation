@@ -11,11 +11,12 @@ fn main() {
         println!("{}", input);
     }
     {
-        let x: u8 = 9; // range = 0 - 255
-        let y: i8 = 10; // range =  -128 - 127
+        let mut input = String::new();
 
-        // let z = x + y // This won't work, the types doesn't match! If they had the same type, then it works.
-        // let x: u8 = 256; | Won't work, it's an overflowing literal! Same will happen if this is due to some arithmetic.
+        println!("Type a number");
+        io::stdin().read_line(&mut input).expect("expected a number");
+        let int_input : i64 = input.trim().parse().unwrap();
 
+        println!("{}", int_input + 2);
     }
 }

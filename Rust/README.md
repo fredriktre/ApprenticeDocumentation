@@ -95,17 +95,34 @@ println!("there are {} seconds in a minute", SECONDS_IN_MINUTE);
         let x: u8 = 4;
         let y: i32 = x | Even if the x is a integer, they are different types.
 
-    Comment on tutorial episode 5: From NorteX:
-        For anyone interested, the Result() in Rust can be somewhat compared to a Promise inside JS, just not asynchronous. But 
-        essentially it means it can be successful (and return Ok, or in JS .then) or unsuccessful (and return an Err, or in JS .
-        catch).
 
-    Prelude: 
-        The prelude is the list of things that Rust automatically imports into every Rust program. It's kept as small as 
-        possible, and is focused on things, particularly traits, whic are used in almost every single Rust program.
+Comment on tutorial episode 5: From NorteX:
+    For anyone interested, the Result() in Rust can be somewhat compared to a Promise inside JS, just not asynchronous. But 
+    essentially it means it can be successful (and return Ok, or in JS .then) or unsuccessful (and return an Err, or in JS .
+    catch).
 
-    Crate:
-        The name for libraries.
+Prelude: 
+    The prelude is the list of things that Rust automatically imports into every Rust program. It's kept as small as 
+    possible, and is focused on things, particularly traits, whic are used in almost every single Rust program.
 
-    Module:
-        A piece of functionality
+Crate:
+    The name for libraries.
+
+Module:
+    A piece of functionality.
+
+let x: u8 = 9; // range = 0 - 255
+let y: i8 = 10; // range =  -128 - 127
+let z = x + y // This won't work, the types doesn't match! If they had the same type, then it works.
+let x: u8 = 256; | Won't work, it's an overflowing literal! Same will happen if this is due to some arithmetic.
+let x = 255.0f32; | This works. We are basically forcing the variable to treat the value as whatever is there.
+let x = 255.0_f32; | This also works.
+let x = 124_000i64; | This also works, will return large number.
+let x = 124_000 as i64; | This also works..
+ let x = 120 as i8;
+ let y:u8 = 64;
+
+ let z = x / (y as i8); | this works!
+ let z = x / y as i8; | this also works!
+let x = (i32::max as i64) + 1;
+let z:i32 = x as i32 | this overflows
