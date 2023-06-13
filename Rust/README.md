@@ -2,26 +2,26 @@
 For Rust to work, you should go to https://youtu.be/T_KrYLW4jw8 and follow that tutorial.
 As long as you aren't using a build of mine, where you would only need to use Windows (since it's what I would compile it on.)
 
-let x = 4; // implicit type | compiler decides
-
-let x:u32 // not implicit
-
-let x = 4;
-println!("x is: {}", x) // for embedding. x will be put into {}
-
-let mut x = 4; | For making values mutable, can also "recreate" it. So just repeating let x = NEW_VALUE
-println!("x is: {}", x);
-x = 5;
-println!("x is: {}", x);
-
-{ this is a new scope
-    I can use the "parent" variables, but the parent can't use this scope's variable. So name shadowing is possible
-    let x = 2;
+    let x = 4; // implicit type | compiler decides
+.
+    let x:u32 // not implicit
+.
+    let x = 4;
+    println!("x is: {}", x) // for embedding. x will be put into {}
+.
+    let mut x = 4; | For making values mutable, can also "recreate" it. So just repeating let x = NEW_VALUE
     println!("x is: {}", x);
-}
-
-const SECONDS_IN_MINUTE:u32 = 60; | This is a constant, you have to give it a value and type for it to work.
-println!("there are {} seconds in a minute", SECONDS_IN_MINUTE);
+    x = 5;
+    println!("x is: {}", x);
+.
+    { this is a new scope
+        I can use the "parent" variables, but the parent can't use this scope's variable. So name shadowing is possible
+        let x = 2;
+        println!("x is: {}", x);
+    }
+.
+    const SECONDS_IN_MINUTE:u32 = 60; | This is a constant, you have to give it a value and type for it to work.
+    println!("there are {} seconds in a minute", SECONDS_IN_MINUTE);
 
  Here are a couple data types: 
 
@@ -111,18 +111,18 @@ Crate:
 Module:
     A piece of functionality.
 
-let x: u8 = 9; // range = 0 - 255
-let y: i8 = 10; // range =  -128 - 127
-let z = x + y // This won't work, the types doesn't match! If they had the same type, then it works.
-let x: u8 = 256; | Won't work, it's an overflowing literal! Same will happen if this is due to some arithmetic.
-let x = 255.0f32; | This works. We are basically forcing the variable to treat the value as whatever is there.
-let x = 255.0_f32; | This also works.
-let x = 124_000i64; | This also works, will return large number.
-let x = 124_000 as i64; | This also works..
- let x = 120 as i8;
- let y:u8 = 64;
+    let x: u8 = 9; // range = 0 - 255
+    let y: i8 = 10; // range =  -128 - 127
+    let z = x + y // This won't work, the types doesn't match! If they had the same type, then it works.
+    let x: u8 = 256; | Won't work, it's an overflowing literal! Same will happen if this is due to some arithmetic.
+    let x = 255.0f32; | This works. We are basically forcing the variable to treat the value as whatever is there.
+    let x = 255.0_f32; | This also works.
+    let x = 124_000i64; | This also works, will return large number.
+    let x = 124_000 as i64; | This also works..
+     let x = 120 as i8;
+     let y:u8 = 64;
 
- let z = x / (y as i8); | this works!
- let z = x / y as i8; | this also works!
-let x = (i32::max as i64) + 1;
-let z:i32 = x as i32 | this overflows
+     let z = x / (y as i8); | this works!
+     let z = x / y as i8; | this also works!
+    let x = (i32::max as i64) + 1;
+    let z:i32 = x as i32 | this overflows
