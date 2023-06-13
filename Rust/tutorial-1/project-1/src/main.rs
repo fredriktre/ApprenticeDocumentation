@@ -42,6 +42,7 @@ fn main() {
         println!("number: {}", number);
 
         println!("number is = {}", add_numbers_2(20, 10));
+        println!("number is = {}", add_numbers_3(10, 15));
     }
 }
 
@@ -55,5 +56,13 @@ fn add_numbers(x:i32, y:i32) {
 }
 
 fn add_numbers_2(x: i32, y:i32) -> i32 {
-    x + y
+    x + y // returns value, as it's an expression.
+}
+
+fn add_numbers_3(x: i32, y:i32) -> i32 {
+    let result = x + y;
+    if result > 10 {
+        return result - 10
+    }
+    result
 }

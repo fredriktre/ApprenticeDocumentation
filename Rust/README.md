@@ -139,3 +139,18 @@ the different operands that exist are:
 "!" for is not (example: !false would be true)
 
 you got to use the same type on both sides of an integer. Convert if needed.
+
+When it comes to garbage collection, it does that automatically when scope is no longer in use.
+Say, you have a function with let x = 2;, x will use up a spot in the stack. When the function is done,
+the x is deleted. Stack only accepts static values.
+
+let string = String::from("hello"); | This is a dynamic String. And since it is, we store it on the heap.
+In the heap, we need to search through the heap and find enough space for whatever we need to store.
+The stack just places it on the top. (FILO, or First In Last Out, describes that.).
+
+When storing in heap, we store the value in heap, and the pointer in stack.
+When you want to get that value, you need to use the pointer to find the value in the heap, then you can access it.
+
+## That's it for now.
+
+For future learning: https://www.youtube.com/watch?v=OX9HJsJUDxA&list=PLai5B987bZ9CoVR-QEIN9foz4QCJ0H2Y8
