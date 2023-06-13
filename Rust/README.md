@@ -126,3 +126,16 @@ Module:
      let z = x / y as i8; | this also works!
     let x = (i32::max as i64) + 1;
     let z:i32 = x as i32 | this overflows
+
+the different operands that exist are:
+"<" for smaller than
+">" for larger than
+"<=" for smaller than or equal
+">=" for larger than or equal
+"!=" for not equal
+"==" for equal
+"&&" for and
+"||" for or
+"!" for is not (example: !false would be true)
+
+you got to use the same type on both sides of an integer. Convert if needed.
