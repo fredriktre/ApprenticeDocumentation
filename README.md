@@ -186,20 +186,21 @@ I'm 19 today :D
 
 I have been fiddling with next.js and have rather good control with it. And I am actually capable of doing more or less what I want to do now!
 
-I'm making a travel vlog and blog page for my upcoming trip, and I'm using a bunch of packages and libraries to make that stuff work. 
+I'm making a travel vlog and blog page for my upcoming trip, and I'm using a bunch of packages and libraries to make that stuff work. 🛫
 
-I've had to go into node_modules a couple times and do small edits because of problems with the compatability (especially tiptap). Sometimes that works, and sometimes it doesn't.
+I've had to go into node_modules a couple times and do small edits because of problems with the compatability (especially tiptap). Sometimes that works, and sometimes it doesn't. 😜
 
 Currently, I've started working with Unity again. Got a real good focus-session yesterday and managed to keep at it for about 
 1.5 hours. Which is a lot more than I normally do, considering how my energy is generally low due to my chronic illness.
 
-Today, I also finished a basic walkthrough of Rustlang (or Rust if you will). And I'm looking into learning Tauri. Since I can use Next.js in combination with rust there to make desktop applications (from what I understand as of yet).
+Today, I also finished a basic walkthrough of Rustlang 🦀 (or Rust if you will). And I'm looking into learning Tauri. Since I can use Next.js in combination with rust there to make desktop applications (from what I understand as of yet).
 
-I have advanced a rather lot in terms of skill if I consider where I was last year. At this point in 2022, I didn't even know what a framework was. I thought it was just languages, which now makes me feel a bit pathetic. :/
+I have advanced a rather lot in terms of skill if I consider where I was last year. At this point in 2022, I didn't even know what a framework was. I thought it was just languages, which now makes me feel a bit pathetic. 😅
 
 But oh well, I have learned since then at least. :D
 
-The 28th I'm going to Japan, and I'm most likely going to do a bit of coding during that trip as well, but not as much I guess.
+The 28th I'm going to Japan 🛫, and I'm most likely going to do a bit of coding during that trip as well, but not as much I guess. 
+
 Hopefully I can keep floating along for now. Even if the seas get a bit rough. My programming career kinda depends on my mind being in the code and not in the constant dread of feeling like a phone with 10% charge remaining.
 
 In the following months, I will likely focus on spreading my knowledge a bit, and getting more into backend. I want to do this to solidify my knowledge, and to build upon it. It will likely include some leetcode with a roadmap on the side to make sure I progress efficiently. I want to get the basics of software engineering in, as my future will likely benefit from it.
