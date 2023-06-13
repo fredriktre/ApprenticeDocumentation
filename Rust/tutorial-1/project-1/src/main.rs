@@ -31,6 +31,29 @@ fn main() {
         }
     }
     {
-        
+        test_one();
+        add_numbers(10, 20);
     }
+    {
+        let number = { // this works, since the x + 1 is an expression, so it returns something. if it wasn't there, it would fail.
+            let x = 3;
+            x + 1 // this here should not have a semicolon ";", as it's an expression, and not a statement
+        };
+        println!("number: {}", number);
+
+        println!("number is = {}", add_numbers_2(20, 10));
+    }
+}
+
+// snake_case functions
+fn test_one() {
+    println!("this is a test function");
+}
+
+fn add_numbers(x:i32, y:i32) {
+    println!("The sum is: {}", x + y);
+}
+
+fn add_numbers_2(x: i32, y:i32) -> i32 {
+    x + y
 }
