@@ -30,7 +30,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             const id = await new Promise(resolve => {
                 let response = ""
                 
-                for (let i = 0; i < 25; i++) {
+                for (let i = 0; i < 15; i++) {
                     response = `${response}${alphabet[Math.floor(Math.random() * alphabet.length - 1)]}`
                 }
         

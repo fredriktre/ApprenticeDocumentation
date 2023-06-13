@@ -4,9 +4,30 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import useUserStore from '@/stores/userstore';
 import axios, { AxiosError } from 'axios';
 import { Triangle } from 'react-loader-spinner';
+import EditorComp from '@/components/text/EditorComp';
+import { GetServerSideProps } from "next";
+import { getIronSession } from "iron-session";
+import { sessionOptions } from "@/lib/auth/sessionOptions";
+import { User } from '..';
+
+export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
+  const session = await getIronSession(req, res, sessionOptions);
+  const { user } = session;
+
+  return {
+    props: {
+      user: user || null,
+    }
+  }
+}
+
+interface Props {
+    user: User | null,
+}
 
 const New = () => {
-    const [currAdd, setCurrAdd] = useState<string>("vlog");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [currAdd, setCurrAdd] = useState<string>("");
     const [fileVideo, setFileVideo] = useState<any>(null);
     const [fileThumbnail, setFileThumbnail] = useState<any>(null);
     const [vlogInput, setVlogInput] = useState({
@@ -18,6 +39,9 @@ const New = () => {
     const [previewSrc, setPreviewSrc] = useState<any>("");
     const [thumbnailSrc, setThumbnailSrc] = useState<any>("");
     const [lackingVlog, setLackingVlog] = useState<string>("");
+    const [blogInput, setBlogInput] = useState({
+        title: "",
+    })
 
     useEffect(() => {
         if (!fileVideo) return
@@ -33,32 +57,51 @@ const New = () => {
 
 
 
-    const handleBlog = async () => {
-
+    const handleBlog = async (data:any) => {
+        
+        console.log({
+            title: blogInput.title,
+            content: data
+        })
     }
 
     const handleVlog = async (event:FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (vlogInput.title.length > 0 && vlogInput.desc.length > 0 && fileVideo && fileThumbnail) {
-            console.log("all good")
             setLackingVlog("")
             try {
+                setLoading(true)
+                const uploadData = new FormData();
+
+                uploadData.append("file", fileVideo)
+                uploadData.append("file", fileThumbnail)
     
-                const response = axios.post("/api/posts/vlog", {
-                    
+                const upload = await axios.post("/api/posts/uploadFile", uploadData)
+                const response = await axios.post("/api/posts/vlog", {
+                    title: vlogInput.title,
+                    desc: vlogInput.desc,
+                    videoURL: upload.data.data.content[0],
+                    thumbnailURL: upload.data.data.content[1],
                 })
     
+                setVlogInput({
+                    title: "",
+                    desc: ""
+                })
+                setFileThumbnail(null)
+                setFileVideo(null)
+                setCurrAdd("")
+                setLoading(false)
+
             } catch (error) {
                 if (error instanceof AxiosError) {
                     console.error(error)
+                    setLoading(false)
                 }
             }
         } else if (vlogInput.title.length < 1) {
             console.warn("Lacking title")
             setLackingVlog("title")
-        } else if (vlogInput.desc.length < 1) {
-            console.warn("Lacking description")
-            setLackingVlog("desc")
         } else if (!fileVideo) {
             console.warn("Lacking video")
             setLackingVlog("video")
@@ -94,10 +137,26 @@ const New = () => {
                 }
 
                 {
-                    currAdd === "vlog" && <form onSubmit={handleVlog} className='w-full flex flex-col gap-5'>
-
-                        
-                        <input 
+                    currAdd === "vlog" && 
+                    
+                    <form onSubmit={handleVlog} className='w-full flex flex-col gap-5'>
+                        {
+                            loading 
+                            
+                            ?   <div className='w-full h-full flex justify-center items-center'>
+                                    <Triangle 
+                                        height={"150"}
+                                        width={"150"}
+                                        color='#ffffff'
+                                        ariaLabel='triangle-loading'
+                                        wrapperStyle={{}}
+                                        wrapperClass=''
+                                        visible={true}
+                                    /> 
+                                </div>
+                            
+                            :   <>
+                                <input 
                             type="text"
                             placeholder='Title'
                             className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
@@ -235,7 +294,27 @@ const New = () => {
                                 Cancel
                             </button>
                         </div>
+                            </>
+                        }                        
+                        
                     </form>
+                }
+
+                {
+                    currAdd === "blog" &&
+                    <div className='w-full flex flex-col gap-5'>
+                        <input 
+                            type="text"
+                            placeholder='Title'
+                            className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
+                            placeholder:text-c-text placeholder:opacity-75 outline-none 
+                            border-2 transition-colors duration-300 rounded-lg border-transparent focus:border-c-s-button`}
+                            value={blogInput.title}
+                            onChange={(ev) => setBlogInput({
+                                title: ev.target.value,
+                            })} />
+                        <EditorComp handler={handleBlog} cancler={() => setCurrAdd("")} />
+                    </div>
                 }
             </div>
         </div>

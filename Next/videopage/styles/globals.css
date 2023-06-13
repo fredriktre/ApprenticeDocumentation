@@ -98,3 +98,62 @@
 input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
     cursor: pointer; 
 }
+
+.ProseMirror {
+    @apply w-full py-2 px-4 text-lg bg-c-background text-c-text 
+    placeholder:text-c-text placeholder:opacity-75 outline-none 
+    border-2 transition-colors duration-300 rounded-lg border-transparent focus:border-c-s-button
+    min-h-[10rem]
+}
+
+.ProseMirror h1 {
+    @apply text-4xl
+}
+.ProseMirror h2 {
+    @apply text-2xl
+}
+.ProseMirror h3 {
+    @apply text-xl
+}
+.ProseMirror p {
+    @apply text-lg
+}
+
+.ProseMirror h1.editor-bold {
+    @apply text-4xl font-bold
+}
+.ProseMirror h2.editor-bold {
+    @apply text-2xl font-bold
+}
+.ProseMirror h3.editor-bold {
+    @apply text-xl font-bold
+}
+.ProseMirror p.editor-bold {
+    @apply text-lg font-bold
+}
+
+.ProseMirror .editor-link {
+    position: relative;
+}
+
+.ProseMirror .editor-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    /* transform: translateX(-50%); */
+    
+    width: 0;
+    height: 2px;
+    background-color: #fcfdfc;
+
+    transition: 0.3s;
+}
+
+.ProseMirror .editor-link:hover::before {
+    width: 100%;
+}
+
+.ProseMirror .editor-image {
+    @apply w-full max-w-md rounded-lg
+}
