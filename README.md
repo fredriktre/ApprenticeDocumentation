@@ -92,7 +92,7 @@ It's been about a month, and I would just like to update a little bit about what
       2. Authentication
       3. Storage
     
-    I will likely continue to use it in the future, until I feel like learning something new.
+I will likely continue to use it in the future, until I feel like learning something new.
 
 I want to continue on with doing these things in the future as well. Not that I have forgotten my earlier goals, but being able to make design into code
 is something I need to know. 
