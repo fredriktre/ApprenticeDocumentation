@@ -1,17 +1,18 @@
 import { create } from 'zustand'
+import { StoreUser } from './userstore'
 
 type Store = {
-    usernames: string[]
+    users: StoreUser[]
     status: boolean
-    setUser: (input:string[]) => void
+    setUsers: (input:StoreUser[]) => void
 }
 
 const useUsersStore = create<Store>((set) => ({
-    usernames: [],
+    users: [],
     status: false,
-    setUser(input) {
+    setUsers(input) {
         set(() => ({
-            usernames: [...input],
+            users: [...this.users, ...input],
             status: true
         }));
     }

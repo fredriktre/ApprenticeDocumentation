@@ -99,6 +99,10 @@ input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
     cursor: pointer; 
 }
 
+.hidescroll::-webkit-scrollbar {
+    display: none;
+}
+
 .ProseMirror {
     @apply w-full py-2 px-4 text-lg bg-c-background text-c-text 
     placeholder:text-c-text placeholder:opacity-75 outline-none 
@@ -106,37 +110,37 @@ input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
     min-h-[10rem]
 }
 
-.ProseMirror h1 {
+.ProseMirror h1, .dsihRead h1 {
     @apply text-4xl
 }
-.ProseMirror h2 {
+.ProseMirror h2, .dsihRead h2 {
     @apply text-2xl
 }
-.ProseMirror h3 {
+.ProseMirror h3, .dsihRead h3 {
     @apply text-xl
 }
-.ProseMirror p {
+.ProseMirror p, .dsihRead p {
     @apply text-lg
 }
 
-.ProseMirror h1.editor-bold {
+.ProseMirror h1.editor-bold, .dsihRead h1.editor-bold {
     @apply text-4xl font-bold
 }
-.ProseMirror h2.editor-bold {
+.ProseMirror h2.editor-bold, .dsihRead h2.editor-bold {
     @apply text-2xl font-bold
 }
-.ProseMirror h3.editor-bold {
+.ProseMirror h3.editor-bold, .dsihRead h3.editor-bold {
     @apply text-xl font-bold
 }
-.ProseMirror p.editor-bold {
+.ProseMirror p.editor-bold, .dsihRead p.editor-bold {
     @apply text-lg font-bold
 }
 
-.ProseMirror .editor-link {
+.ProseMirror .editor-link, .dsihRead .editor-link {
     position: relative;
 }
 
-.ProseMirror .editor-link::before {
+.ProseMirror .editor-link::before, .dsihRead .editor-link::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -150,10 +154,10 @@ input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
     transition: 0.3s;
 }
 
-.ProseMirror .editor-link:hover::before {
+.ProseMirror .editor-link:hover::before, .dsihRead .editor-link:hover::before {
     width: 100%;
 }
 
-.ProseMirror .editor-image {
+.ProseMirror .editor-image, .dsihRead .editor-image {
     @apply w-full max-w-md rounded-lg
 }

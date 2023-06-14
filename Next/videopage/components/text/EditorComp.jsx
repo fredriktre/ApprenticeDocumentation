@@ -1,6 +1,6 @@
+import { useEffect, useRef, useState, useCallback } from "react"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import { useEffect, useRef, useState, useCallback } from "react"
 import Bold from '@tiptap/extension-bold'
 import Link from '@tiptap/extension-link'
 import CharacterCount from '@tiptap/extension-character-count'
@@ -146,10 +146,10 @@ const EditorComp = ({handler, cancler}) => {
             >
                 B
             </button>
-            <button
+            <div
                 onClick={() => setHeaderActive(!headerActive)}
                 className={`relative w-12 h-12 flex justify-center items-center text-lg 
-                placeholder:text-c-text placeholder:opacity-75 outline-none font-bold 
+                placeholder:text-c-text placeholder:opacity-75 outline-none font-bold cursor-pointer
                 ${headerActive ? "bg-c-s-button text-c-background hover:border-c-background" 
                 : "bg-c-background text-c-text hover:border-c-s-button"}
                 border-2 border-transparent transition-colors duration-300 rounded-lg`}
@@ -198,7 +198,7 @@ const EditorComp = ({handler, cancler}) => {
                         3
                     </button>
                 </div>
-            </button>
+            </div>
             <button
                 onClick={() => {
                     setLinkActive(!linkActive)

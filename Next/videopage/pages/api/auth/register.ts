@@ -6,7 +6,7 @@ import { animals } from "@/lib/samples";
 import { alphabet } from "@/lib/samples";
 import crypt from "bcryptjs"
 import { createAvatar } from "@dicebear/core";
-import * as NN from "@dicebear/notionists-neutral"
+import * as avatarstyle from "@dicebear/bottts-neutral"
 import { Avatar } from "@/models/Avatar";
 
 const regiserRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
@@ -68,13 +68,12 @@ async function makeAvatar() {
         seed = `${seed}${alphabet[Math.random() * alphabet.length]}`
     }
 
-    // const r = Math.floor(Math.random() * 256) 
-    // const g = Math.floor(Math.random() * 256) 
-    // const b = Math.floor(Math.random() * 256) 
-    // const hex = `${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
-    const hex = "ffffff"
+    const r = Math.floor(Math.random() * 256) 
+    const g = Math.floor(Math.random() * 256) 
+    const b = Math.floor(Math.random() * 256) 
+    const hex = `${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
 
-    const avatar = createAvatar(NN, {
+    const avatar = createAvatar(avatarstyle, {
         seed:seed,
         backgroundColor: [`${hex}`]
     })

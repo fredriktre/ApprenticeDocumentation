@@ -9,6 +9,7 @@ import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { User } from '..';
+import { getAvatar } from '..';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -25,7 +26,12 @@ interface Props {
     user: User | null,
 }
 
-const New = () => {
+type SendData = {
+    title: string,
+    content: {},
+}
+
+const New = ({user}:Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [currAdd, setCurrAdd] = useState<string>("");
     const [fileVideo, setFileVideo] = useState<any>(null);
@@ -42,6 +48,24 @@ const New = () => {
     const [blogInput, setBlogInput] = useState({
         title: "",
     })
+    const userStore = useUserStore();
+
+    useEffect(() => {
+        if (!user) return
+        if (!userStore.status) {
+          getAvatar(`${user.avatar}`).then((res:any) => {
+            userStore.setUser({
+              id: user.id,
+              data: {
+                  email: user.data.email,
+                  name: user.data.name,
+              },
+              admin: user.admin,
+              avatar: res,
+            })
+          })
+        }
+      }, [user])
 
     useEffect(() => {
         if (!fileVideo) return
@@ -58,11 +82,70 @@ const New = () => {
 
 
     const handleBlog = async (data:any) => {
-        
-        console.log({
+        setLoading(true)
+             
+        let sendData:SendData = {
             title: blogInput.title,
-            content: data
-        })
+            content: {},
+        }     
+        if (data.files.length >= 1) {
+            const uploadData = new FormData();
+            data.files.forEach((file:any) => {
+                uploadData.append("file", file.image)
+            })
+            const imageResponse = await axios.post("/api/posts/uploadFile", uploadData)
+            
+            console.log(data.json)
+            console.log(imageResponse)
+            
+            let currentImage = 0;
+            data.json.content.forEach((line:any) => {
+                console.log(line)
+                line.content.forEach((piece:any) => {
+                    console.log(piece)
+                    console.log(currentImage)
+                    if (piece.type === "image") {
+                        piece.attrs.src = imageResponse.data.data.content[currentImage]
+                        currentImage += 1;
+                    }
+                })
+            })
+
+            sendData = {
+                title: sendData.title,
+                content: data.json,
+            }
+
+            console.log(sendData)
+            
+        } 
+        if (data.files.length === 0) {
+            console.log("without files")
+            sendData = {
+                title: sendData.title,
+                content: sendData.content,
+            }
+        }
+
+        try {  
+            const response = await axios.post("/api/posts/blog", {
+                type: "POST",
+                body: sendData
+            })
+
+            console.log(response)
+            setBlogInput({
+                title: "",
+            })
+            setLoading(false)
+            setCurrAdd("")
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+                setLoading(false)
+            }
+        }
+
     }
 
     const handleVlog = async (event:FormEvent<HTMLFormElement>) => {
@@ -78,6 +161,7 @@ const New = () => {
     
                 const upload = await axios.post("/api/posts/uploadFile", uploadData)
                 const response = await axios.post("/api/posts/vlog", {
+                    type: "POST",
                     title: vlogInput.title,
                     desc: vlogInput.desc,
                     videoURL: upload.data.data.content[0],
@@ -137,6 +221,7 @@ const New = () => {
                 }
 
                 {
+                    currAdd.length > 0 &&
                     currAdd === "vlog" && 
                     
                     <form onSubmit={handleVlog} className='w-full flex flex-col gap-5'>
@@ -301,9 +386,24 @@ const New = () => {
                 }
 
                 {
-                    currAdd === "blog" &&
+                    currAdd.length > 0 &&
+                    currAdd === "blog" &&  
                     <div className='w-full flex flex-col gap-5'>
-                        <input 
+                        {
+                            loading
+                            ?   <div className='w-full h-full flex justify-center items-center'>
+                                    <Triangle 
+                                        height={"150"}
+                                        width={"150"}
+                                        color='#ffffff'
+                                        ariaLabel='triangle-loading'
+                                        wrapperStyle={{}}
+                                        wrapperClass=''
+                                        visible={true}
+                                    />  
+                                </div>
+                            : <>
+                                <input 
                             type="text"
                             placeholder='Title'
                             className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
@@ -314,6 +414,8 @@ const New = () => {
                                 title: ev.target.value,
                             })} />
                         <EditorComp handler={handleBlog} cancler={() => setCurrAdd("")} />
+                            </>
+                        }                     
                     </div>
                 }
             </div>

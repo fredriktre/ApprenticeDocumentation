@@ -26,7 +26,6 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
         });
     
         const links = [];
-
         for (const file of files.file) {
             const id = await new Promise(resolve => {
                 let response = ""
@@ -38,7 +37,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
                 resolve(response)
             })
             const ext = file.originalFilename.split('.').pop();
-            const newFilename = `${id}.${ext}`;
+            const newFilename = `avatars/${id}.${ext}`;
             await client.send(new PutObjectCommand({
                 Bucket: bucket,
                 Key: newFilename,

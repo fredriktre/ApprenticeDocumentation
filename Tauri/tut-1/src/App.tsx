@@ -14,6 +14,7 @@ function App() {
 
   useEffect(() => {
     invoke("get_message", {content: "Frontend update!"})
+    setLoaded(true)
   }, [])
 
   const changePage = async (changepage:number) => {

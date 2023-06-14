@@ -5,7 +5,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { useEffect } from "react";
 import useUserStore from "@/stores/userstore";
-import VideoComp from '@/components/media/VideoComp';
+import Link from 'next/link';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -65,7 +65,19 @@ export default function Home({user}:Props) {
 
   return (
     <Layout>
-
+      <div className='h-screen-wnav w-4/5 mx-auto flex flex-col justify-center gap-10'>
+        <div className='h-full w-full flex flex-col gap-5'>
+          <div className='bg-c-accent w-full h-fit rounded-lg p-4 text-white'>
+            <h1 className='text-4xl'>Welcome to TrefTravelVlog!</h1>
+          </div>
+          <div className='bg-c-accent w-full h-fit rounded-lg p-4 text-white'>
+            <p>Here you can find <Link href={"/posts"} className='line-under-link'>posts</Link> about my travels!</p>
+            
+            <p>If you want to contact me, please email me at <Link href={"mailto:trevlandf0604@gmail.com"} className='line-under-link'>trevlandf0604@gmail.com</Link></p>
+            <p>I don't have an email system for forgot password, is you forget it, contact me :D</p>
+          </div>
+        </div>
+      </div>
     </Layout>
   )
 }
