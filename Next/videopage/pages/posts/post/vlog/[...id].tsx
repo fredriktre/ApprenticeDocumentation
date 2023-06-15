@@ -27,7 +27,7 @@ interface Props {
 }
 
 
-const vlog = ({user}:Props) => {
+const Vlog = ({user}:Props) => {
     const router = useRouter();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
@@ -68,7 +68,7 @@ const vlog = ({user}:Props) => {
                 avatar: userStore.user.avatar,
             })
         }
-      }, [user])
+      }, [user, userStore])
 
     useEffect(() => {
         if (!router) return
@@ -140,4 +140,4 @@ const vlog = ({user}:Props) => {
   )
 }
 
-export default vlog
+export default Vlog

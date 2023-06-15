@@ -1,13 +1,14 @@
-import Layout from '@/components/basic/Layout'
+import Layout from "@/components/basic/Layout"
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { FormEvent, useEffect, useState } from "react";
 import useUserStore from "@/stores/userstore";
-import { User, getAvatar } from '.';
-import axios, { AxiosError } from 'axios';
-import { useRouter } from 'next/router';
-import { Triangle } from 'react-loader-spinner';
+import { User, getAvatar } from ".";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/router";
+import { Triangle } from "react-loader-spinner";
+import Image from "next/image";
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -101,16 +102,16 @@ const User = ({user}:Props) => {
             })
             setAvatarID(user.avatar)
         }
-      }, [user])
+      }, [user, userStore])
 
       useEffect(() => {        
         if (!userData) return
         setEditInput({
             email: userData.data.email,
             username: userData.data.name,
-            password: editInput.password,
-            newpassword: editInput.newpassword,
-            confirm: editInput.confirm,
+            password: "",
+            newpassword: "",
+            confirm: "",
         })
       }, [userData])
     
@@ -296,14 +297,17 @@ const User = ({user}:Props) => {
   return (
     <Layout>
 
-        <div className='w-full h-screen-wnav flex lg:flex-row flex-col justify-center items-center gap-5'>
+        <div className="w-full h-screen-wnav flex lg:flex-row flex-col justify-center items-center gap-5">
 
-            <div className='bg-c-accent w-fit h-fit p-4 flex flex-col gap-5 items-center rounded-lg'>
+            <div className="bg-c-accent w-fit h-fit p-4 flex flex-col gap-5 items-center rounded-lg">
                 <div 
                 onMouseEnter={() => setHoverImage(true)} onMouseLeave={() => setHoverImage(false)} onClick={() => setImageChangeModalOpen(true)}
                 className={`text-xl bg-c-s-button text-black w-24 relative h-24 rounded-lg border-2 overflow-hidden cursor-pointer
                 ${hoverImage ? "border-black" : "border-transparent"} transition-colors duration-300`}>
-                    <img src={userData?.avatar} className='w-full h-full' />
+                    {
+                        userData?.avatar &&
+                        <Image src={userData.avatar} alt="image" className="w-full h-full" />
+                    }
                     <span className={`absolute w-full h-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                     ${hoverImage ? "opacity-100" : "opacity-0"} transition-opacity duration-300 flex justify-center items-center`}>
                     <svg className={`w-6 h-6 relative z-20 text-white`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -312,16 +316,16 @@ const User = ({user}:Props) => {
                     <span className="absolute top-0 left-0 w-full h-full bg-black opacity-70"></span>
                   </span>
                 </div>
-                <h2 className='text-white text-2xl'>{userData?.data.name}</h2>
-                <div className='flex lg:flex-col flex-row gap-2 w-full'>
-                    <button type='button' onClick={() => setCurrentPage("notedit")} 
+                <h2 className="text-white text-2xl">{userData?.data.name}</h2>
+                <div className="flex lg:flex-col flex-row gap-2 w-full">
+                    <button type="button" onClick={() => setCurrentPage("notedit")} 
                         className={`w-full mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 ${currentPage === "user" ? "border-c-s-button" : "border-transparent hover:border-c-s-button"} 
                         transition-colors duration-300 rounded-lg`}>
                         User
                     </button>
-                    <button type='button' onClick={() => setCurrentPage("edit")} 
+                    <button type="button" onClick={() => setCurrentPage("edit")} 
                         className={`w-full mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 ${currentPage === "settings" ? "border-c-s-button" : "border-transparent hover:border-c-s-button"} 
@@ -330,7 +334,7 @@ const User = ({user}:Props) => {
                     </button>
                     {
                         userData?.admin &&
-                        <button type='button' onClick={() => setCurrentPage("help")} 
+                        <button type="button" onClick={() => setCurrentPage("help")} 
                             className={`w-full mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                             placeholder:text-c-text placeholder:opacity-75 outline-none
                             border-2 ${currentPage === "settings" ? "border-c-s-button" : "border-transparent hover:border-c-s-button"} 
@@ -338,24 +342,24 @@ const User = ({user}:Props) => {
                             Help
                         </button>
                     }
-                    <button type='button' onClick={handleLogout} 
-                        className='w-full mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
+                    <button type="button" onClick={handleLogout} 
+                        className="w-full mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none whitespace-nowrap
-                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                         Log out
                     </button>
                 </div>
             </div>
 
-            <div className='bg-c-accent w-fit h-fit p-4 flex flex-col gap-5 items-center rounded-lg'>
+            <div className="bg-c-accent w-fit h-fit p-4 flex flex-col gap-5 items-center rounded-lg">
 
                 {
                     currentPage === "notedit" &&
-                    <div className='w-fit relative flex justify-center items-center'>
+                    <div className="w-fit relative flex justify-center items-center">
                         <div 
                         className={`md:w-[30rem] sm:w-96 w-72 h-fit p-4 rounded-lg flex flex-col gap-5 shadow-accent
                         ${loading ? "opacity-0 pointer-events-none": "opacity-100 pointer-events-auto"}`}>
-                            <h2 className='mr-auto text-white text-2xl'>User Info</h2>
+                            <h2 className="mr-auto text-white text-2xl">User Info</h2>
                             <p 
                                 className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                                 placeholder:text-c-text placeholder:opacity-75 outline-none
@@ -375,15 +379,15 @@ const User = ({user}:Props) => {
                 }
                 {
                     currentPage === "edit" &&
-                    <div className='w-fit relative flex justify-center items-center'>
+                    <div className="w-fit relative flex justify-center items-center">
                         <form 
                         onSubmit={handleEdit}
                         className={`md:w-[30rem] sm:w-96 w-72 h-fit p-4 rounded-lg flex flex-col gap-5 shadow-accent
                         ${loading ? "opacity-0 pointer-events-none": "opacity-100 pointer-events-auto"}`}>
-                            <h2 className='mr-auto text-white text-2xl'>Change user info</h2>
+                            <h2 className="mr-auto text-white text-2xl">Change user info</h2>
                             <input 
                                 type="email"
-                                placeholder='Email'
+                                placeholder="Email"
                                 className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                                 placeholder:text-c-text placeholder:opacity-75 outline-none
                                 border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`}
@@ -397,7 +401,7 @@ const User = ({user}:Props) => {
                                     })} />
                             <input 
                                 type="text"
-                                placeholder='Username'
+                                placeholder="Username"
                                 className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                                 placeholder:text-c-text placeholder:opacity-75 outline-none
                                 border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -412,7 +416,7 @@ const User = ({user}:Props) => {
                             <div className={`w-full ${showPass ? "font-standard" : "font-covered"}`}>
                                 <input 
                                     type="text"
-                                    placeholder='Password'
+                                    placeholder="Password"
                                     className={`w-full py-2 px-4 text-lg bg-c-background text-c-text
                                     placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                                     border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -440,10 +444,10 @@ const User = ({user}:Props) => {
                                         newpassword: ev.target.value,
                                         confirm: editInput.confirm
                                     })} />
-                                <button type='button' onClick={() => setShowPass(!showPass)} 
-                                    className='w-fit p-2 text-lg bg-c-background text-c-text 
+                                <button type="button" onClick={() => setShowPass(!showPass)} 
+                                    className="w-fit p-2 text-lg bg-c-background text-c-text 
                                     placeholder:text-c-text placeholder:opacity-75 outline-none
-                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         {
                                             showPass 
@@ -459,7 +463,7 @@ const User = ({user}:Props) => {
                             <div className={`w-full ${showPass ? "font-standard" : "font-covered"}`}>
                                 <input 
                                     type="text"
-                                    placeholder='Confirm new password'
+                                    placeholder="Confirm new password"
                                     className={`w-full py-2 px-4 text-lg bg-c-background text-c-text
                                     placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                                     border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -467,19 +471,19 @@ const User = ({user}:Props) => {
                                     onChange={(ev) => checkPass(ev)} />
                             </div>
                             {
-                                !passMatch.matches && <p className='text-white border-b-2 border-red-600 w-fit'>Password doesn't match</p>
+                                !passMatch.matches && <p className="text-white border-b-2 border-red-600 w-fit">Password doesn{"'"}t match</p>
                             }
-                            <div className='w-full flex gap-5'>
-                                <button type='submit'
-                                    className='w-fit py-2 px-4 text-lg bg-c-background text-c-text outline-none
-                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                            <div className="w-full flex gap-5">
+                                <button type="submit"
+                                    className="w-fit py-2 px-4 text-lg bg-c-background text-c-text outline-none
+                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                                     Save
                                 </button>
                                 {
                                     errorEdit.length > 0 &&
-                                    <p className='w-fit py-2 px-4 text-lg bg-c-background text-c-text 
+                                    <p className="w-fit py-2 px-4 text-lg bg-c-background text-c-text 
                                      outline-none text-red-600
-                                    border-2 border-transparent rounded-lg'>{errorEdit}</p>
+                                    border-2 border-transparent rounded-lg">{errorEdit}</p>
                                 }
                             </div>
                         </form>
@@ -487,10 +491,10 @@ const User = ({user}:Props) => {
                             <Triangle 
                                 height={"150"}
                                 width={"150"}
-                                color='#050505'
-                                ariaLabel='triangle-loading'
+                                color="#050505"
+                                ariaLabel="triangle-loading"
                                 wrapperStyle={{}}
-                                wrapperClass=''
+                                wrapperClass=""
                                 visible={true}
                             />
                         </div>
@@ -499,15 +503,15 @@ const User = ({user}:Props) => {
                 }
                 {
                     currentPage === "help" &&
-                    <div className='w-fit relative flex justify-center items-center'>
+                    <div className="w-fit relative flex justify-center items-center">
                         <form 
                         onSubmit={handleHelp}
                         className={`md:w-[30rem] sm:w-96 w-72 h-fit p-4 rounded-lg flex flex-col gap-5 shadow-accent
                         ${loading ? "opacity-0 pointer-events-none": "opacity-100 pointer-events-auto"}`}>
-                            <h2 className='mr-auto text-white text-2xl'>Help user change password</h2>
+                            <h2 className="mr-auto text-white text-2xl">Help user change password</h2>
                             <input 
                                 type="email"
-                                placeholder='Email'
+                                placeholder="Email"
                                 className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                                 placeholder:text-c-text placeholder:opacity-75 outline-none
                                 border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`}
@@ -530,10 +534,10 @@ const User = ({user}:Props) => {
                                         newpassword: ev.target.value,
                                         confirm: helpInput.confirm
                                     })} />
-                                <button type='button' onClick={() => setShowPass(!showPass)} 
-                                    className='w-fit p-2 text-lg bg-c-background text-c-text 
+                                <button type="button" onClick={() => setShowPass(!showPass)} 
+                                    className="w-fit p-2 text-lg bg-c-background text-c-text 
                                     placeholder:text-c-text placeholder:opacity-75 outline-none
-                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         {
                                             showPass 
@@ -549,7 +553,7 @@ const User = ({user}:Props) => {
                             <div className={`w-full ${showPass ? "font-standard" : "font-covered"}`}>
                                 <input 
                                     type="text"
-                                    placeholder='Confirm new password'
+                                    placeholder="Confirm new password"
                                     className={`w-full py-2 px-4 text-lg bg-c-background text-c-text
                                     placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                                     border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -557,12 +561,12 @@ const User = ({user}:Props) => {
                                     onChange={(ev) => checkHelpPass(ev)} />
                             </div>
                             {
-                                !passMatch.matches && <p className='text-white border-b-2 border-red-600 w-fit'>Password doesn't match</p>
+                                !passMatch.matches && <p className="text-white border-b-2 border-red-600 w-fit">Password doesn{"'"}t match</p>
                             }
-                            <button type='submit'
-                                className='w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
+                            <button type="submit"
+                                className="w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                                 placeholder:text-c-text placeholder:opacity-75 outline-none
-                                border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                                border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                                 Save
                             </button>
                         </form>
@@ -570,10 +574,10 @@ const User = ({user}:Props) => {
                             <Triangle 
                                 height={"150"}
                                 width={"150"}
-                                color='#050505'
-                                ariaLabel='triangle-loading'
+                                color="#050505"
+                                ariaLabel="triangle-loading"
                                 wrapperStyle={{}}
-                                wrapperClass=''
+                                wrapperClass=""
                                 visible={true}
                             />
                         </div>
@@ -590,17 +594,17 @@ const User = ({user}:Props) => {
                         <Triangle 
                             height={"150"}
                             width={"150"}
-                            color='#ffffff'
-                            ariaLabel='triangle-loading'
+                            color="#ffffff"
+                            ariaLabel="triangle-loading"
                             wrapperStyle={{}}
-                            wrapperClass=''
+                            wrapperClass=""
                             visible={true}
                         />
                     </div>
                 <div className={`w-fit h-fit bg-c-accent p-4 rounded-lg z-10 ${loading ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} `}>
                     <div className={`flex md:flex-row flex-col gap-5 items-center justify-center`}>
                         
-                        <h2 className='text-white text-2xl'>Are you sure you want to change avatar?</h2>
+                        <h2 className="text-white text-2xl">Are you sure you want to change avatar?</h2>
                         <button onClick={() => handleGenerateNewAvatar()} 
                         className={`md:w-fit w-full py-2 px-4 text-lg bg-c-background hover:bg-c-s-button text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
@@ -611,7 +615,7 @@ const User = ({user}:Props) => {
                         placeholder:text-c-text placeholder:opacity-75 outline-none cursor-pointer
                         border-2 border-transparent hover:border-black relative
                         transition-colors duration-300 rounded-lg`}>
-                            <input type='file' className={`absolute z-30 top-0 left-0 w-full h-full opacity-0 cursor-pointer`}
+                            <input type="file" className={`absolute z-30 top-0 left-0 w-full h-full opacity-0 cursor-pointer`}
                             onChange={(ev) => handleImageChange(ev)} />
                             Yes
                         </button>

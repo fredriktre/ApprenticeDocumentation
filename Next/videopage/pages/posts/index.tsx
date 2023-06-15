@@ -4,10 +4,11 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { User } from ".."; 
 import axios, { AxiosError } from "axios";
-import { getAvatar } from '..';
-import useUserStore from '@/stores/userstore';
+import { getAvatar } from "..";
+import useUserStore from "@/stores/userstore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -75,7 +76,7 @@ const Posts = ({user, vlog, blog}:Props) => {
           avatar: userStore.user.avatar,
         })
       }
-    }, [user])
+    }, [user, userStore])
 
     useEffect(() => {
       if (!vlog) return
@@ -125,7 +126,7 @@ const Posts = ({user, vlog, blog}:Props) => {
               <div key={vlog._id} className={`relative w-full aspect-video rounded-lg overflow-hidden`}
                 onMouseEnter={() => setCurrentHover(`vlog-${index}`)} 
                 onMouseLeave={() => setCurrentHover(``)}>
-                <img src={vlog.thumbnailURL} className="w-full h-full" />
+                <Image src={vlog.thumbnailURL} alt={"image"} className="w-full h-full" />
                 <div onClick={() => handleVlogClick(vlog._id)}
                 className={`absolute top-0 left-0 w-full h-full p-4
                 ${currentHover === `vlog-${index}` ? "opacity-100" : "opacity-0"} transition-opacity duration-300 text-white

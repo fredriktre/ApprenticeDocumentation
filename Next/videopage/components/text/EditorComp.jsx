@@ -104,8 +104,8 @@ const EditorComp = ({handler, cancler}) => {
 
     const addImage = useCallback((event) => {
 
-        setImageList([...imageList, {
-            index: imageList.length,
+        setImageList(oldList => [...oldList, {
+            index: oldList.length,
             image: event.target.files[0]
         }])
 
@@ -115,7 +115,7 @@ const EditorComp = ({handler, cancler}) => {
         if (src) {
           editor.chain().focus().setImage({ src: src, alt: `${imageList.length}` }).run()
         }
-      }, [editor])
+      }, [editor, imageList.length])
 
     const addYT = () => {
         if (ytURLDropdownText.length > 0) {

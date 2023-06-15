@@ -10,6 +10,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { User } from '..';
 import { getAvatar } from '..';
+import Image from 'next/image';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -65,7 +66,7 @@ const New = ({user}:Props) => {
             })
           })
         }
-      }, [user])
+      }, [user, userStore])
 
     useEffect(() => {
         if (!fileVideo) return
@@ -346,7 +347,7 @@ const New = ({user}:Props) => {
                                             visible={true}
                                         />
                                     </div>
-                                    <img src={thumbnailSrc} alt="thumbnail" className='w-full' />
+                                    <Image src={thumbnailSrc} alt="thumbnail" className='w-full' />
                                 </div>
                             </>
                         }

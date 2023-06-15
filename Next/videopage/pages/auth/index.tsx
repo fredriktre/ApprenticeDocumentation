@@ -1,13 +1,13 @@
-import Layout from '@/components/basic/Layout'
-import React, { FormEvent, useState } from 'react'
-import axios, { AxiosError } from 'axios'
+import Layout from "@/components/basic/Layout"
+import React, { FormEvent, useState } from "react"
+import axios, { AxiosError } from "axios"
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { useEffect } from "react";
-import { useRouter } from 'next/router'
-import { Triangle } from 'react-loader-spinner';
-import { User } from '..';
+import { useRouter } from "next/router"
+import { Triangle } from "react-loader-spinner";
+import { User } from "..";
 
 type LoginInput = {
     email: string,
@@ -36,14 +36,7 @@ interface Props {
     user: User | null,
 }
   
-const Auth = ({user}:Props) => {
-
-    useEffect(() => {
-        if (user) {
-            router.push("/")
-        }
-    }, [user])
-
+const Auth = ({user}:Props) => {   
     const [loaded, setLoaded] = useState<boolean>(false)
     const [showPassLogin, setShowPassLogin] = useState<boolean>(false)
     const [showPassRegister, setShowPassRegister] = useState<boolean>(false)
@@ -65,6 +58,12 @@ const Auth = ({user}:Props) => {
     })
     const [regFailed, setRegFailed] = useState<string>("")
     const router = useRouter();
+
+    useEffect(() => {
+        if (user) {
+            router.push("/")
+        }
+    }, [user, router])
 
     useEffect(() => {
         setLoaded(true)
@@ -153,16 +152,16 @@ const Auth = ({user}:Props) => {
   return (
     <Layout>
 
-        <div className='w-full h-full h-screen-wnav flex flex-col justify-center items-center gap-10 lg:p-10 p-5 pb-20'>
+        <div className="w-full h-full h-screen-wnav flex flex-col justify-center items-center gap-10 lg:p-10 p-5 pb-20">
 
             <form 
             onSubmit={handleLogin}
             className={`relative xl:w-[50rem] lg:w-3/5 w-11/12 h-fit p-4 bg-c-accent rounded-lg shadow-accent`}>
                 <div className={`w-full h-fit ${loaded ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} flex flex-col gap-5`}>
-                    <h2 className='mr-auto text-white text-2xl'>Log in</h2>
+                    <h2 className="mr-auto text-white text-2xl">Log in</h2>
                     <input 
                         type="email"
-                        placeholder='Email'
+                        placeholder="Email"
                         className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`}
@@ -174,7 +173,7 @@ const Auth = ({user}:Props) => {
                     <div className={`w-full flex gap-5 ${showPassLogin ? "font-standard" : "font-covered"}`}>
                         <input 
                             type="text"
-                            placeholder='Password'
+                            placeholder="Password"
                             className={`w-full py-2 px-4 text-lg bg-c-background text-c-text ${loaded ? "opacity-100" : "opacity-0"}
                             placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                             border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`}
@@ -183,10 +182,10 @@ const Auth = ({user}:Props) => {
                                 email: loginInput.email,
                                 password: ev.target.value
                             })} />
-                        <button type='button' onClick={() => setShowPassLogin(!showPassLogin)} 
-                            className='w-fit p-2 text-lg bg-c-background text-c-text 
+                        <button type="button" onClick={() => setShowPassLogin(!showPassLogin)} 
+                            className="w-fit p-2 text-lg bg-c-background text-c-text 
                             placeholder:text-c-text placeholder:opacity-75 outline-none
-                            border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                            border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 {
                                     showPassLogin 
@@ -199,10 +198,10 @@ const Auth = ({user}:Props) => {
                             </svg>
                         </button>
                     </div>
-                    <button type='submit'
-                        className='w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
+                    <button type="submit"
+                        className="w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
-                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                         Log in
                     </button>
                 </div>
@@ -211,10 +210,10 @@ const Auth = ({user}:Props) => {
                     <Triangle 
                         height={"150"}
                         width={"150"}
-                        color='#050505'
-                        ariaLabel='triangle-loading'
+                        color="#050505"
+                        ariaLabel="triangle-loading"
                         wrapperStyle={{}}
-                        wrapperClass=''
+                        wrapperClass=""
                         visible={true}
                     />
                 </div>
@@ -224,11 +223,11 @@ const Auth = ({user}:Props) => {
             onSubmit={handleRegister}
             className={`relative xl:w-[50rem] lg:w-3/5 w-11/12 h-fit p-4 bg-c-accent rounded-lg shadow-accent`}>
                 <div className={`w-full h-fit ${loaded ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"} flex flex-col gap-5`}>
-                    <h2 className='mr-auto text-white text-2xl'>Register</h2>
+                    <h2 className="mr-auto text-white text-2xl">Register</h2>
                     <input 
                         type="email"
                         required
-                        placeholder='Email'
+                        placeholder="Email"
                         className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`}
@@ -241,7 +240,7 @@ const Auth = ({user}:Props) => {
                             })} />
                     <input 
                         type="text"
-                        placeholder='Username'
+                        placeholder="Username"
                         className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -267,10 +266,10 @@ const Auth = ({user}:Props) => {
                                 password: ev.target.value,
                                 confirm: registerInput.confirm
                             })} />
-                        <button type='button' onClick={() => setShowPassRegister(!showPassRegister)} 
-                            className='w-fit p-2 text-lg bg-c-background text-c-text 
+                        <button type="button" onClick={() => setShowPassRegister(!showPassRegister)} 
+                            className="w-fit p-2 text-lg bg-c-background text-c-text 
                             placeholder:text-c-text placeholder:opacity-75 outline-none
-                            border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                            border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 {
                                     showPassRegister 
@@ -286,7 +285,7 @@ const Auth = ({user}:Props) => {
                     <div className={`w-full ${showPassRegister ? "font-standard" : "font-covered"}`}>
                         <input 
                             type="text"
-                            placeholder='Confirm Password'
+                            placeholder="Confirm Password"
                             className={`w-full py-2 px-4 text-lg bg-c-background text-c-text ${loaded ? "opacity-100" : "opacity-0"}
                             placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                             border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
@@ -294,22 +293,22 @@ const Auth = ({user}:Props) => {
                             onChange={(ev) => checkPass(ev)} />
                     </div>
                     {
-                        regFailed.length > 0 && <p className='text-white border-b-2 border-red-600 w-fit'>{regFailed}</p>
+                        regFailed.length > 0 && <p className="text-white border-b-2 border-red-600 w-fit">{regFailed}</p>
                     }
                     {
-                        !passMatch.matches && <p className='text-white border-b-2 border-red-600 w-fit'>Password doesn't match</p>
+                        !passMatch.matches && <p className="text-white border-b-2 border-red-600 w-fit">Password doesn{"'"}t match</p>
                     }
-                    <button type='button'
+                    <button type="button"
                         onClick={() => setRegisterCookies(!registerCookies)}
                         className={`w-fit mr-auto py-2 px-4 text-lg ${registerCookies ? "bg-green-600" : "bg-c-background"} text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 ${cookiesError ? "border-red-600" : "border-transparent hover:border-c-background"} transition-colors duration-300 rounded-lg`}>
                         Cookies? (needed for users)
                     </button>
-                    <button type='submit'
-                        className='w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
+                    <button type="submit"
+                        className="w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
-                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                        border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg">
                         Register
                     </button>
                 </div>
@@ -318,10 +317,10 @@ const Auth = ({user}:Props) => {
                     <Triangle 
                         height={"150"}
                         width={"150"}
-                        color='#050505'
-                        ariaLabel='triangle-loading'
+                        color="#050505"
+                        ariaLabel="triangle-loading"
                         wrapperStyle={{}}
-                        wrapperClass=''
+                        wrapperClass=""
                         visible={true}
                     />
                 </div>

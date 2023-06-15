@@ -33,7 +33,7 @@ export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) =
       user: User | null,
   }
 
-const blog = ({user}:Props) => {
+const Blog = ({user}:Props) => {
     const router = useRouter();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
@@ -75,7 +75,7 @@ const blog = ({user}:Props) => {
                 avatar: userStore.user.avatar,
             })
         }
-      }, [user])
+      }, [user, userStore])
 
     useEffect(() => {
         if (!router) return
@@ -161,7 +161,7 @@ const blog = ({user}:Props) => {
 
         setBlog(html)
 
-    }, [blogData])
+    }, [blogData, editor])
 
     async function handleSendingComments(input:string) {
 
@@ -201,4 +201,4 @@ const blog = ({user}:Props) => {
   )
 }
 
-export default blog
+export default Blog

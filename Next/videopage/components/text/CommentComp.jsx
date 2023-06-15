@@ -3,6 +3,7 @@ import useUsersStore from '@/stores/usersstore';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react'
+import Image from 'next/image';
 
 const CommentComp = ({postID, userData, handleAsync}) => {
     const [input, setInput] = useState("");
@@ -15,7 +16,7 @@ const CommentComp = ({postID, userData, handleAsync}) => {
 
         getUsersAndComments(postID.toString())
 
-    }, [postID])
+    })
 
     async function getUsersAndComments (id) {
         try {
@@ -118,8 +119,9 @@ const CommentComp = ({postID, userData, handleAsync}) => {
                     return (
                         <div key={index} className='w-full flex flex-col gap-2 text-white'>
                             <div className={`w-fit flex gap-2 items-center`}>
-                                <img 
+                                <Image 
                                     src={comment.avatar} 
+                                    alt='image'
                                     className='w-12 h-12 rounded-lg'
                                  />
                                 <p className={`text-xl whitespace-nowrap`}>{comment.username}</p>    
