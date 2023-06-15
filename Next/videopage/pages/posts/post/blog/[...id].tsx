@@ -149,13 +149,11 @@ const blog = ({user}:Props) => {
     useEffect(() => {
         if (!blogData) return
 
-        console.log(blogData)
 
         const data = {
             type: blogData.content.type,
             content: blogData.content.content
         }
-        console.log(data)    
 
         editor?.commands.setContent(data)
 
@@ -163,7 +161,6 @@ const blog = ({user}:Props) => {
 
         setBlog(html)
 
-        console.log(blogData)
     }, [blogData])
 
     async function handleSendingComments(input:string) {

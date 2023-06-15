@@ -1,12 +1,14 @@
 import { getAvatar } from '@/pages'
 import useUsersStore from '@/stores/usersstore';
 import axios, { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react'
 
 const CommentComp = ({postID, userData, handleAsync}) => {
     const [input, setInput] = useState("");
     const [comments, setComments] = useState([]);
     const usersStore = useUsersStore();
+    const router = useRouter();
 
     useEffect(() => {
         if (!postID) return
@@ -57,7 +59,7 @@ const CommentComp = ({postID, userData, handleAsync}) => {
     }
     const handleSendComment = async () => {
         
-        if (userData.id) {
+        if (userData?.id) {
             try {
                 const res = await handleAsync(input);
                 const newCommentArray = [{

@@ -116,14 +116,12 @@ const New = ({user}:Props) => {
                 content: data.json,
             }
 
-            console.log(sendData)
-            
         } 
         if (data.files.length === 0) {
             console.log("without files")
             sendData = {
                 title: sendData.title,
-                content: sendData.content,
+                content: data.json,
             }
         }
 

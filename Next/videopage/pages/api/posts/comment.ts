@@ -15,7 +15,6 @@ const handle:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) =>
     
             return res.status(200).json({message: "Successfully retireved", content: response})
         } else if (req.body.type === "POST") {
-            console.log("hi")
             const {comment, userID, postID} = req.body;
             if (comment.length > 0) {
 

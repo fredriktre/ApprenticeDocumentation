@@ -11,7 +11,6 @@ import { Avatar } from "@/models/Avatar";
 
 const regiserRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
     const { method } = req
-    console.log("hi")
     if (method === "POST") {
         await mongooseConnect();
 

@@ -3,9 +3,10 @@ import axios, { AxiosError } from 'axios'
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useUserStore from "@/stores/userstore";
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -44,6 +45,7 @@ export async function getAvatar(id:string) {
 
 export default function Home({user}:Props) {
   const userStore = useUserStore();
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return
@@ -62,6 +64,19 @@ export default function Home({user}:Props) {
     }
 
   }, [user])
+
+  useEffect(() => {
+    if (userStore.needRefresh === false) return
+    const checkIflogout = (url:any) => {
+      if (url === "/"){
+        if (userStore.status === false) {
+          userStore.setForRefresh(false);
+          router.reload();
+        }
+      }
+    }
+    router.events.on('routeChangeStart', checkIflogout)
+  }, [router])
 
   return (
     <Layout>

@@ -18,8 +18,6 @@ const handler:NextApiHandler = async (req: NextApiRequest, res: NextApiResponse)
         if (type === "POST") {
             const {title, content, imageLinks} = req.body.body
 
-            console.log(title, content, imageLinks)
-
             await mongooseConnect();
 
             const date = new Date();

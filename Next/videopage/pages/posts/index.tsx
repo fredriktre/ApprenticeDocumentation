@@ -92,22 +92,18 @@ const Posts = ({user, vlog, blog}:Props) => {
     }, [blog])
 
     const handleVlogClick = (id:string) => {
-      console.log("vlog " + id)
       router.push(`/posts/post/vlog/${id}`)
     }
 
     const handleVlogEditClick = (id:string) => {
-      console.log("vedit " + id)
       router.push(`/posts/edit/vlog/${id}`)
     }
 
     const handleBlogClick = (id:string) => {
-      console.log("blog " + id)
       router.push(`/posts/post/blog/${id}`)
     }
 
     const handleBlogEditClick = (id:string) => {
-      console.log("bedit " + id)
       router.push(`/posts/edit/blog/${id}`)
     }
 
@@ -137,7 +133,7 @@ const Posts = ({user, vlog, blog}:Props) => {
                   <p className="relative z-20 text-xl">{vlog.title}</p>
                   <span className="block absolute z-10 top-0 left-0 w-full h-full bg-black opacity-60"></span>
                 </div>
-                {
+                {/* {
                   userData?.admin &&
                   <button 
                   type="button"
@@ -147,14 +143,13 @@ const Posts = ({user, vlog, blog}:Props) => {
                   border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg`}> 
                     Edit
                   </button>
-                }
+                } */}
               </div>
             )
           })}
         </div>
         <div className="flex flex-col w-3/5 gap-5">
           {blogs.map((blog:any, index:number) => {
-            console.log(blog)
             return (
               <div key={blog._id}               
               className={`relative bg-c-accent border-2 ${currentHover === `blog-${index}` ? "border-c-s-button" : "border-transparent"}
@@ -165,7 +160,7 @@ const Posts = ({user, vlog, blog}:Props) => {
                   <h2 className="text-2xl">{blog.title}</h2>
                   <p className="overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">{blog.content.content[0].content[0].text}</p>
                 </div>
-                {
+                {/* {
                   userData?.admin &&
                   <button 
                   type="button"
@@ -175,7 +170,7 @@ const Posts = ({user, vlog, blog}:Props) => {
                   border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg"> 
                     Edit
                   </button>
-                }
+                } */}
               </div>
             )
           })}

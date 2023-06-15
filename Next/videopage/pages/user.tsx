@@ -2,10 +2,10 @@ import Layout from '@/components/basic/Layout'
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import useUserStore from "@/stores/userstore";
 import { User, getAvatar } from '.';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { Triangle } from 'react-loader-spinner';
 
@@ -33,7 +33,6 @@ type EditInput = {
 }
 type HelpInput = {
     email: string,
-    password: string,
     newpassword: string,
     confirm: string,
 }
@@ -57,7 +56,6 @@ const User = ({user}:Props) => {
     })
     const [helpInput, setHelpInput] = useState<HelpInput>({
         email: "",
-        password: "",
         newpassword: "",
         confirm: "",
     })
@@ -65,6 +63,7 @@ const User = ({user}:Props) => {
         matches: true,
         start: false
     })
+    const [errorEdit, setErrorEdit] = useState<string>("");
 
     useEffect(() => {
         if (!user) return
@@ -120,10 +119,12 @@ const User = ({user}:Props) => {
         const res = axios.post("/api/auth/loginout", {
             type: "LOGOUT"
         })
-
         userStore.logOut();
+        userStore.setForRefresh(true);
 
-        router.push("/")
+        setTimeout(() => {
+            router.push("/")
+        }, 1000)
     }
 
     const handleImageChange = async (event:any) => {
@@ -157,22 +158,80 @@ const User = ({user}:Props) => {
                 avatarID: avatarID,
             })
             
-            console.log(response)
 
             setLoading(false)
             setImageChangeModalOpen(false);
         } catch(error) {
-            console.error(error)
             setLoading(false)
         }
     }
 
-    const handleEdit = async () => {
+    const handleEdit = async (ev:FormEvent<HTMLFormElement>) => {
+        ev.preventDefault();
         setLoading(true)
+        
+        if (editInput.email.length > 0) {
+            if (editInput.username.length > 0) {
+                try {
+        
+                    const response = await axios.post("/api/auth/editUserData", {
+                        type: "CHANGE",
+                        email: editInput.email,
+                        username: editInput.username,
+                        password: editInput.password,
+                        newpassword: editInput.newpassword,
+                        id: userData?.id
+                    })
+        
+                    setEditInput({
+                        email: "",
+                        username: "",
+                        password: "",
+                        newpassword: "",
+                        confirm: "",
+                    })
+                    setLoading(false)
+                    setErrorEdit("")
+                } catch (error) {
+                    if (error instanceof AxiosError) {
+                        console.log(error)
+                        if (error.response?.data.error === "Wrong password") {
+                            setErrorEdit(error.response?.data.error)
+                        }
+                        setLoading(false)
+                    }
+                }
+            } else {
+
+            }
+        } else {
+            
+        }
     }
     
-    const handleHelp = async () => {
-        
+    const handleHelp = async (ev:FormEvent<HTMLFormElement>) => {
+        ev.preventDefault();
+        setLoading(true)
+        try {   
+            const response = await axios.post("/api/auth/editUserData", {
+                type: "HELPCHANGE",
+                email: helpInput.email,
+                password: helpInput.newpassword,
+            })
+
+            setHelpInput({
+                email: "",
+                newpassword: "",
+                confirm: "",
+            })
+            setLoading(false)
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                setLoading(false)
+                console.log(error)
+            }
+        }
+
     }
 
     const checkPass = (ev:any) => {
@@ -202,12 +261,11 @@ const User = ({user}:Props) => {
     }
     const checkHelpPass = (ev:any) => {
         setHelpInput({
-            email: editInput.email,
-            password: editInput.password,
-            newpassword: editInput.newpassword,
+            email: helpInput.email,
+            newpassword: helpInput.newpassword,
             confirm: ev.target.value
         })
-        if (ev.target.value != helpInput.password) {
+        if (ev.target.value != helpInput.newpassword) {
             setPassMatch({
                 matches: false,
                 start: true
@@ -227,16 +285,14 @@ const User = ({user}:Props) => {
 
     useEffect(() => {
         if (!currentPage) return
-
+        if (currentPage === "help") return
         setHelpInput({
             email: "",
-            password: "",
             newpassword: "",
             confirm: ""
         })
 
     }, [currentPage])
-
   return (
     <Layout>
 
@@ -297,7 +353,6 @@ const User = ({user}:Props) => {
                     currentPage === "notedit" &&
                     <div className='w-fit relative flex justify-center items-center'>
                         <div 
-                        onSubmit={handleEdit}
                         className={`md:w-[30rem] sm:w-96 w-72 h-fit p-4 rounded-lg flex flex-col gap-5 shadow-accent
                         ${loading ? "opacity-0 pointer-events-none": "opacity-100 pointer-events-auto"}`}>
                             <h2 className='mr-auto text-white text-2xl'>User Info</h2>
@@ -409,19 +464,26 @@ const User = ({user}:Props) => {
                                     placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                                     border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
                                     value={editInput.confirm}
-                                    onChange={(ev) => checkHelpPass(ev)} />
+                                    onChange={(ev) => checkPass(ev)} />
                             </div>
                             {
                                 !passMatch.matches && <p className='text-white border-b-2 border-red-600 w-fit'>Password doesn't match</p>
                             }
-                            <button type='submit'
-                                className='w-fit mr-auto py-2 px-4 text-lg bg-c-background text-c-text 
-                                placeholder:text-c-text placeholder:opacity-75 outline-none
-                                border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
-                                Save
-                            </button>
+                            <div className='w-full flex gap-5'>
+                                <button type='submit'
+                                    className='w-fit py-2 px-4 text-lg bg-c-background text-c-text outline-none
+                                    border-2 border-transparent hover:border-c-s-button transition-colors duration-300 rounded-lg'>
+                                    Save
+                                </button>
+                                {
+                                    errorEdit.length > 0 &&
+                                    <p className='w-fit py-2 px-4 text-lg bg-c-background text-c-text 
+                                     outline-none text-red-600
+                                    border-2 border-transparent rounded-lg'>{errorEdit}</p>
+                                }
+                            </div>
                         </form>
-                        <div className={`w-fit absolute ${loading ? "opacity-100" : "opacity-0"}`}>
+                        <div className={`w-fit absolute ${loading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
                             <Triangle 
                                 height={"150"}
                                 width={"150"}
@@ -452,25 +514,9 @@ const User = ({user}:Props) => {
                                 value={helpInput.email}
                                     onChange={(ev) => setHelpInput({
                                         email: ev.target.value,
-                                        password: helpInput.password,
                                         newpassword: helpInput.newpassword,
                                         confirm: helpInput.confirm
                                     })} />
-                            <div className={`w-full ${showPass ? "font-standard" : "font-covered"}`}>
-                                <input 
-                                    type="text"
-                                    placeholder='Password'
-                                    className={`w-full py-2 px-4 text-lg bg-c-background text-c-text
-                                    placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
-                                    border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
-                                    value={helpInput.password}
-                                    onChange={(ev) => setHelpInput({
-                                        email: helpInput.email,
-                                        password: ev.target.value,
-                                        newpassword: helpInput.newpassword,
-                                        confirm: helpInput.confirm
-                                    })} />
-                            </div>
                             <div className={`w-full flex gap-5 ${showPass ? "font-standard" : "font-covered"}`}>                    
                                 <input 
                                     type="text"
@@ -481,7 +527,6 @@ const User = ({user}:Props) => {
                                     value={helpInput.newpassword}
                                     onChange={(ev) => setHelpInput({
                                         email: helpInput.email,
-                                        password: helpInput.password,
                                         newpassword: ev.target.value,
                                         confirm: helpInput.confirm
                                     })} />
@@ -509,7 +554,7 @@ const User = ({user}:Props) => {
                                     placeholder:text-c-text placeholder:font-standard placeholder:opacity-75 outline-none
                                     border-2 border-transparent focus:border-c-s-button transition-colors duration-300 rounded-lg`} 
                                     value={helpInput.confirm}
-                                    onChange={(ev) => checkPass(ev)} />
+                                    onChange={(ev) => checkHelpPass(ev)} />
                             </div>
                             {
                                 !passMatch.matches && <p className='text-white border-b-2 border-red-600 w-fit'>Password doesn't match</p>
@@ -521,7 +566,7 @@ const User = ({user}:Props) => {
                                 Save
                             </button>
                         </form>
-                        <div className={`w-fit absolute ${loading ? "opacity-100" : "opacity-0"}`}>
+                        <div className={`w-fit absolute ${loading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
                             <Triangle 
                                 height={"150"}
                                 width={"150"}
@@ -539,7 +584,7 @@ const User = ({user}:Props) => {
             </div>
 
             <div className={`fixed top-0 left-0 w-screen h-screen flex justify-center items-center transition-opacity duration-300
-            ${imageChangeModalOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+            ${imageChangeModalOpen ? "opacity-100 pointer-events-auto z-50" : "opacity-0 pointer-events-none -z-50"}`}>
                     <div className={`w-fit h-fit bg-c-accent absolute z-10 rounded-lg p-4 ${loading ? "opacity-100" : "opacity-0 pointer-events-none"} 
                     top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
                         <Triangle 
@@ -552,8 +597,9 @@ const User = ({user}:Props) => {
                             visible={true}
                         />
                     </div>
-                <div className={`w-fit h-fit bg-c-accent p-4 rounded-lg z-10 ${loading ? "opacity-0 pointer-events-none" : "opacity-100"} `}>
+                <div className={`w-fit h-fit bg-c-accent p-4 rounded-lg z-10 ${loading ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"} `}>
                     <div className={`flex md:flex-row flex-col gap-5 items-center justify-center`}>
+                        
                         <h2 className='text-white text-2xl'>Are you sure you want to change avatar?</h2>
                         <button onClick={() => handleGenerateNewAvatar()} 
                         className={`md:w-fit w-full py-2 px-4 text-lg bg-c-background hover:bg-c-s-button text-c-text 
@@ -565,7 +611,7 @@ const User = ({user}:Props) => {
                         placeholder:text-c-text placeholder:opacity-75 outline-none cursor-pointer
                         border-2 border-transparent hover:border-black relative
                         transition-colors duration-300 rounded-lg`}>
-                            <input type='file' className='absolute z-30 top-0 left-0 w-full h-full opacity-0 pointer-events-auto cursor-pointer' 
+                            <input type='file' className={`absolute z-30 top-0 left-0 w-full h-full opacity-0 cursor-pointer`}
                             onChange={(ev) => handleImageChange(ev)} />
                             Yes
                         </button>
@@ -573,7 +619,8 @@ const User = ({user}:Props) => {
                         className={`md:w-fit w-full py-2 px-4 text-lg bg-c-background hover:bg-red-600 text-c-text 
                         placeholder:text-c-text placeholder:opacity-75 outline-none
                         border-2 border-transparent hover:border-black 
-                        transition-colors duration-300 rounded-lg`}>No</button>                                      
+                        transition-colors duration-300 rounded-lg`}>No</button>       
+                                                    
                     </div>
                     <p className={`text-white md:mt-2 mt-5 md:text-left text-center`}>Avatar will update on next refresh</p>
                 </div>

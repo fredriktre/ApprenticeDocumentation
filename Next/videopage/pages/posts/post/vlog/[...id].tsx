@@ -120,7 +120,17 @@ const vlog = ({user}:Props) => {
         <div className={`w-full h-screen-wnav flex flex-col items-center gap-5 pt-5`}>
             <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent flex justify-center items-center`}>
                 <VideoComp title={vlogData ? `${vlogData.title} - ${vlogData.date}` : ""} source={vlogData ? vlogData.videoURL : ""} />
-            </div>     
+            </div>  
+            <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent flex flex-col gap-5 text-white`}>
+                <div className='flex gap-5 items-center'>
+                    <h2 className='text-2xl'>{vlogData?.title}</h2>
+                    <p>{vlogData?.date}</p>
+                </div>
+                <div>
+                    <h3 className='text-xl'>Description</h3>
+                    <p>{vlogData?.desc}</p>
+                </div>
+            </div>   
             <div className={`w-4/5 h-fit`}>
                 <CommentComp postID={vlogData?._id} userData={userData} handleAsync={handleSendingComments} />
             </div>       

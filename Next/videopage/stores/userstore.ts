@@ -13,7 +13,9 @@ export type StoreUser = {
 type Store = {
     user: StoreUser
     status: boolean
+    needRefresh: boolean
     setUser: (input:StoreUser) => void
+    setForRefresh: (input:boolean) => void
     logOut: () => void
 }
 
@@ -28,6 +30,7 @@ const useUserStore = create<Store>((set) => ({
         avatar: "",
     },
     status: false,
+    needRefresh: false,
     setUser(input) {
         set(() => ({
             user: {
@@ -41,6 +44,11 @@ const useUserStore = create<Store>((set) => ({
             },
             status: true
         }));
+    },
+    setForRefresh(input) {
+        set(() => ({
+            needRefresh: input
+        }))
     },
     logOut(){
         set(() => ({
