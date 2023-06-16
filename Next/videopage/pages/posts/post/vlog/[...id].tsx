@@ -26,13 +26,13 @@ interface Props {
     user: User | null,
 }
 
-
 const Vlog = ({user}:Props) => {
     const router = useRouter();
     const usersStore = useUsersStore();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
     const [vlogData, setVlogData] = useState<any>();
+    const [comments, setComments] = useState<any[]>([]);
 
     useEffect(() => {
         if (!user) return
@@ -78,37 +78,51 @@ const Vlog = ({user}:Props) => {
         }
     }, [router])
 
+    useEffect(() => {
+        if (!vlogData) return
+        if (vlogData._id.length > 0) {
+            console.log(vlogData._id)
+            getUsersAndComments(vlogData._id)
+        }
+    }, [vlogData])
+
     async function getUsersAndComments (id:string) {
         try {
-
             const responseComments = await axios.post("/api/posts/comment", {
                 type: "GET",
                 id:id
             })
-            
-            if (responseComments.data.content.length > 0) {
-                const userList:any[] = [];
-                responseComments.data.content.forEach((comment:any) => {
-                    userList.push(comment.userID)
-                })
-                const responseUsers = await axios.post("/api/posts/getUsers", {
-                    type: "GETLISTOFUSERS",
-                    ids: userList
-                })
-                usersStore.setUsers(responseUsers.data.content);
-                const commentData = [];
-                for (let i = 0; i < responseComments.data.content.length; i++) {
-                    const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
 
-                    commentData.push({
-                        avatar: currAvatar,
-                        username: responseUsers.data.content[i].data.name,
-                        date: responseComments.data.content[i].date,
-                        comment: responseComments.data.content[i].content
+            if (responseComments) {
+                if (responseComments.data.content.length > 0) {
+                    const userList:any[] = [];
+                    responseComments.data.content.forEach((comment:any) => {
+                        userList.push(comment.userID)
                     })
+                    const responseUsers = await axios.post("/api/posts/getUsers", {
+                        type: "GETLISTOFUSERS",
+                        ids: userList
+                    })
+                    usersStore.setUsers(responseUsers.data.content);
+                    const commentData:any[] = [];
+                    for (let i = 0; i < responseComments.data.content.length; i++) {
+                        const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
+    
+                        commentData.push({
+                            avatar: currAvatar,
+                            username: responseUsers.data.content[i].data.name,
+                            date: responseComments.data.content[i].date,
+                            comment: responseComments.data.content[i].content
+                        })
+                    }
+
+                    const reversedCommentData:any[] = [];
+                    commentData.forEach((comment:any) => {
+                        reversedCommentData.push(commentData.pop());
+                    })
+                    
+                    setComments(reversedCommentData)
                 }
-                
-                return commentData
             }
 
         } catch (error) {
@@ -146,7 +160,14 @@ const Vlog = ({user}:Props) => {
                         userID: userData?.id,
                         postID: vlogData?._id
                     })
-                    return response
+                    const newCommentArray:any[] = [{
+                        avatar: userData.avatar,
+                        username: userData.data.name,
+                        date: response.data.content.date,
+                        comment: response.data.content.content
+                    }, ...comments]                
+                    
+                    setComments(newCommentArray);
                 } catch(error) {
                     if (error instanceof AxiosError) {
                         console.error(error)
@@ -160,10 +181,10 @@ const Vlog = ({user}:Props) => {
     <Layout>
 
         <div className={`w-full h-screen-wnav flex flex-col items-center gap-5 pt-5`}>
-            <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent flex justify-center items-center`}>
+            <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent shadow-accent flex justify-center items-center`}>
                 <VideoComp title={vlogData ? `${vlogData.title} - ${vlogData.date}` : ""} source={vlogData ? vlogData.videoURL : ""} />
             </div>  
-            <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent flex flex-col gap-5 text-white`}>
+            <div className={`w-4/5 h-fit p-4 rounded-lg bg-c-accent shadow-accent flex flex-col gap-5 text-white`}>
                 <div className='flex gap-5 items-center'>
                     <h2 className='text-2xl'>{vlogData?.title}</h2>
                     <p>{vlogData?.date}</p>
@@ -174,7 +195,10 @@ const Vlog = ({user}:Props) => {
                 </div>
             </div>   
             <div className={`w-4/5 h-fit`}>
-                <CommentComp handleComments={vlogData?._id && getUsersAndComments(vlogData._id)} userData={userData} handleAsync={handleSendingComments} />
+                {
+                    vlogData?._id &&
+                    <CommentComp comments={comments} userData={userData} handleAsync={handleSendingComments} />
+                }
             </div>       
         </div>
 

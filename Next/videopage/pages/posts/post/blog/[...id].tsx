@@ -38,6 +38,7 @@ const Blog = ({user}:Props) => {
     const usersStore = useUsersStore();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
+    const [comments, setComments] = useState<any[]>([]);
     const [blogData, setBlogData] = useState<any>();
     const [blog, setBlog] = useState<any>();
 
@@ -176,7 +177,14 @@ const Blog = ({user}:Props) => {
                         userID: userData?.id,
                         postID: blogData?._id
                     })
-                    return response
+                    const newCommentArray:any[] = [{
+                        avatar: userData.avatar,
+                        username: userData.data.name,
+                        date: response.data.content.date,
+                        comment: response.data.content.content
+                    }, ...comments]                
+                    
+                    setComments(newCommentArray);
                 } catch(error) {
                     if (error instanceof AxiosError) {
                         console.error(error)
@@ -186,37 +194,47 @@ const Blog = ({user}:Props) => {
         }
     }
 
+    useEffect(() => {
+        if (!blogData) return 
+        if (blogData._id.length > 0) {
+            getUsersAndComments(blogData._id)
+                .then((response:any) => {
+                    setComments(response)
+                })
+        }
+    }, [blogData])
+
     async function getUsersAndComments (id:string) {
         try {
-
             const responseComments = await axios.post("/api/posts/comment", {
                 type: "GET",
                 id:id
             })
-            
-            if (responseComments.data.content.length > 0) {
-                const userList:any[] = [];
-                responseComments.data.content.forEach((comment:any) => {
-                    userList.push(comment.userID)
-                })
-                const responseUsers = await axios.post("/api/posts/getUsers", {
-                    type: "GETLISTOFUSERS",
-                    ids: userList
-                })
-                usersStore.setUsers(responseUsers.data.content);
-                const commentData = [];
-                for (let i = 0; i < responseComments.data.content.length; i++) {
-                    const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
 
-                    commentData.push({
-                        avatar: currAvatar,
-                        username: responseUsers.data.content[i].data.name,
-                        date: responseComments.data.content[i].date,
-                        comment: responseComments.data.content[i].content
+            if (responseComments) {
+                console.log(responseComments)
+                if (responseComments.data.content.length > 0) {
+                    const userList:any[] = [];
+                    responseComments.data.content.forEach((comment:any) => {
+                        userList.push(comment.userID)
                     })
+                    const commentdata:any[] = await getcommentuserinfo(
+                        userList, 
+                        responseComments.data.content);
+                    const reversedCommentData:any[] = [];
+
+                    console.log(commentdata)
+                    if (commentdata) {
+                        if (commentdata.length > 0) {
+                            let commentsLength = commentdata.length;
+                            for (let i = 0; i < commentsLength; i++) {
+                                reversedCommentData.push(commentdata.pop());
+                            }
+                        }
+                    }
+                    setComments(reversedCommentData)
+                    
                 }
-                
-                return commentData
             }
 
         } catch (error) {
@@ -226,17 +244,39 @@ const Blog = ({user}:Props) => {
         }
     }
 
+    const getcommentuserinfo = async (userlist:any[], commentscontent:any) => {        
+        const responseUsers = await axios.post("/api/posts/getUsers", {
+            type: "GETLISTOFUSERS",
+            ids: userlist
+        })
+        usersStore.setUsers(responseUsers.data.content);
+        const commentData:any[] = [];
+        for (let i = 0; i < commentscontent.length; i++) {
+            const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
+            commentData.push({
+                avatar: currAvatar,
+                username: responseUsers.data.content[i].data.name,
+                date: commentscontent.date,
+                comment: commentscontent.content
+            })
+        }
+        return commentData
+    }
+
   return (
     <Layout>
         <div className='w-full h-screen-wnav flex flex-col justify-center items-center gap-5 pt-5'>
-            <div className='w-4/5 h-fit p-4 bg-c-accent text-white rounded-lg'>
+            <div className='w-4/5 h-fit p-4 bg-c-accent shadow-accent text-white rounded-lg'>
                 <h1 className='text-4xl'>{blogData?.title}</h1>
                 <p>{blogData?.date}</p>
             </div>
-            <div className='w-4/5 h-fit p-4 bg-c-accent text-white rounded-lg dsihRead'
+            <div className='w-4/5 h-fit p-4 bg-c-accent shadow-accent text-white rounded-lg dsihRead'
             dangerouslySetInnerHTML={{__html: blog}} ></div>
             <div className='w-4/5 h-fit'>
-                <CommentComp handleComments={blogData?._id && getUsersAndComments(blogData._id)} userData={userData} handleAsync={handleSendingComments} />
+                {
+                    blogData?._id &&
+                    <CommentComp comments={comments} userData={userData} handleAsync={handleSendingComments} />
+                }
             </div>
         </div>
     </Layout>

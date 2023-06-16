@@ -2,42 +2,24 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react'
 import Image from 'next/image';
 
-const CommentComp = ({userData, handleAsync, handleComments}) => {
+const CommentComp = ({userData, handleAsync, comments}) => {
     const [input, setInput] = useState("");
-    const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
-
-    useEffect(() => {
-        if (!loading) return
-        handleComments().then((response) => {
-            setComments(response)
-            setLoading(false);
-        })
-    }, [loading])
 
     const handleSendComment = async () => {
         
         if (userData?.id) {
-            const res = await handleAsync(input);
-            const newCommentArray = [{
-                avatar: userData.avatar,
-                username: userData.data.name,
-                date: res.data.content.date,
-                comment: res.data.content.content
-            }, ...comments]                
-            
-            setComments(newCommentArray);
+            await handleAsync(input)
             setInput("");            
         } else {
             router.push("/auth")
         }
-    }   
-    
+    }       
 
   return (
     <div className='w-full flex flex-col gap-5'>
-        <div className="w-full bg-c-accent p-4 rounded-lg flex gap-5 items-center justify-center">
+        <div className="w-full bg-c-accent p-4 shadow-accent rounded-lg flex gap-5 items-center justify-center">
             <div className="relative w-full h-fit max-w-[85%] flex justify-center items-center">
                 <textarea maxLength={200} rows={1} onChange={(ev) => setInput(ev.target.value)} value={input} 
                 placeholder='Comment' className="w-full py-2 px-4 text-lg bg-c-background text-c-text hidescroll
@@ -63,7 +45,7 @@ const CommentComp = ({userData, handleAsync, handleComments}) => {
         </div>
         {
         comments.length > 0 &&
-        <div className={`w-full h-fit p-4 rounded-lg bg-c-accent flex flex-col gap-5`}>
+        <div className={`w-full h-fit p-4 rounded-lg bg-c-accent shadow-accent flex flex-col gap-5`}>
             {
                 comments.map((comment, index) => {
 
