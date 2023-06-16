@@ -3,6 +3,8 @@ use std::cmp::Ordering;
 use rand::Rng;
 use colored::*;
 
+// Current video : https://www.youtube.com/watch?v=n3bPhdiJm9I&list=PLai5B987bZ9CoVR-QEIN9foz4QCJ0H2Y8&index=5
+
 fn main() {
 
     
