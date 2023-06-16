@@ -154,3 +154,5 @@ When you want to get that value, you need to use the pointer to find the value i
 ## That's it for now.
 
 For future learning: https://www.youtube.com/watch?v=OX9HJsJUDxA&list=PLai5B987bZ9CoVR-QEIN9foz4QCJ0H2Y8
+
+On https://www.youtube.com/watch?v=2V0JaMVjzws&list=PLai5B987bZ9CoVR-QEIN9foz4QCJ0H2Y8&index=3 right now!
