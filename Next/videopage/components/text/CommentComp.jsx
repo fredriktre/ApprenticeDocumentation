@@ -1,81 +1,34 @@
-import { getAvatar } from '@/pages'
-import useUsersStore from '@/stores/usersstore';
-import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react'
 import Image from 'next/image';
 
-const CommentComp = ({postID, userData, handleAsync}) => {
+const CommentComp = ({userData, handleAsync, handleComments}) => {
     const [input, setInput] = useState("");
     const [comments, setComments] = useState([]);
-    const usersStore = useUsersStore();
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(() => {
-        if (!postID) return
-        getUsersAndComments(postID.toString())
-    }, [])
+        if (!loading) return
+        handleComments().then((response) => {
+            setComments(response)
+            setLoading(false);
+        })
+    }, [loading])
 
-    async function getUsersAndComments (id) {
-        try {
-
-            const responseComments = await axios.post("/api/posts/comment", {
-                type: "GET",
-                id:id
-            })
-            
-            if (responseComments.data.content.length > 0) {
-                const userList = [];
-                responseComments.data.content.forEach((comment) => {
-                    userList.push(comment.userID)
-                })
-                const responseUsers = await axios.post("/api/posts/getUsers", {
-                    type: "GETLISTOFUSERS",
-                    ids: userList
-                })
-                usersStore.setUsers(responseUsers.data.content);
-                const commentData = [];
-                for (let i = 0; i < responseComments.data.content.length; i++) {
-                    const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
-
-                    commentData.push({
-                        avatar: currAvatar,
-                        username: responseUsers.data.content[i].data.name,
-                        date: responseComments.data.content[i].date,
-                        comment: responseComments.data.content[i].content
-                    })
-                }
-                console.log(commentData)
-                
-                setComments(commentData)
-            }
-
-        } catch (error) {
-            if (error instanceof AxiosError) {
-                console.error(error)
-            }
-        }
-    }
     const handleSendComment = async () => {
         
         if (userData?.id) {
-            try {
-                const res = await handleAsync(input);
-                const newCommentArray = [{
-                    avatar: userData.avatar,
-                    username: userData.data.name,
-                    date: res.data.content.date,
-                    comment: res.data.content.content
-                }, ...comments]
-                
-                console.log(newCommentArray)
-                setComments(newCommentArray);
-                setInput("");
-            } catch (error) {
-                if (error instanceof AxiosError) {
-                    console.error(error)
-                }
-            }
+            const res = await handleAsync(input);
+            const newCommentArray = [{
+                avatar: userData.avatar,
+                username: userData.data.name,
+                date: res.data.content.date,
+                comment: res.data.content.content
+            }, ...comments]                
+            
+            setComments(newCommentArray);
+            setInput("");            
         } else {
             router.push("/auth")
         }

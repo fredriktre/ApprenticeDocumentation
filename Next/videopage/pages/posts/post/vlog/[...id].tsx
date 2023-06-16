@@ -9,6 +9,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { User, getAvatar } from '@/pages'; 
 import useUserStore from '@/stores/userstore';
+import useUsersStore from '@/stores/usersstore';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -28,6 +29,7 @@ interface Props {
 
 const Vlog = ({user}:Props) => {
     const router = useRouter();
+    const usersStore = useUsersStore();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
     const [vlogData, setVlogData] = useState<any>();
@@ -75,6 +77,46 @@ const Vlog = ({user}:Props) => {
             getVlog(router.query.id[0].toString());
         }
     }, [router])
+
+    async function getUsersAndComments (id:string) {
+        try {
+
+            const responseComments = await axios.post("/api/posts/comment", {
+                type: "GET",
+                id:id
+            })
+            
+            if (responseComments.data.content.length > 0) {
+                const userList:any[] = [];
+                responseComments.data.content.forEach((comment:any) => {
+                    userList.push(comment.userID)
+                })
+                const responseUsers = await axios.post("/api/posts/getUsers", {
+                    type: "GETLISTOFUSERS",
+                    ids: userList
+                })
+                usersStore.setUsers(responseUsers.data.content);
+                const commentData = [];
+                for (let i = 0; i < responseComments.data.content.length; i++) {
+                    const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
+
+                    commentData.push({
+                        avatar: currAvatar,
+                        username: responseUsers.data.content[i].data.name,
+                        date: responseComments.data.content[i].date,
+                        comment: responseComments.data.content[i].content
+                    })
+                }
+                
+                return commentData
+            }
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+            }
+        }
+    }
 
     async function getVlog (id:string) {
         try {
@@ -132,7 +174,7 @@ const Vlog = ({user}:Props) => {
                 </div>
             </div>   
             <div className={`w-4/5 h-fit`}>
-                <CommentComp postID={vlogData?._id} userData={userData} handleAsync={handleSendingComments} />
+                <CommentComp handleComments={vlogData?._id && getUsersAndComments(vlogData._id)} userData={userData} handleAsync={handleSendingComments} />
             </div>       
         </div>
 

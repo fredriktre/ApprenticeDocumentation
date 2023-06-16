@@ -16,6 +16,7 @@ import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { User, getAvatar } from '@/pages'; 
+import useUsersStore from '@/stores/usersstore';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
     const session = await getIronSession(req, res, sessionOptions);
@@ -34,6 +35,7 @@ export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) =
 
 const Blog = ({user}:Props) => {
     const router = useRouter();
+    const usersStore = useUsersStore();
     const userStore = useUserStore();
     const [userData, setUserData] = useState<User>();
     const [blogData, setBlogData] = useState<any>();
@@ -184,6 +186,46 @@ const Blog = ({user}:Props) => {
         }
     }
 
+    async function getUsersAndComments (id:string) {
+        try {
+
+            const responseComments = await axios.post("/api/posts/comment", {
+                type: "GET",
+                id:id
+            })
+            
+            if (responseComments.data.content.length > 0) {
+                const userList:any[] = [];
+                responseComments.data.content.forEach((comment:any) => {
+                    userList.push(comment.userID)
+                })
+                const responseUsers = await axios.post("/api/posts/getUsers", {
+                    type: "GETLISTOFUSERS",
+                    ids: userList
+                })
+                usersStore.setUsers(responseUsers.data.content);
+                const commentData = [];
+                for (let i = 0; i < responseComments.data.content.length; i++) {
+                    const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
+
+                    commentData.push({
+                        avatar: currAvatar,
+                        username: responseUsers.data.content[i].data.name,
+                        date: responseComments.data.content[i].date,
+                        comment: responseComments.data.content[i].content
+                    })
+                }
+                
+                return commentData
+            }
+
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                console.error(error)
+            }
+        }
+    }
+
   return (
     <Layout>
         <div className='w-full h-screen-wnav flex flex-col justify-center items-center gap-5 pt-5'>
@@ -194,7 +236,7 @@ const Blog = ({user}:Props) => {
             <div className='w-4/5 h-fit p-4 bg-c-accent text-white rounded-lg dsihRead'
             dangerouslySetInnerHTML={{__html: blog}} ></div>
             <div className='w-4/5 h-fit'>
-                <CommentComp postID={blogData?._id} userData={userData} handleAsync={handleSendingComments} />
+                <CommentComp handleComments={blogData?._id && getUsersAndComments(blogData._id)} userData={userData} handleAsync={handleSendingComments} />
             </div>
         </div>
     </Layout>
