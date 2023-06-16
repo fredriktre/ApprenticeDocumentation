@@ -8,9 +8,15 @@ import crypt from "bcryptjs"
 import { createAvatar } from "@dicebear/core";
 import * as avatarstyle from "@dicebear/bottts-neutral"
 import { Avatar } from "@/models/Avatar";
+import Cors from 'cors'
 
 const regiserRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
     const { method } = req
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
+
     if (method === "POST") {
         await mongooseConnect();
 

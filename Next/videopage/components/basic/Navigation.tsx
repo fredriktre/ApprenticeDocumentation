@@ -95,7 +95,7 @@ const Navigation = () => {
             onMouseEnter={() => setCurrentBtnHover(1)} onMouseLeave={() => setCurrentBtnHover(0)}
             href={"/user"} className={`text-xl bg-c-s-button text-black w-16 relative h-16 rounded-lg border-2 overflow-hidden
             ${router.pathname.includes('/user') ? `border-black` : `${currentBtnHover === 1 ? "border-black" : "border-transparent"}`} transition-colors duration-300 `}>
-              <Image src={userData.avatar} alt="avatar" className="w-full h-full" />
+              <Image src={userData?.avatar} alt="avatar" width={300} height={300} className="w-full h-full" />
               <span className={`absolute w-full h-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
               ${currentBtnHover === 1 ? "opacity-100" : "opacity-0"} transition-opacity duration-300 flex justify-center items-center`}>
                 <svg className={`w-10 h-10 relative z-20 text-white`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

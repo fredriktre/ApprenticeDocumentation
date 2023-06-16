@@ -13,10 +13,8 @@ const CommentComp = ({postID, userData, handleAsync}) => {
 
     useEffect(() => {
         if (!postID) return
-
         getUsersAndComments(postID.toString())
-
-    })
+    }, [])
 
     async function getUsersAndComments (id) {
         try {

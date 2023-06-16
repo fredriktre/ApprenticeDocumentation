@@ -1,9 +1,14 @@
 import { mongooseConnect } from "@/lib/db/mongoose";
 import { Vlog } from "@/models/Vlog";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
+import Cors from 'cors'
 
 const handler:NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const {method} = req
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
 
     if (method === "GET") {
         await mongooseConnect();

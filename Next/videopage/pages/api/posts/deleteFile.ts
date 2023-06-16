@@ -1,8 +1,13 @@
 import {DeleteObjectCommand, ListObjectsCommand, S3Client} from '@aws-sdk/client-s3'
 import { NextApiRequest, NextApiResponse } from 'next'
+import Cors from 'cors'
 
 export default async function handle(req:NextApiRequest, res:NextApiResponse) {
     const bucket:string = "treftravelvlog"
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
 
     if (req.body.data) {
         if (process.env.S3_ACCESS_KEY != undefined && process.env.S3_SECRET_ACCESS_KEY != undefined) {

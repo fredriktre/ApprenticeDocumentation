@@ -3,9 +3,14 @@ import { User } from "@/models/User";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import crypt from 'bcryptjs'
 import { mongooseConnect } from "@/lib/db/mongoose";
+import Cors from 'cors'
 
 const loginoutRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
     const {method} = req
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
 
     if (method === "POST") {
 
@@ -13,7 +18,7 @@ const loginoutRoute:NextApiHandler = async (req:NextApiRequest, res:NextApiRespo
             await mongooseConnect();
 
             const {email, password} = req.body
-            
+            console.log(email);
             const userData = await User.findOne({email})
 
             if (userData) {

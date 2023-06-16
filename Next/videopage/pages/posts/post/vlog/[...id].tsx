@@ -7,8 +7,7 @@ import CommentComp from '@/components/text/CommentComp';
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
-import { User } from '@/pages'; 
-import { getAvatar } from '@/pages'
+import { User, getAvatar } from '@/pages'; 
 import useUserStore from '@/stores/userstore';
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
@@ -98,6 +97,7 @@ const Vlog = ({user}:Props) => {
         if (input.length > 0) {
             if (userData?.id) {
                 try {
+                    console.log(vlogData._id, input)
                     const response = await axios.post("/api/posts/comment", {
                         type: "POST",
                         comment: input,

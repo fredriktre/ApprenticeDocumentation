@@ -36,10 +36,9 @@ interface Props {
 export async function getAvatar(id:string) {
   try {
     const response = await axios.post("/api/auth/getAvatar", {id})
-
     return response.data.avatar
   } catch (error) {
-
+    console.error(error)
   }
 }
 
@@ -78,6 +77,12 @@ export default function Home({user}:Props) {
     }
     router.events.on("routeChangeStart", checkIflogout)
   }, [router, userStore])
+
+  useEffect(() => {
+    axios.get("/api/checkConnect").then((res:any) => {
+      console.log(res.data.message)
+    })
+  }, [])
 
   return (
     <Layout>

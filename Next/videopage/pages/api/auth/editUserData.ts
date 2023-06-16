@@ -1,10 +1,15 @@
 import { User } from "@/models/User";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import crypt from 'bcryptjs'
+import Cors from 'cors'
 
 const handle:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
 
     const { method } = req
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
 
     if (method === "POST") {
 

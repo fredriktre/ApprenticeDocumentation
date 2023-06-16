@@ -12,11 +12,10 @@ import YT from '@tiptap/extension-youtube'
 import Heading from '@tiptap/extension-heading'
 import CommentComp from '@/components/text/CommentComp';
 import useUserStore from '@/stores/userstore';
-import { getAvatar } from '@/pages'
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
-import { User } from '@/pages'; 
+import { User, getAvatar } from '@/pages'; 
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
     const session = await getIronSession(req, res, sessionOptions);
@@ -168,6 +167,7 @@ const Blog = ({user}:Props) => {
         if (input.length > 0) {
             if (userData?.id) {
                 try {
+                    console.log(blogData._id, input)
                     const response = await axios.post("/api/posts/comment", {
                         type: "POST",
                         comment: input,

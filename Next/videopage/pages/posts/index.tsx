@@ -13,28 +13,19 @@ import Image from "next/image";
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
   const { user } = session;
-  const responseVlog = await axios.get(`${process.env.CURRENTURL}/api/posts/vlog`)
-  const responseBlog = await axios.get(`${process.env.CURRENTURL}/api/posts/blog`)
-
-  const jsonVlog = JSON.stringify(responseVlog.data.content)
-  const jsonBlog = JSON.stringify(responseBlog.data.content)
 
     return {
       props: {
         user: user || null,
-        vlog: jsonVlog,
-        blog: jsonBlog,
       }
     }
 }
 
 interface Props {
-  user: User | null,
-  vlog: any,
-  blog: any
+  user: User | null
 }
 
-const Posts = ({user, vlog, blog}:Props) => {
+const Posts = ({user}:Props) => {
   const userStore = useUserStore();
   const [vlogs, setVlogs] = useState<any[]>([])
   const [blogs, setBlogs] = useState<any[]>([])
@@ -79,18 +70,37 @@ const Posts = ({user, vlog, blog}:Props) => {
     }, [user, userStore])
 
     useEffect(() => {
-      if (!vlog) return
+      getVlogs().then(() => {
+        getBlogs();
+      });
+    }, [])
 
-      setVlogs(JSON.parse(vlog))
+    const getVlogs = async () => {
+      try {
 
-    }, [vlog])
+        const response = await axios.get('/api/posts/vlog');
+        setVlogs(response.data.content)
 
-    useEffect(() => {
-      if (!blog) return
+      } catch(error) {
+        if (error instanceof AxiosError) {
+          console.error(error)
+        }
+      }
+    }
+    
+    const getBlogs = async () => {
+      try {
 
-      setBlogs(JSON.parse(blog))
+        const response = await axios.get('/api/posts/blog');
+        setBlogs(response.data.content)
+  
+      } catch(error) {
+        if (error instanceof AxiosError) {
+          console.error(error)
+        }
+      }
 
-    }, [blog])
+    }
 
     const handleVlogClick = (id:string) => {
       router.push(`/posts/post/vlog/${id}`)
@@ -126,7 +136,7 @@ const Posts = ({user, vlog, blog}:Props) => {
               <div key={vlog._id} className={`relative w-full aspect-video rounded-lg overflow-hidden`}
                 onMouseEnter={() => setCurrentHover(`vlog-${index}`)} 
                 onMouseLeave={() => setCurrentHover(``)}>
-                <Image src={vlog.thumbnailURL} alt={"image"} className="w-full h-full" />
+                <Image src={vlog.thumbnailURL} alt={"image"} width={1000} height={800} className="w-full h-full" />
                 <div onClick={() => handleVlogClick(vlog._id)}
                 className={`absolute top-0 left-0 w-full h-full p-4
                 ${currentHover === `vlog-${index}` ? "opacity-100" : "opacity-0"} transition-opacity duration-300 text-white

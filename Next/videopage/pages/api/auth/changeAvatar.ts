@@ -6,9 +6,14 @@ import { createAvatar } from "@dicebear/core";
 import * as avatarstyle from "@dicebear/bottts-neutral"
 import { animals } from "@/lib/samples";
 import { alphabet } from "@/lib/samples";
+import Cors from 'cors'
 
 const handler:NextApiHandler = async (req:NextApiRequest, res:NextApiResponse) => {
     const {method} = req
+
+    const cors = Cors({
+        methods: ["POST", "GET", "HEAD"]
+    })
 
     if (method === "POST") {
 

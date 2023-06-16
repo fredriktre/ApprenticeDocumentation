@@ -306,7 +306,7 @@ const User = ({user}:Props) => {
                 ${hoverImage ? "border-black" : "border-transparent"} transition-colors duration-300`}>
                     {
                         userData?.avatar &&
-                        <Image src={userData.avatar} alt="image" className="w-full h-full" />
+                        <Image src={userData.avatar} width={600} height={600} alt="image" className="w-full h-full" />
                     }
                     <span className={`absolute w-full h-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
                     ${hoverImage ? "opacity-100" : "opacity-0"} transition-opacity duration-300 flex justify-center items-center`}>
