@@ -81,7 +81,6 @@ const Vlog = ({user}:Props) => {
     useEffect(() => {
         if (!vlogData) return
         if (vlogData._id.length > 0) {
-            console.log(vlogData._id)
             getUsersAndComments(vlogData._id)
         }
     }, [vlogData])
@@ -99,29 +98,42 @@ const Vlog = ({user}:Props) => {
                     responseComments.data.content.forEach((comment:any) => {
                         userList.push(comment.userID)
                     })
+
                     const responseUsers = await axios.post("/api/posts/getUsers", {
                         type: "GETLISTOFUSERS",
                         ids: userList
                     })
                     usersStore.setUsers(responseUsers.data.content);
-                    const commentData:any[] = [];
-                    for (let i = 0; i < responseComments.data.content.length; i++) {
-                        const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
-    
-                        commentData.push({
-                            avatar: currAvatar,
-                            username: responseUsers.data.content[i].data.name,
-                            date: responseComments.data.content[i].date,
-                            comment: responseComments.data.content[i].content
+                    const commentData:any[] = []
+                    let readyCount = 0;
+                    for (let i = 0; i < responseComments.data.content.length + 1; i++) {
+                        getAvatar(responseUsers.data.content[i].avatar).then((response:any) => {
+                            commentData.push({
+                                avatar: response,
+                                username: responseUsers.data.content[i].data.name,
+                                date: new Date(
+                                parseInt(`${responseComments.data.content[i].date.split("-")[2]}`),
+                                parseInt(`${responseComments.data.content[i].date.split("-")[1]}`),
+                                parseInt(`${responseComments.data.content[i].date.split("-")[0]}`),),
+                                comment: responseComments.data.content[i].content
+                            })
+                            readyCount++;
+                            if (readyCount === responseComments.data.content.length) {
+                                const ascSort:any[] = commentData.sort((obj1:any, obj2:any) => 
+                                    obj1.date - obj2.date,
+                                );
+                                const reverse:any[] = []
+                                const ascLength = ascSort.length;
+                                for (let j = 0; j < ascLength; j++) {
+                                    reverse.push(ascSort.splice(-1)[0]);
+                                }
+                                setComments([...reverse])
+                            }
                         })
                     }
-
-                    const reversedCommentData:any[] = [];
-                    commentData.forEach((comment:any) => {
-                        reversedCommentData.push(commentData.pop());
-                    })
                     
-                    setComments(reversedCommentData)
+                    
+                    
                 }
             }
 
@@ -149,25 +161,27 @@ const Vlog = ({user}:Props) => {
     }
 
     async function handleSendingComments(input:string) {
-
         if (input.length > 0) {
             if (userData?.id) {
                 try {
-                    console.log(vlogData._id, input)
                     const response = await axios.post("/api/posts/comment", {
                         type: "POST",
                         comment: input,
                         userID: userData?.id,
                         postID: vlogData?._id
                     })
-                    const newCommentArray:any[] = [{
-                        avatar: userData.avatar,
-                        username: userData.data.name,
-                        date: response.data.content.date,
-                        comment: response.data.content.content
-                    }, ...comments]                
-                    
-                    setComments(newCommentArray);
+                    const newComments = [           
+                        {
+                            avatar: userData.avatar,
+                            username: userData.data.name,
+                            date: new Date(
+                            parseInt(`${response.data.content.date.split("-")[2]}`),
+                            parseInt(`${response.data.content.date.split("-")[1]}`),
+                            parseInt(`${response.data.content.date.split("-")[0]}`),),
+                            comment: response.data.content.content
+                        }, ...comments
+                    ]
+                    setComments(newComments);
                 } catch(error) {
                     if (error instanceof AxiosError) {
                         console.error(error)

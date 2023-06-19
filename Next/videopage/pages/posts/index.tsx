@@ -8,7 +8,6 @@ import { getAvatar } from "..";
 import useUserStore from "@/stores/userstore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -113,7 +112,7 @@ const Posts = ({user}:Props) => {
                 onMouseLeave={() => setCurrentHover(``)}>
                   {
                     vlog.thumbnailURL &&
-                    <Image src={vlog.thumbnailURL} alt={"image"} width={1000} height={800} className="w-full h-full" />
+                    <img src={vlog.thumbnailURL} alt={"image"} width={1000} height={800} className="w-full h-full" />
                   }
                 <div onClick={() => handleVlogClick(vlog._id)}
                 className={`absolute top-0 left-0 w-full h-full p-4

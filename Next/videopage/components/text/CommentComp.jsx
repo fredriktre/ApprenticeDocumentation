@@ -1,11 +1,16 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react'
-import Image from 'next/image';
 
 const CommentComp = ({userData, handleAsync, comments}) => {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showComments, setShowComments] = useState([])
     const router = useRouter();
+
+    useEffect(() => {
+        if (!comments) return
+        setLoading(false)
+    }, [comments])
 
     const handleSendComment = async () => {
         
@@ -16,6 +21,11 @@ const CommentComp = ({userData, handleAsync, comments}) => {
             router.push("/auth")
         }
     }       
+
+    const handleShowDate = (date) => {
+        const newdate = new Date(date);
+        return `${newdate.getUTCDate() + 1}/${newdate.getUTCMonth()} - ${newdate.getUTCFullYear()}`
+    }
 
   return (
     <div className='w-full flex flex-col gap-5'>
@@ -42,24 +52,23 @@ const CommentComp = ({userData, handleAsync, comments}) => {
                     Post
                 </button>
             </div>
-        </div>
-        {
-        comments.length > 0 &&
+        </div>        
         <div className={`w-full h-fit p-4 rounded-lg bg-c-accent shadow-accent flex flex-col gap-5`}>
             {
+                !loading &&
+                comments &&
                 comments.map((comment, index) => {
-
                     return (
                         <div key={index} className='w-full flex flex-col gap-2 text-white'>
                             <div className={`w-fit flex gap-2 items-center`}>
-                                <Image 
+                                <img 
                                     src={comment.avatar} 
                                     alt='image'
                                     className='w-12 h-12 rounded-lg'
                                  />
                                 <p className={`text-xl whitespace-nowrap`}>{comment.username}</p>    
                                 <p className={`text-xl whitespace-nowrap mx-2`}>|</p>    
-                                <p className={`text-lg whitespace-nowrap`}>{comment.date}</p>                                    
+                                <p className={`text-lg whitespace-nowrap`}>{handleShowDate(comment.date)}</p>                                    
                             </div> 
                             <div className='w-full px-4 py-2 bg-black rounded-lg'>
                                 <p>{comment.comment}</p>
@@ -69,7 +78,6 @@ const CommentComp = ({userData, handleAsync, comments}) => {
                 })
             }
         </div>
-        }
     </div>        
   )
 }
