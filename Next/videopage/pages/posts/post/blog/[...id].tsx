@@ -218,20 +218,34 @@ const Blog = ({user}:Props) => {
                     responseComments.data.content.forEach((comment:any) => {
                         userList.push(comment.userID)
                     })
-                    const commentdata:any[] = await getcommentuserinfo(
-                        userList, 
-                        responseComments.data.content);
+
+                    const responseUsers = await axios.post("/api/posts/getUsers", {
+                        type: "GETLISTOFUSERS",
+                        ids: userList
+                    })
+                    usersStore.setUsers(responseUsers.data.content);
+                    const commentData:any[] = [];
+                    for (let i = 0; i < responseComments.data.content.length; i++) {
+                        const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
+                        commentData.push({
+                            avatar: currAvatar,
+                            username: responseUsers.data.content[i].data.name,
+                            date: responseComments.data.content.date,
+                            comment: responseComments.data.content.content
+                        })
+                    }
                     const reversedCommentData:any[] = [];
 
-                    console.log(commentdata)
-                    if (commentdata) {
-                        if (commentdata.length > 0) {
-                            let commentsLength = commentdata.length;
+                    console.log(commentData)
+                    if (commentData) {
+                        if (commentData.length > 0) {
+                            let commentsLength = commentData.length;
                             for (let i = 0; i < commentsLength; i++) {
-                                reversedCommentData.push(commentdata.pop());
+                                reversedCommentData.push(commentData.pop());
                             }
                         }
                     }
+                    console.log(reversedCommentData)
                     setComments(reversedCommentData)
                     
                 }
@@ -243,26 +257,6 @@ const Blog = ({user}:Props) => {
             }
         }
     }
-
-    const getcommentuserinfo = async (userlist:any[], commentscontent:any) => {        
-        const responseUsers = await axios.post("/api/posts/getUsers", {
-            type: "GETLISTOFUSERS",
-            ids: userlist
-        })
-        usersStore.setUsers(responseUsers.data.content);
-        const commentData:any[] = [];
-        for (let i = 0; i < commentscontent.length; i++) {
-            const currAvatar = await getAvatar(responseUsers.data.content[i].avatar)
-            commentData.push({
-                avatar: currAvatar,
-                username: responseUsers.data.content[i].data.name,
-                date: commentscontent.date,
-                comment: commentscontent.content
-            })
-        }
-        return commentData
-    }
-
   return (
     <Layout>
         <div className='w-full h-screen-wnav flex flex-col justify-center items-center gap-5 pt-5'>

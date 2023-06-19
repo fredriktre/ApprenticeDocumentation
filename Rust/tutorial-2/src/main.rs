@@ -10,7 +10,9 @@ fn main() {
     
     let mut choice:String = String::new(); 
     
-    loop {
+    let mut active = true;
+
+    while active == true {
         println!("Welcome! What do you want to do? (write number to choose...)");
         println!("1. exit");
         println!("2. guess_game");
@@ -26,6 +28,7 @@ fn main() {
         };
 
         if choice == 1 {
+            active = false;
             break;
         } else if choice == 2 {
             guess_game();
@@ -80,7 +83,7 @@ fn print_project () {
 
     let y = 5;
     println!("The value of y is: {}", y);
-    let y = "six"    
+    let y = "six";
     println!("The value of y is: {}", y);
 
     let tup = ("Let's Get Rusty!", 100_000);
@@ -97,22 +100,20 @@ fn print_project () {
         if counter == 10 {
             break counter;
         }
-    }
+    };
 
     let mut iterations = 0;
-    let res2 = do {
-        loop {
-            iterations += 1;
-            let mut counter = 0;
-            let result = loop {
-                counter += 1;
-                
-                if counter == 10 {
-                    break counter;
-                }
+    let res2 = while iterations < 11 {
+        iterations += 1;
+        let mut counter = 0;
+        let result = loop {
+            counter += 1;
+            
+            if counter == 10 {
+                break counter;
             }
-        }
-    } while iterations < 11;
+        };
+    };
 
     for element in error_codes.iter() {
         println!("error code {}", element);
@@ -130,8 +131,127 @@ struct User {
     active: bool
 }
 
+// struct Color(i32, i32, i32); 
+
+
 fn struct_project() {
 
-    
+    struct_project_1();
+    struct_project_2();
 
 }
+
+fn struct_project_1() {
+    let mut user1 = User {
+        email: String::from("bogdan@mail.com"),
+        username: String::from("bogdan123"),
+        active: true,
+        sign_in_count: 1
+    };
+
+    let name = user1.username;
+    user1.username = String::from("wallace123");
+
+    let user2 = struct_project_1_build_user(
+        String::from("kyle@mail.com"),
+        String::from("kyle123")
+    );
+
+    let user3 = User {
+        email: String::from("james@mail.com"),
+        username: String::from("james123"),
+        ..user2
+    };
+}
+
+fn struct_project_1_build_user(email: String, username: String) -> User {
+    User {
+        email,
+        username,
+        active: true,
+        sign_in_count: 1
+    }
+}
+
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+
+impl Rectangle {
+    fn square(size: u32) -> Rectangle {
+        Rectangle {
+            width: size,
+            height: size,
+        }
+    }
+}
+
+fn struct_project_2() {
+    let rect = Rectangle {
+        width: 30,
+        height: 50
+    };
+
+    let rect1 = Rectangle {
+        width: 20,
+        height: 40
+    };
+
+    let rect2 = Rectangle {
+        width: 40,
+        height: 50
+    };
+    
+    let rect3 = Rectangle::square(25);
+
+    println!("rect can hold rect1: {}", rect.can_hold(&rect1));
+    println!("rect can hold rect1: {}", rect.can_hold(&rect2));
+
+    println!("rect: {:#?}", rect);
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect.area()
+    );
+}
+
+enum IpAddrKind {
+    V4(String),
+    V6(String),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32},
+    Write(String),
+    ChangeColor(i32, i32, i32)
+}
+
+impl Message {
+    fn some_function() {
+        println!("Let's Get Rusty!")
+    }
+}
+
+struct IpAddr {
+    kind: IpAddrKind,
+    address: String,
+}
+
+fn enum_project() {
+    let localhost = IpAddrKind::V4(127, 0, 0, 1),
+}
+
+fn route(ip_kind: IpAddrKind) {}
