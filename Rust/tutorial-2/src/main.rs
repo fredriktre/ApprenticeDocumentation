@@ -14,6 +14,8 @@ fn main() {
         println!("Welcome! What do you want to do? (write number to choose...)");
         println!("1. exit");
         println!("2. guess_game");
+        println!("3. struct_project");
+
         io::stdin()
             .read_line(&mut choice)
             .expect("Failed to read line");
@@ -27,6 +29,8 @@ fn main() {
             break;
         } else if choice == 2 {
             guess_game();
+        } else if choice == 3 {
+            struct_project();
         }
     }
 }
@@ -119,3 +123,15 @@ fn print_project () {
     }
 }
 
+struct User {
+    username: String,
+    email: String,
+    sign_in_count: u64,
+    active: bool
+}
+
+fn struct_project() {
+
+    
+
+}
