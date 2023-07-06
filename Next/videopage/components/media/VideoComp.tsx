@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Triangle } from 'react-loader-spinner';
+import { MagnifyingGlass } from 'react-loader-spinner';
 
 interface Props {
     source: string
@@ -26,14 +26,15 @@ const VideoComp = ({source, title}:Props) => {
         }}>
         { source.length < 1 &&
             <div className="w-full aspect-video absolute top-0 left-0 z-20 bg-black flex justify-center items-center">
-                <Triangle 
-                    height={"150"}
-                    width={"150"}
-                    color='#ffffff'
-                    ariaLabel='triangle-loading'
-                    wrapperStyle={{}}
-                    wrapperClass=''
+                <MagnifyingGlass
                     visible={true}
+                    height="150"
+                    width="150"
+                    ariaLabel="MagnifyingGlass-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="MagnifyingGlass-wrapper"
+                    glassColor = '#111111'
+                    color = '#ffffff'
                 />
             </div>
         }

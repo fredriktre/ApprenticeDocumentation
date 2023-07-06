@@ -3,7 +3,7 @@ import VideoComp from '@/components/media/VideoComp';
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import useUserStore from '@/stores/userstore';
 import axios, { AxiosError } from 'axios';
-import { Triangle } from 'react-loader-spinner';
+import { Vortex } from 'react-loader-spinner';
 import EditorComp from '@/components/text/EditorComp';
 import { GetServerSideProps } from "next";
 import { getIronSession } from "iron-session";
@@ -49,6 +49,7 @@ const New = ({user}:Props) => {
     const [blogInput, setBlogInput] = useState({
         title: "",
     })
+    const [lackingBlogTitle, setLackingBlogTitle] = useState<boolean>(false);
     const userStore = useUserStore();
 
     useEffect(() => {
@@ -83,66 +84,75 @@ const New = ({user}:Props) => {
 
 
     const handleBlog = async (data:any) => {
-        setLoading(true)
-             
-        let sendData:SendData = {
-            title: blogInput.title,
-            content: {},
-        }     
-        if (data.files.length >= 1) {
-            const uploadData = new FormData();
-            data.files.forEach((file:any) => {
-                uploadData.append("file", file.image)
-            })
-            const imageResponse = await axios.post("/api/posts/uploadFile", uploadData)
-            
-            console.log(data.json)
-            console.log(imageResponse)
-            
-            let currentImage = 0;
-            data.json.content.forEach((line:any) => {
-                console.log(line)
-                line.content.forEach((piece:any) => {
-                    console.log(piece)
-                    console.log(currentImage)
-                    if (piece.type === "image") {
-                        piece.attrs.src = imageResponse.data.data.content[currentImage]
-                        currentImage += 1;
+        
+        if (blogInput.title.length > 0) {
+            setLoading(true)
+            console.log("handler started")
+            setLackingBlogTitle(false)
+            let sendData:SendData = {
+                title: blogInput.title,
+                content: {},
+            }     
+            if (data.files.length >= 1) {
+                const uploadData = new FormData();
+                data.files.forEach((file:any) => {
+                    console.log("file handled")
+                    uploadData.append("file", file.image)
+                })
+                const imageResponse = await axios.post("/api/posts/uploadFile", uploadData)
+                
+                console.log(data.json)
+                console.log(imageResponse)
+                
+                let currentImage = 0;
+                data.json.content.forEach((line:any) => {
+                    console.log("data.json.foreach")
+                    console.log(line)
+                    if (line?.content) {
+                        line.content.forEach((piece:any) => {
+                            console.log("line.content.foreach")
+                            if (piece.type === "image") {
+                                piece.attrs.src = imageResponse.data.data.content[currentImage]
+                                currentImage += 1;
+                            }
+                        })
                     }
                 })
-            })
-
-            sendData = {
-                title: sendData.title,
-                content: data.json,
+    
+                sendData = {
+                    title: sendData.title,
+                    content: data.json,
+                }
+    
+            } 
+            if (data.files.length === 0) {
+                console.log("without files")
+                sendData = {
+                    title: sendData.title,
+                    content: data.json,
+                }
             }
-
-        } 
-        if (data.files.length === 0) {
-            console.log("without files")
-            sendData = {
-                title: sendData.title,
-                content: data.json,
-            }
-        }
-
-        try {  
-            const response = await axios.post("/api/posts/blog", {
-                type: "POST",
-                body: sendData
-            })
-
-            console.log(response)
-            setBlogInput({
-                title: "",
-            })
-            setLoading(false)
-            setCurrAdd("")
-        } catch (error) {
-            if (error instanceof AxiosError) {
-                console.error(error)
+    
+            try {  
+                const response = await axios.post("/api/posts/blog", {
+                    type: "POST",
+                    body: sendData
+                })
+    
+                console.log(response)
+                setBlogInput({
+                    title: "",
+                })
                 setLoading(false)
+                setCurrAdd("")
+            } catch (error) {
+                if (error instanceof AxiosError) {
+                    console.error(error)
+                    setLoading(false)
+                }
             }
+        } else {
+            setLackingBlogTitle(true)
         }
 
     }
@@ -228,15 +238,15 @@ const New = ({user}:Props) => {
                             loading 
                             
                             ?   <div className='w-full h-full flex justify-center items-center'>
-                                    <Triangle 
+                                    <Vortex 
                                         height={"150"}
-                                        width={"150"}
-                                        color='#ffffff'
-                                        ariaLabel='triangle-loading'
-                                        wrapperStyle={{}}
-                                        wrapperClass=''
+                                        width={"150"}                  
+                                        colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                                        ariaLabel="Circles-loading"                  
+                                        wrapperStyle={{}}                  
+                                        wrapperClass=""                                    
                                         visible={true}
-                                    /> 
+                                    />
                                 </div>
                             
                             :   <>
@@ -337,15 +347,15 @@ const New = ({user}:Props) => {
                                     
                                 <div className={`w-full relative ${fileThumbnail ? "w-fit h-fit" : "w-full aspect-video"} rounded-lg overflow-hidden`}>
                                     <div className={`w-full aspect-video absolute top-0 left-0 z-20 bg-black flex justify-center items-center ${fileThumbnail ? "opacity-0" : "opacity-100"}`}>
-                                        <Triangle 
-                                            height={"150"}
-                                            width={"150"}
-                                            color='#ffffff'
-                                            ariaLabel='triangle-loading'
-                                            wrapperStyle={{}}
-                                            wrapperClass=''
-                                            visible={true}
-                                        />
+                                    <Vortex 
+                                        height={"150"}
+                                        width={"150"}                  
+                                        colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                                        ariaLabel="Circles-loading"                  
+                                        wrapperStyle={{}}                  
+                                        wrapperClass=""                                    
+                                        visible={true}
+                                    />
                                     </div>
                                     <Image src={thumbnailSrc} alt="thumbnail" className='w-full' />
                                 </div>
@@ -391,15 +401,15 @@ const New = ({user}:Props) => {
                         {
                             loading
                             ?   <div className='w-full h-full flex justify-center items-center'>
-                                    <Triangle 
+                                    <Vortex 
                                         height={"150"}
-                                        width={"150"}
-                                        color='#ffffff'
-                                        ariaLabel='triangle-loading'
-                                        wrapperStyle={{}}
-                                        wrapperClass=''
+                                        width={"150"}                  
+                                        colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                                        ariaLabel="Circles-loading"                  
+                                        wrapperStyle={{}}                  
+                                        wrapperClass=""                                    
                                         visible={true}
-                                    />  
+                                    />
                                 </div>
                             : <>
                                 <input 
@@ -407,7 +417,8 @@ const New = ({user}:Props) => {
                             placeholder='Title'
                             className={`w-full py-2 px-4 text-lg bg-c-background text-c-text 
                             placeholder:text-c-text placeholder:opacity-75 outline-none 
-                            border-2 transition-colors duration-300 rounded-lg border-transparent focus:border-c-s-button`}
+                            ${lackingBlogTitle ? "border-red-600" : "border-transparent focus:border-c-s-button"}
+                            border-2 transition-colors duration-300 rounded-lg`}
                             value={blogInput.title}
                             onChange={(ev) => setBlogInput({
                                 title: ev.target.value,

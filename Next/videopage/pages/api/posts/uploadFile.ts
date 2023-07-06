@@ -4,15 +4,10 @@ import fs from 'fs'
 import mime from 'mime-types'
 import { alphabet } from '@/lib/samples'
 import { NextApiRequest, NextApiResponse } from 'next'
-import Cors from 'cors'
 
 export default async function handle(req:NextApiRequest, res:NextApiResponse) {
     const form = new multiparty.Form();
     const bucket:string = "treftravelvlog"
-
-    const cors = Cors({
-        methods: ["POST", "GET", "HEAD"]
-    })
 
     const {fields, files}:any = await new Promise((resolve, reject) => {
         form.parse(req, async (err:any, fields:any, files:any) => {

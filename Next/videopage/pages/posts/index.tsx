@@ -8,6 +8,7 @@ import { getAvatar } from "..";
 import useUserStore from "@/stores/userstore";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { Vortex } from "react-loader-spinner";
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
   const session = await getIronSession(req, res, sessionOptions);
@@ -99,15 +100,23 @@ const Posts = ({user}:Props) => {
           vlogs.length < 1 &&
           blogs.length < 1 &&
           <div className="w-full my-auto flex justify-center items-center text-white">
-            <h1 className="text-4xl">No posts yet</h1>
+            <Vortex 
+              height={"150"}
+              width={"150"}                  
+              colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+              ariaLabel="Circles-loading"                  
+              wrapperStyle={{}}                  
+              wrapperClass=""                                    
+              visible={true}
+            />
           </div>
         }
 
-        <div className="grid grid-cols-2 items-center w-3/5 gap-5">
+        <div className="grid md:grid-cols-2 grid-cols-1 items-center w-3/5 gap-5">
           {vlogs.map((vlog:any, index:number) => {
             console.log(vlog)
             return (
-              <div key={vlog._id} className={`relative w-full aspect-video rounded-lg overflow-hidden`}
+              <div key={vlog._id} className={`relative cursor-pointer w-full aspect-video rounded-lg overflow-hidden`}
                 onMouseEnter={() => setCurrentHover(`vlog-${index}`)} 
                 onMouseLeave={() => setCurrentHover(``)}>
                   {
@@ -129,7 +138,7 @@ const Posts = ({user}:Props) => {
           {blogs.map((blog:any, index:number) => {
             return (
               <div key={blog._id}               
-              className={`relative shadow-accent bg-c-accent border-2 ${currentHover === `blog-${index}` ? "border-c-s-button" : "border-transparent"}
+              className={`relative cursor-pointer shadow-accent bg-c-accent border-2 ${currentHover === `blog-${index}` ? "border-c-s-button" : "border-transparent"}
               rounded-lg w-full text-white transition-colors duration-300`}>
                 <div onClick={() => handleBlogClick(blog._id)} className="w-full px-4 py-2" 
                 onMouseEnter={() => setCurrentHover(`blog-${index}`)} 

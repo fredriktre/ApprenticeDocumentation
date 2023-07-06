@@ -6,7 +6,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/lib/auth/sessionOptions";
 import { useEffect } from "react";
 import { useRouter } from "next/router"
-import { Triangle } from "react-loader-spinner";
+import { Vortex } from "react-loader-spinner";
 import { User } from "..";
 
 type LoginInput = {
@@ -207,15 +207,15 @@ const Auth = ({user}:Props) => {
                 </div>
                 <div className={`w-fit top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                 absolute ${!loaded ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                    <Triangle 
-                        height={"150"}
-                        width={"150"}
-                        color="#050505"
-                        ariaLabel="triangle-loading"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                    />
+                    <Vortex 
+                                        height={"150"}
+                                        width={"150"}                  
+                                        colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                                        ariaLabel="Circles-loading"                  
+                                        wrapperStyle={{}}                  
+                                        wrapperClass=""                                    
+                                        visible={true}
+                                    />
                 </div>
             </form>
 
@@ -314,15 +314,15 @@ const Auth = ({user}:Props) => {
                 </div>
                 <div className={`w-fit top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
                 absolute ${!loaded ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                    <Triangle 
-                        height={"150"}
-                        width={"150"}
-                        color="#050505"
-                        ariaLabel="triangle-loading"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                    />
+                   <Vortex 
+                                        height={"150"}
+                                        width={"150"}                  
+                                        colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                                        ariaLabel="Circles-loading"                  
+                                        wrapperStyle={{}}                  
+                                        wrapperClass=""                                    
+                                        visible={true}
+                                    />
                 </div>
             </form>
 

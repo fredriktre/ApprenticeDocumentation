@@ -91,8 +91,14 @@
     background: linear-gradient(to right, rgba(120, 59, 79, 1) 90%, rgba(120, 59, 79, 0.9));
 }
 
+@media (max-width: 768px) {
+    .h-screen-wnav {
+        min-height: calc(100vh - 10rem);
+    }
+}
+
 .h-screen-wnav {
-    min-height: calc(100vh - 10rem);
+    min-height: 100vh
 }
 
 input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
@@ -121,6 +127,10 @@ input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
 }
 .ProseMirror p, .dsihRead p {
     @apply text-lg
+}
+
+.dsihRead p {
+    min-height: 20px;
 }
 
 .ProseMirror h1.editor-bold, .dsihRead h1.editor-bold {

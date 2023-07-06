@@ -7,7 +7,7 @@ import useUserStore from "@/stores/userstore";
 import { User, getAvatar } from ".";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { Triangle } from "react-loader-spinner";
+import { Vortex } from "react-loader-spinner";
 import Image from "next/image";
 
 export const getServerSideProps:GetServerSideProps<Props> = async ({req, res}) => {
@@ -488,15 +488,15 @@ const User = ({user}:Props) => {
                             </div>
                         </form>
                         <div className={`w-fit absolute ${loading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                            <Triangle 
-                                height={"150"}
-                                width={"150"}
-                                color="#050505"
-                                ariaLabel="triangle-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                                visible={true}
-                            />
+                        <Vortex 
+                            height={"150"}
+                            width={"150"}                  
+                            colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                            ariaLabel="Circles-loading"                  
+                            wrapperStyle={{}}                  
+                            wrapperClass=""                                    
+                            visible={true}
+                        />
                         </div>
                     </div>
                 
@@ -571,15 +571,15 @@ const User = ({user}:Props) => {
                             </button>
                         </form>
                         <div className={`w-fit absolute ${loading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-                            <Triangle 
-                                height={"150"}
-                                width={"150"}
-                                color="#050505"
-                                ariaLabel="triangle-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                                visible={true}
-                            />
+                        <Vortex 
+                            height={"150"}
+                            width={"150"}                  
+                            colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                            ariaLabel="Circles-loading"                  
+                            wrapperStyle={{}}                  
+                            wrapperClass=""                                    
+                            visible={true}
+                        />
                         </div>
                     </div>
                 
@@ -588,16 +588,16 @@ const User = ({user}:Props) => {
             </div>
 
             <div className={`fixed top-0 left-0 w-screen h-screen flex justify-center items-center transition-opacity duration-300
-            ${imageChangeModalOpen ? "opacity-100 pointer-events-auto z-50" : "opacity-0 pointer-events-none -z-50"}`}>
+            ${imageChangeModalOpen ? "opacity-100 pointer-events-auto z-[200]" : "opacity-0 pointer-events-none -z-50"}`}>
                     <div className={`w-fit h-fit bg-c-accent absolute z-10 rounded-lg p-4 ${loading ? "opacity-100" : "opacity-0 pointer-events-none"} 
                     top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}>
-                        <Triangle 
+                        <Vortex 
                             height={"150"}
-                            width={"150"}
-                            color="#ffffff"
-                            ariaLabel="triangle-loading"
-                            wrapperStyle={{}}
-                            wrapperClass=""
+                            width={"150"}                  
+                            colors={['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}                  
+                            ariaLabel="Circles-loading"                  
+                            wrapperStyle={{}}                  
+                            wrapperClass=""                                    
                             visible={true}
                         />
                     </div>

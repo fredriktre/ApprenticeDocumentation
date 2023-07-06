@@ -46,7 +46,7 @@ const Navigation = () => {
   }, [userStore])
 
   return (
-    <nav className="fixed left-0 top-0 md:w-52 w-full md:h-screen text-c-text">
+    <nav className="fixed z-[100] left-0 top-0 md:w-52 w-full md:h-screen text-c-text">
       <div className="bg-c-accent-with-opacity-gradient w-full h-full pr-12 flex flex-col md:justify-between md:gap-0 gap-2 p-4">
         <div>
           <h3 className="text-2xl">TrefTravelVlog</h3>

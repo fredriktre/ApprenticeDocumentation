@@ -46,9 +46,9 @@ async function makeAvatar() {
         seed = `${seed}${alphabet[Math.random() * alphabet.length]}`
     }
 
-    const r = Math.floor(Math.random() * 256) 
-    const g = Math.floor(Math.random() * 256) 
-    const b = Math.floor(Math.random() * 256) 
+    const r = Math.floor(1 + Math.random() * 255) 
+    const g = Math.floor(1 + Math.random() * 255) 
+    const b = Math.floor(1 + Math.random() * 255) 
     const hex = `${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
 
     const avatar = createAvatar(avatarstyle, {

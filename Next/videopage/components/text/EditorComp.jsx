@@ -66,7 +66,6 @@ const EditorComp = ({handler, cancler}) => {
 
         const imagesElements = document.querySelectorAll(".editor-image");
         const images = []
-
         if (imagesElements.length > 0) {
             if (imageList.length > 0) {
                 imageList.forEach((image) => {

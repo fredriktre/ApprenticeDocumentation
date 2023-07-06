@@ -20,7 +20,7 @@ const Layout = ({children, title}:Props) => {
 
         <Navigation />
 
-        <main className="w-full h-full h-screen-wnav md:pl-64 pl-0 md:pt-0 pt-[10rem]">
+        <main className="w-full h-full h-screen-wnav md:pl-64 pl-0 md:pt-0 pt-[15rem]">
           {children}
         </main>
 

@@ -56,7 +56,7 @@ const CommentComp = ({userData, handleAsync, comments}) => {
         <div className={`w-full h-fit p-4 rounded-lg bg-c-accent shadow-accent flex flex-col gap-5`}>
             {
                 !loading &&
-                comments &&
+                comments.length > 0 &&
                 comments.map((comment, index) => {
                     return (
                         <div key={index} className='w-full flex flex-col gap-2 text-white'>
