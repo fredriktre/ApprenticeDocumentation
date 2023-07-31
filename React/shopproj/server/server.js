@@ -49,7 +49,7 @@ app.get(`${SU}/getshops`, (req, res) => {
 
 })
 
-app.get(`${SU}/getproducts`, (req, res) => {
+app.get(`${SU}/getproducts`, (req, response) => {
     console.log("attempting get request " + attempts);
     attempts += 1;
 
@@ -75,7 +75,8 @@ app.get(`${SU}/getproducts`, (req, res) => {
             console.log('Response ended: ');
             const products = JSON.parse(Buffer.concat(data).toString());
 
-            console.log(products)
+            
+            response.status(200).json({message: "successfully retrieved products", body: products})
 
         }).on('error', err => {
             console.log('Error: ', err.message);

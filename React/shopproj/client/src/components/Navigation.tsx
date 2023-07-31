@@ -1,10 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from 'react-router-dom'
+import useCartStore from "../stores/cartStore";
 
 const Navigation = () => {
+  const {amount, status}  = useCartStore();
   const [searchInput, setSearchInput] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [cartAmount, setCartAmount] = useState<number>(0);
+
+  useEffect(() => {
+    if (!status) return;
+
+    setCartAmount(amount);
+    console.log(amount)
+
+  }, [amount, status])
+  
 
   return (
     <nav className="w-full h-16 relative">
