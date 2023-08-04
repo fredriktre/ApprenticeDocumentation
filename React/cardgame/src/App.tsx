@@ -44,6 +44,12 @@ function App() {
       <Route path='/game6x6/proglang' element={<Game6x6 game='proglang' />} />
       <Route path='/game8x8/proglang' element={<Game8x8 game='proglang' />} />
       <Route path='/game10x10/proglang' element={<Game10x10 game='proglang' />} />
+      <Route path='/game4x4/countries' element={<Game4x4 game='countries' />} />
+      <Route path='/game6x4/countries' element={<Game6x4 game='countries' />} />
+      <Route path='/game8x4/countries' element={<Game8x4 game='countries' />} />
+      <Route path='/game6x6/countries' element={<Game6x6 game='countries' />} />
+      <Route path='/game8x8/countries' element={<Game8x8 game='countries' />} />
+      <Route path='/game10x10/countries' element={<Game10x10 game='countries' />} />
 
     </Routes>
   )
