@@ -76,6 +76,47 @@ function App() {
     },
   }
 
+  useEffect(() => {
+    setPlayer_1_Deck([
+      {
+        value: cardtypes.c0.value,
+        action: cardtypes.c0.action,
+        color: "red"
+      },
+      {
+        value: cardtypes.c4.value,
+        action: cardtypes.c4.action,
+        color: "blue"
+      },
+      {
+        value: cardtypes.reverse.value,
+        action: cardtypes.reverse.action,
+        color: "yellow"
+      },
+      {
+        value: cardtypes.skip.value,
+        action: cardtypes.skip.action,
+        color: "yellow"
+      },
+      {
+        value: cardtypes.drawtwo.value,
+        action: cardtypes.drawtwo.action,
+        color: "yellow"
+      },
+      {
+        value: cardtypes.wild.value,
+        action: cardtypes.wild.action,
+        color: "black"
+      },
+      {
+        value: cardtypes.wilddrawfour.value,
+        action: cardtypes.wilddrawfour.action,
+        color: "black"
+      }
+    ])
+  }, [])
+  
+
   return (
     <div className='w-full min-h-screen h-full bg-blue-200 flex justify-center items-center perspective relative'>
      
@@ -101,7 +142,7 @@ function App() {
             <div key={`player1-${index}`} data-action={`${card.action}`} className={`relative z-10 px-2 py-4 h-full card-aspect rounded-lg
             ${card.color === "red" && "bg-red-500"} ${card.color === "green" && "bg-green-500"} ${card.color === "blue" && "bg-blue-500"}
             ${card.color === "yellow" && "bg-yellow-500"} ${card.color === "black" && "bg-black"}`}>
-              <div className='w-full h-full bg-white flex justify-center items-center' onClick={() => setCurrentPickedCard(1)}>
+              <div className='w-full h-full bg-white flex justify-center items-center' onClick={() => setCurrentPickedCard(index + 1)}>
                 <div className={`rounded-full ${card.color === "red" && "bg-red-500"} ${card.color === "green" && "bg-green-500"} 
                 ${card.color === "blue" && "bg-blue-500"} ${card.color === "yellow" && "bg-yellow-500"} ${card.color === "black" && "bg-black"} 
                 aspect-square w-4/5 flex justify-center items-center`}>
@@ -139,7 +180,7 @@ function App() {
                 </div>
               </div>
               <div className={`absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center
-              ${currentPickedCard === 1 ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
+              ${currentPickedCard === index + 1 ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
               transition-all duration-150`}>
                 <button className='relative z-30 w-fit h-fit px-4 py-2 bg-blue-800 rounded-xl text-white
                 '>Use</button>

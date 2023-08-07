@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useEffect, useRef, useState, DragEvent, Children } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Request } from "@/pages/admin"
 import SelectCountry from "./SelectCountry"
 import axios, { AxiosError } from "axios"
@@ -131,9 +131,11 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                 }
             })
 
-            setPotentialChildren(response.data.data.children)
-            setPotentialFathers(response.data.data.father)
-            setPotentialMothers(response.data.data.mother)
+            // setPotentialChildren(response.data.data.children)
+            // setPotentialFathers(response.data.data.father)
+            // setPotentialMothers(response.data.data.mother)
+
+            console.log(response)
 
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -170,8 +172,12 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
     }
 
     const handleSave = async () => {
-        console.log("save")
-        console.log(inputs)
+        saveFunction({
+            inputs: inputs,
+            _id: member._id
+        });
+
+        console.log(inputChildren)
         setEditActive(false)
     }
 
@@ -270,10 +276,32 @@ const RequestCard = ({member, saveFunction, deleteFunction}:Props) => {
                                 extrainfo: inputs.extrainfo
                             })}/>
 
-                            {
-                                
-                            }
+                            <input className="w-full" type={"text"} placeholder="Father" 
+                            value={inputs.father} onChange={(ev) => setInputs({
+                                fullname: inputs.fullname,
+                                gender: inputs.gender,
+                                birthdate: inputs.birthdate,
+                                deathdate: inputs.deathdate,
+                                bornin: inputs.bornin,
+                                diedin: inputs.diedin,
+                                father: ev.target.value,
+                                mother: inputs.mother,
+                                extrainfo: inputs.extrainfo
+                            })} />
 
+                            <input className="w-full" type={"text"} placeholder="Mother" 
+                            value={inputs.mother} onChange={(ev) => setInputs({
+                                fullname: inputs.fullname,
+                                gender: inputs.gender,
+                                birthdate: inputs.birthdate,
+                                deathdate: inputs.deathdate,
+                                bornin: inputs.bornin,
+                                diedin: inputs.diedin,
+                                father: inputs.father,
+                                mother: ev.target.value,
+                                extrainfo: inputs.extrainfo
+                            })} />
+                            
                             <textarea 
                                 placeholder="Extra information" 
                                 className="resize-none" 

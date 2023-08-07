@@ -415,6 +415,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                     ?<div className="flex gap-5">
                             <select onChange={(ev) => setFatherCustom(ev.target.value)} 
                             className={`${fatherCustom === "custom" ? "w-1/6" : "w-full"}`}>
+                                <option value={"custom"}>Custom</option>
                                 {
                                     potentialFathers.data.map((pchild:Request, index:number) => {
                                         return(
@@ -422,7 +423,6 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                         )
                                     })
                                 }
-                                <option value={"custom"}>Custom</option>
                             </select>
                             {
                                 fatherCustom === "custom" ?
@@ -463,6 +463,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                     ?<div className="flex gap-5">
                             <select onChange={(ev) => setMotherCustom(ev.target.value)} 
                             className={`${motherCustom === "custom" ? "w-1/6" : "w-full"}`}>
+                                <option value={"custom"}>Custom</option>
                                 {
                                     potentialMothers.data.map((pchild:Request, index:number) => {
                                         return(
@@ -470,7 +471,6 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                         )
                                     })
                                 }
-                                <option value={"custom"}>Custom</option>
                             </select>
                             {
                                 motherCustom === "custom" ?
@@ -519,6 +519,7 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                             setChanges(!changes)
                                             return (data)
                                         })} className={`${childCustom[index] === "custom" ? "w-1/6" : "w-full"}`}>
+                                            <option value={"custom"}>Custom</option>
                                             {
                                                 PCData.map((pchild:Request, index:number) => {
                                                     return(
@@ -526,7 +527,6 @@ const RequestCard = ({request, acceptFunction, deleteFunction}:Props) => {
                                                     )
                                                 })
                                             }
-                                            <option value={"custom"}>Custom</option>
                                         </select>
                                         {
                                             childCustom[index] === "custom" ?

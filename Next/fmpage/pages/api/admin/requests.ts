@@ -22,20 +22,8 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
             await mongooseConnect();
 
             const { fullname, gender, birthdate, deathdate, bornin, diedin, father, mother,
-             extrainfo, children, imageIds } = req.body.body
-             console.log({ 
-                fullname,
-                gender,
-                birthdate,
-                deathdate ,
-                bornin,
-                diedin,
-                father,
-                mother,
-                extrainfo,
-                children,
-                imageIds
-            })
+             extrainfo, children, imageIds } = req.body.body;
+
             let fatherID;
             let motherID;
             const childrenIds:any[] = []
@@ -90,7 +78,7 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
                         bornin: children[i].bornin,
                         diedin: children[i].diedin,
                         father: children[i].father,
-                        mother: mother.mother,
+                        mother: children[i].mother,
                         extrainfo: children[i].extrainfo,
                         children: children[i].children,
                         imageIds: children[i].imageIds

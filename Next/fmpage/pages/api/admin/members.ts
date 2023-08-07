@@ -80,6 +80,37 @@ export default async function handle(req:NextApiRequest, res:NextApiResponse) {
                 mother: motherData,
                 children: childrenData,
             }})
+        } else if (req.body.type === "PUT") {
+            await mongooseConnect();
+            
+            const {inputs, _id} = req.body.body;
+
+            const memberData = await Members.findOne({_id: _id});
+
+            if (memberData) {
+                const response = await Members.findOneAndUpdate({_id: _id}, {
+                    fullname: inputs.fullname,
+                    gender: inputs.gender,
+                    birthdate: inputs.birthdate,
+                    deathdate: inputs.deathdate,
+                    bornin: inputs.bornin,
+                    diedin: inputs.diedin,
+                    father: inputs.father,
+                    mother: inputs.mother,
+                    extrainfo: inputs.extrainfo,
+                    children: inputs.children,
+                    imageIds: inputs.imageIds
+                });
+                if (response) {
+                    return res.status(200).json({message: "update successful"})
+                } else {
+                    return res.status(500).json({error: "update unsuccessful"})
+                }
+            } else {
+                return res.status(404).json({error: "could not find member"})
+            }
+        } else {
+            return res.status(405).json({error: "type is invalid"})
         }
 
     } else {
