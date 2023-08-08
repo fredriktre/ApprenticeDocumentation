@@ -120,9 +120,9 @@ function App() {
   }
 
   return (
-    <div className='relative w-full h-full min-h-screen flex flex-col gap-5 bg-blue-800'>
+    <div className='relative w-full h-full min-h-screen flex flex-col gap-'>
 
-      <nav className='w-full h-16 bg-black flex justify-between items-center px-4'>
+      <nav className='w-full h-fit bg-black flex md:flex-row flex-col md:gap-0 gap-5 justify-between items-center px-4 py-2'>
         <h1 className="text-white text-4xl">Ferieboard</h1>
         <button onClick={handlePresentation}
         className="w-fit h-fit relative bg-blue-500 hover:bg-blue-400 active:bg-blue-600 
@@ -197,7 +197,7 @@ function App() {
 
         <span className="absolute z-20 top-0 left-0 w-full h-full max-h-screen bg-black opacity-60"></span>
       </div>
-      <div className={`absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center
+      <div className={`fixed z-20 top-0 left-0 w-full h-full flex justify-center items-center
       ${isLoading ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} 
       transition-opacity duration-150 pointer-events-none opacity-0`}>
 
@@ -205,7 +205,7 @@ function App() {
           <ClimbingBoxLoader
             color={"#ffffff"}
             loading={isLoading}
-            size={100}
+            size={50}
             aria-label="Loading Spinner"
             data-testid="loader"
           />
@@ -214,7 +214,7 @@ function App() {
         <span className="absolute z-20 top-0 left-0 w-full h-full bg-black opacity-60"></span>
       </div>
 
-      <div className={`absolute z-20 top-0 left-0 w-full h-full max-h-screen flex justify-center items-center
+      <div className={`fixed z-20 top-0 left-0 w-full h-full max-h-screen flex justify-center items-center
       ${currentlyClickedPost != 0 ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} 
       transition-opacity duration-150 pointer-events-none opacity-0`} onClick={() => setCurrentlyClickedPost(0)}>
 
@@ -228,7 +228,7 @@ function App() {
         <span className="absolute z-20 top-0 left-0 w-full h-full bg-black opacity-60"></span>
       </div>
 
-      <div className={`absolute z-20 top-0 left-0 w-full h-full max-h-screen flex justify-center items-center
+      <div className={`fixed z-20 top-0 left-0 w-full h-full max-h-screen flex justify-center items-center
       ${currentPresented != 0 ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} 
       transition-opacity duration-150 pointer-events-none opacity-0`} onClick={() => setCurrentPresented(0)}>
 
