@@ -1,8 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta name="restrict-font-color" content="#377C2B,#5E5A5A,#377C20,#008A8A,#AAAB7C,#B1CDDE,#597B7C,#014E99,#1088FF,#262824,#008CD2,#D95E16" agignore="true" />
     
@@ -13,9 +14,9 @@
     <meta name="param-order" param-namespace="Block" content="Background,Alignment" agignore="true" />  
     <meta name="param-order" param-namespace="Margins" content="Margin_under, Margin_over" agignore="true" />  
 
-    <meta name="x-apple-disable-message-reformatting">
+    <meta name="x-apple-disable-message-reformatting" />
 
-    <meta name="color-scheme" content="light dark" agactive="runtime">
+    <meta name="color-scheme" content="light dark" agactive="runtime" />
 
     <title>Email</title>
     <from>company@company.no</from>
@@ -111,6 +112,44 @@
         }
     </style>
     
+
+    <style>
+      h1 {
+      margin: inherit !important;
+      font-weight: inherit !important;
+      font-style: inherit !important;
+      font-size: inherit !important;
+      color: inherit !important;
+      font-family: 'tekna',Arial,Helvetica,sans-serif !important;
+    }
+
+    h2 {
+      margin: inherit !important;
+      font-weight: inherit !important;
+      font-style: inherit !important;
+      font-size: inherit !important;
+      color: inherit !important;
+      font-family: 'tekna',Arial,Helvetica,sans-serif !important;
+    }
+    
+    span {
+      margin: inherit;
+      font-weight: inherit;
+      font-style: inherit;
+      font-size: inherit;
+      color: inherit;
+      font-family: 'tekna',Arial,Helvetica,sans-serif !important;
+    }
+
+    p {
+      margin: inherit !important;
+      font-weight: inherit !important;
+      font-style: inherit !important;
+      font-size: inherit !important;
+      color: inherit !important;
+      font-family: 'tekna',Arial,Helvetica,sans-serif !important;
+    }
+    </style>
 </head>
 <body>
     <div class="preheader-wrapper">
@@ -161,13 +200,187 @@
                             <table agrepeatingblock="active" agid="default.header" width="100%" style="width: 100%" 
                             border="0" cellspacing="0" cellpadding="0" role="presentation">
                                 <tr>
-                                    <td style="width:100%; padding-bottom: 40px;" width="100%">
+                                    <td style="width:100%; padding-bottom: ${blockparam:margin::Margin_under|INTEGER|40}px;" width="100%">
                                         <!-- Logo, if you have a website you can add the link here -->
-                                        <a href="www.vg.no">
-                                            <img style="width: 100px; height: 50px;" width="100" src="../resources/templates/email/placeholders/600x400.png" />
+                                        <a href="${blockparam:image::logo_link|LINK|https://www.vg.no}">
+                                            <img style="width: 100px; height: 50px;" width="100" src="${blockparam:image::logo_src|IMAGE|../resources/templates/email/placeholders/600x400.png}" />
                                         </a>
                                     </td>
                                 </tr>
+                            </table>
+
+                            <table agrepeatingblock="active" agid="big_article_block" width="100%" style="width: 100%" 
+                            border="0" cellspacing="0" cellpadding="0" role="presentation">
+                              <tr>
+                                <td style="padding-bottom: 10px">
+                                  <table border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr><td>                            
+                                      <a href="${blockparam:image::image_link|LINK|https://www.vg.no}">
+                                        <img style="width: 640px; height: 400px;" width="100" src="${blockparam:image::image_src|IMAGE|../resources/templates/email/placeholders/600x400.png}" />
+                                      </a>
+                                    </td></tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: 10px">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div style="font-weight: normal; font-size: 20px; color: #000000; line-height: 1.0; margin: 0; font-family: Arial, Helvetica, sans-serif;">
+                                          <h1 ageditable="*"><font>H1 - Enter Header here!</font></h1>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: 20px">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div style="font-weight: normal; font-size: 15px; color: #000000; line-height: 1.0; margin: 0; font-family: Arial, Helvetica, sans-serif;">
+                                          <p ageditable="*"><font>Paragraph - Enter Paragraph here! <br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</font></p>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: ${blockparam:Margin::Margin_under|INTEGER|40px};">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div agignore="true"
+                                            data-link="${blockparam:button::button_link|LINK|https://www.tekna.no/}"
+                                            data-border-color="${blockparam:button::button_border_color|COLOR|[#000000; #ffffff; #550000; #005500; #000055; #555555]}"
+                                            data-background-color="${blockparam:button::button_background_color|COLOR|[#000000; #ffffff; #550000; #005500; #000055; #555555]}"
+                                            >
+                                        <!--[if mso]>
+                                            <v:roundrect href="${ref:button::button_link}" style="v-text-anchor: middle; mso-wrap-style: none; mso-position-horizontal: center; mso-position-vertical: top" arcsize="0%" fillcolor="${ref:button::button_background_color}" strokecolor="${ref:button::button_border_color}" strokeweight="1.5pt">
+                                                <v:textbox inset="0,0,0,0" style="mso-fit-shape-to-text:true">     
+                                                    <div style="font-family:sans-serif;font-size:16px;">
+                                                        <![endif]-->
+                                                            <a href="${ref:button::button_link}" style="text-align: center; vertical-align: middle; font-size: 16px; line-height: 1; font-family: Arial, Verdana, Helvetica; font-weight: bold; border-radius: 0; border: 2px solid ${ref:button::button_border_color}; mso-border-alt: none; mso-padding-alt:0px; background: ${ref:button::button_background_color}; display: inline-block; padding: 16px 19px; color: #ffffff; text-decoration: none"> 
+                                                              <!--[if mso]> <span style="mso-text-raise:12pt;letter-spacing: 25px;mso-font-width:-100%;" hidden>&nbsp;</span><![endif]-->
+                                                              <span ageditable="font_color">Primary button</span>
+                                                              <!--[if mso]><span style="mso-text-raise:-12pt;letter-spacing: 25px;mso-font-width:-100%;" hidden>&nbsp;</span><![endif]-->
+                                                            </a>
+                                                        <!--[if mso]>
+                                                    </div>
+                                                </v:textbox>
+                                            </v:roundrect>
+                                        <![endif]-->
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+
+                            <table agrepeatingblock="active" agid="big_event_block" width="100%" style="width: 100%" 
+                            border="0" cellspacing="0" cellpadding="0" role="presentation">
+                              <tr>
+                                <td style="padding-bottom: 10px">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div style="font-weight: normal; font-size: 20px; color: #000000; line-height: 1.0; margin: 0; font-family: Arial, Helvetica, sans-serif;">
+                                          <h1 ageditable="*"><font>H1 - Enter Header here!</font></h1>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: 10px">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div style="font-weight: normal; font-size: 18px; color: #000000; line-height: 1.0; margin: 0; font-family: Arial, Helvetica, sans-serif;">
+                                          <h1 ageditable="*"><font>Time - Day / Month / Year</font></h1>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <table border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr><td>                            
+                                      <a href="${blockparam:image::image_link|LINK|https://www.vg.no}">
+                                        <img style="width: 640px; height: 400px;" width="100" src="${blockparam:image::image_src|IMAGE|../resources/templates/email/placeholders/600x400.png}" />
+                                      </a>
+                                    </td></tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: 20px">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div style="font-weight: normal; font-size: 15px; color: #000000; line-height: 1.0; margin: 0; font-family: Arial, Helvetica, sans-serif;">
+                                          <p ageditable="*"><font>Paragraph - Enter Paragraph here! <br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</font></p>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding-bottom: ${blockparam:Margin::Margin_under|INTEGER|40px};">
+                                  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                    <tr>
+                                      <td>
+                                        <div agignore="true"
+                                            data-link="${blockparam:button::button_link|LINK|https://www.tekna.no/}"
+                                            data-border-color="${blockparam:button::button_border_color|COLOR|[#000000; #ffffff; #550000; #005500; #000055; #555555]}"
+                                            data-background-color="${blockparam:button::button_background_color|COLOR|[#000000; #ffffff; #550000; #005500; #000055; #555555]}"
+                                            >
+                                        <!--[if mso]>
+                                            <v:roundrect href="${ref:button::button_link}" style="v-text-anchor: middle; mso-wrap-style: none; mso-position-horizontal: center; mso-position-vertical: top" arcsize="0%" fillcolor="${ref:button::button_background_color}" strokecolor="${ref:button::button_border_color}" strokeweight="1.5pt">
+                                                <v:textbox inset="0,0,0,0" style="mso-fit-shape-to-text:true">     
+                                                    <div style="font-family:sans-serif;font-size:16px;">
+                                                        <![endif]-->
+                                                            <a href="${ref:button::button_link}" style="text-align: center; vertical-align: middle; font-size: 16px; line-height: 1; font-family: Arial, Verdana, Helvetica; font-weight: bold; border-radius: 0; border: 2px solid ${ref:button::button_border_color}; mso-border-alt: none; mso-padding-alt:0px; background: ${ref:button::button_background_color}; display: inline-block; padding: 16px 19px; color: #ffffff; text-decoration: none"> 
+                                                              <!--[if mso]> <span style="mso-text-raise:12pt;letter-spacing: 25px;mso-font-width:-100%;" hidden>&nbsp;</span><![endif]-->
+                                                              <span ageditable="font_color">Primary button</span>
+                                                              <!--[if mso]><span style="mso-text-raise:-12pt;letter-spacing: 25px;mso-font-width:-100%;" hidden>&nbsp;</span><![endif]-->
+                                                            </a>
+                                                        <!--[if mso]>
+                                                    </div>
+                                                </v:textbox>
+                                            </v:roundrect>
+                                        <![endif]-->
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+
+                            <table agrepeatingblock="active" agid="right_half_event_block" width="100%" style="width: 100%" 
+                            border="0" cellspacing="0" cellpadding="0" role="presentation">
+                              <tr>
+                                <td style="padding-bottom: ${blockparam:Margin::Margin_under|INTEGER|40px};">
+
+                                  <table>
+                                    <tr>
+                                      <th>
+                                        
+                                      </th>
+                                    </tr>
+                                  </table>
+
+                                </td>
+                              </tr>
                             </table>
 
                         </td>

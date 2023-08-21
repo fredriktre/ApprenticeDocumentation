@@ -1,27 +1,17 @@
 import { useState } from "react"
+import { ProductInformation } from "../App"
 
-const ProductCard = () => {
+interface Props {
+  productInformation : ProductInformation,
+}
 
-    const [productInformation, setProductInformation] = useState();
-    const [modalOpened, setModalOpened] = useState<boolean>(false);
+const ProductCard = ({productInformation}:Props) => {
+
 
   return (
-    <>
-        <div>
+    <div>
 
-
-
-        </div>
-        {
-            modalOpened &&
-            <div className="fixed z-[60] top-0 left-0 w-full h-screen">
-
-
-
-                <span className="absolute top-0 left-0 w-full h-full bg-black opacity-60"></span>
-            </div>
-        }
-    </>
+    </div>
   )
 }
 
