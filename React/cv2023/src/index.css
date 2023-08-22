@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
+:root {
+  font-family: 'Roboto Mono', monospace;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #000000;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+nav {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: calc(80% - 2rem);
+  padding: 1rem;
+  border: 0.2rem solid rgba(0, 0, 200, 0.8);
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 200, 0.15);
+}
+
+nav > button {
+  position: relative;
+  z-index: 2;
+  border: 0.2rem solid rgba(0, 0, 200, 0.8);
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 200, 1);
+
+  padding: 0.5rem 1rem;
+  font-size: 1.5em;
+
+  text-transform: uppercase;
+
+  transition: 0.2s;
+}
+
+nav > button.active {
+  background-color: rgba(100, 0, 200, 1);
+  border-color: rgba(100, 0, 200, 0.8);
+}
+
+nav > button:hover {
+  background-color: rgba(0, 0, 200, 0.8);
+}
+nav > button.active:hover {
+  background-color: rgba(100, 0, 200, 0.8);
+}
+
+nav > button:active {
+  background-color: rgba(0, 0, 200, 0.4);
+}
+nav > button.active:active {
+  background-color: rgba(100, 0, 200, 0.4);
+}
+
+.card {
+  position: relative;
+  border: 0.2rem solid rgba(0, 0, 200, 0.8);
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 200, 0.15);
+}
+
+.card > span, nav > span {
+  display: block;
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    rgba(0, 0, 200, 0.2),
+    rgba(0, 0, 200, 0.2) 3px,
+    transparent 3px,
+    transparent 9px
+  );
+
+  background-size: 100% 9px;
+}
+
+.card > span {
+  animation: pan-overlay 15s infinite linear;
+  z-index: 2;
+}
+
+nav > span {
+  animation: pan-overlay 1.5s infinite linear;
+}
+
+@keyframes pan-overlay {
+  
+  from {
+    background-position: 0% 0%;
+  }
+
+  to {
+    background-position: 0% -100%;
+  }
+}
+
+.card.content-card {
+  width: 80%;
+  aspect-ratio: 16/9;
+}
