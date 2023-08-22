@@ -1,0 +1,149 @@
+
+#root {
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+
+    font-family: 'Roboto Mono', monospace;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #000000;
+}
+
+.home-page {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100dvh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.home-page > span {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(to right, rgba(0, 0, 0, 1), transparent, transparent);
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+
+    margin: 0 auto 0 0;
+    
+    width: 20rem;
+    height: fit-content;
+    
+    padding: 4rem 2rem;
+
+
+    overflow: hidden;
+}
+
+nav > button {   
+    position: relative;
+
+    padding: 0;
+    margin: 0;
+
+    border-radius: 0.5rem;
+
+    background-color: transparent;
+    outline: unset;
+    border: unset;
+
+    color: #ffffff;
+    font-size: 2em;
+    text-transform: uppercase;
+
+    cursor: pointer;
+}
+
+nav > button::before {
+    position: absolute;
+    content: "";
+    display: block;
+
+    width: 0;
+    height: 2px;
+
+    bottom: -2px;
+    left: 0;
+
+    background-color: #00ff00;
+    transition: 0.4s;
+}
+nav > button:hover::before {width: 100%;}
+
+nav > img {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: -2;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    transition: 0.4s;
+    object-fit: cover;
+    filter: sepia(100%) hue-rotate(50deg);
+    -webkit-filter: sepia(100%) hue-rotate(50deg);
+}
+
+nav > img.inactive {
+    opacity: 0;
+}
+nav > img.active {
+    opacity: 0.2;
+}
+
+@media (max-width: 615px) {
+    .home-page{
+        flex-direction: column;
+    }
+
+    nav > img { 
+        height: 100%;
+    }
+
+    .home-page > span {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 1), transparent, transparent);
+    }
+}
+
+
+.content-container {
+    width: calc(100% - 8rem);
+    height: calc(100% - 8rem);
+
+    padding: 4rem 4rem 4rem 0;
+}
+
+.content-wrapper {
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 255, 0, 0.1);
+    border-radius: 1rem;
+    opacity: 0;
+
+    transition: 0.4s;
+}
+
+.content-wrapper.active {
+    opacity: 1;
+}
