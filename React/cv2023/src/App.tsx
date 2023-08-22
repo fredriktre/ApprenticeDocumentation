@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 // import "./s1.css"
 import "./s2.css"
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
 function App() {
   const [currentHoveredButton, setCurrentHoveredButton] = useState(0);
@@ -37,6 +39,19 @@ function App() {
       image: "/assets/freetime.png"
     },
   ]
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-3km9K8spoM-tep5eyVCcqBCPHmIDze0",
+    authDomain: "portfolio-a0738.firebaseapp.com",
+    projectId: "portfolio-a0738",
+    storageBucket: "portfolio-a0738.appspot.com",
+    messagingSenderId: "557921732481",
+    appId: "1:557921732481:web:97fc16a20c217a17034a80",
+    measurementId: "G-BC0P9DSTJZ"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
 
   const hackify = (id:string) => {
     const button = document.getElementById(id)
@@ -84,7 +99,9 @@ function App() {
       <div className='content-container'>
           <div className={`content-wrapper ${currentPage != 0 ? "active" : ""}`}>
 
-            
+            <div className={`${currentPage === 5 ? "" : ""}`}>
+
+            </div>
 
           </div>
       </div>
