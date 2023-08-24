@@ -1,12 +1,60 @@
 import { useEffect, useState } from 'react'
 // import "./s1.css"
 import "./s2.css"
+import { motion, useAnimation } from 'framer-motion'
 
 function App() {
   const [currentHoveredButton, setCurrentHoveredButton] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentPagePart, setCurrentPagePart] = useState(0);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  
+  const devlangController = useAnimation()
+  const frameworksController = useAnimation()
+  const librariesController = useAnimation()
+  const languagesController = useAnimation()
+  const interestsController = useAnimation()
+
+  useEffect(() => {
+
+    if (currentPage === 3) {
+      if (currentPagePart === 1) {
+        devlangController.start("visible");
+        frameworksController.start("hidden");
+        librariesController.start("hidden");
+        languagesController.start("hidden");
+      } else if (currentPagePart === 2) {
+        devlangController.start("hidden");
+        frameworksController.start("visible");
+        librariesController.start("hidden");
+        languagesController.start("hidden");
+      } else if (currentPagePart === 3) {
+        devlangController.start("hidden");
+        frameworksController.start("hidden");
+        librariesController.start("visible");
+        languagesController.start("hidden");
+      } else if (currentPagePart === 4) {
+        devlangController.start("hidden");
+        frameworksController.start("hidden");
+        librariesController.start("hidden");
+        languagesController.start("visible");
+      } else {
+        devlangController.start("hidden");
+        frameworksController.start("hidden");
+        librariesController.start("hidden");
+        languagesController.start("hidden"); 
+      }
+
+    }
+    
+    if (currentPage === 6) {
+      if (currentPagePart === 10) {
+        interestsController.start("visible");
+      } else {
+        interestsController.start("hidden");
+      }
+    }
+  }, [currentPage])
+
   const pages = [
     {
       name: "home",
@@ -21,15 +69,15 @@ function App() {
       image: "/assets/experience.png"
     },
     {
-      name: "skillset",
-      image: "/assets/skillset.png"
+      name: "Skillset",
+      image: "/assets/devlang.png"
     },
     {
       name: "Portfolio",
       image: "/assets/portfolio.png"
     },
     {
-      name: "AI stuff",
+      name: "AIImages",
       image: "/assets/aistuff.png"
     },
     {
@@ -38,18 +86,71 @@ function App() {
     },
   ]
 
-  const skillset = [
+  const devlang = [
     {
       name: "HTML",
-      confidence: 4
+      confidence: 8
     },
     {
       name: "CSS",
-      confidence: 4
+      confidence: 8
     },
     {
       name: "Javacript",
-      confidence: 3
+      confidence: 7
+    },
+  ]
+  const frameworks = [
+    {
+      name: "React",
+      confidence: 6
+    },
+    {
+      name: "Vue",
+      confidence: 2
+    },
+    {
+      name: "Svelte",
+      confidence: 0
+    },
+  ]
+
+  const interests = [
+    {
+      name: "Gaming",
+      like: 10
+    },
+    {
+      name: "AI image generation",
+      like: 6
+    },
+    {
+      name: "Music | Listening",
+      like: 8
+    },
+    {
+      name: "Anime / Manga",
+      like: 8
+    },
+    {
+      name: "Exercise",
+      like: 8
+    },
+    {
+      name: "Front - End Development",
+      like: 6
+    },
+    {
+      name: "Back - End Development",
+      like: 5
+    },
+    {
+      name: "Email - Development",
+      like: 4
+    },
+    {
+      name: "Game - Development",
+      like: 7
     },
   ]
 
@@ -77,7 +178,10 @@ function App() {
           {
             pages.map((page:any, index:number) => (
               <>
-                <button id={`${page.name}-${index}`} key={index} onClick={() => setCurrentPage(index)}
+                <button id={`${page.name}-${index}`} key={index} onClick={() => {
+                  setCurrentPage(index)
+                  setCurrentPagePart(0)
+                }}
                 onMouseEnter={() => {
                   hackify(`${page.name}-${index}`);
                   setCurrentHoveredButton(index + 1)
@@ -174,10 +278,30 @@ function App() {
           </div>
         </div>
         <div className={`content-wrapper  ${currentPage === 3 ? "active" : ""}`}>
-          
-          <div className='card-wrapper'>
+          <div className='pagepartbtn-wrapper'>
+            <button
+              onClick={() => setCurrentPagePart(1)}>
+              Dev - Languages
+            </button>
+            <button
+              onClick={() => setCurrentPagePart(2)}>
+              Frameworks
+            </button>
+            <button
+              onClick={() => setCurrentPagePart(3)}>
+              Libraries
+            </button>
+            <button
+              onClick={() => setCurrentPagePart(4)}>
+              Languages
+            </button>
+          </div>
+          <div className='card-container'>
+
+          </div>
+          <div className={`static-cards card-wrapper ${currentPagePart === 1 ? "cactive" : ""}`}>
             {
-              skillset.map((skill:any, index:number) => {
+              devlang.map((skill:any, index:number) => {
 
                 return (
                   <div key={`${skill.name}-${index}`}>
@@ -185,13 +309,79 @@ function App() {
                     <div className='skill-meter'>
                       <p
                       className='skill-meter-txt'
-                      >{skill.confidence}</p>
-                      <span 
-                      className='skill-meter-fg'
-                      style={{
-                        width: `${skill.confidence * 20}%`,
+                      >{skill.confidence}/10</p>
+                      <motion.span 
+                      variants={{
+                        hidden: { width: 0 },
+                        visible: { width: 12 + skill.confidence * 10 }
                       }}
-                      ></span>
+                      initial="hidden"
+                      animate={devlangController}
+                      transition={{ ease: "easeInOut", duration: 1, delay: 0.1 }}
+                      className='skill-meter-fg'
+                      ></motion.span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+          <div className={`card-wrapper ${currentPagePart === 2 ? "cactive" : ""}`}>
+            {
+              devlang.map((skill:any, index:number) => {
+
+                return (
+                  <div key={`${skill.name}-${index}`}>
+                    <h1>{skill.name}</h1>
+                    <div className='skill-meter'>
+                      <p
+                      className='skill-meter-txt'
+                      >{skill.confidence}/10</p>
+                      <motion.span 
+                      variants={{
+                        hidden: { width: 0 },
+                        visible: { width: 12 + skill.confidence * 10 }
+                      }}
+                      initial="hidden"
+                      animate={devlangController}
+                      transition={{ ease: "easeInOut", duration: 1, delay: 0.1 }}
+                      className='skill-meter-fg'
+                      ></motion.span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
+        <div className={`content-wrapper  ${currentPage === 6 ? "active" : ""}`}>
+          <div className='pagepartbtn-wrapper'>
+            <button
+              onClick={() => setCurrentPagePart(10)}>
+              Interests
+            </button>
+          </div>
+          <div className={`card-wrapper ${currentPagePart === 10 ? "cactive" : ""}`}>
+            {
+              interests.map((interest:any, index:number) => {
+
+                return (
+                  <div key={`${interest.name}-${index}`}>
+                    <h1>{interest.name}</h1>
+                    <div className='skill-meter'>
+                      <p
+                      className='skill-meter-txt'
+                      >{interest.like}/10</p>
+                      <motion.span 
+                      variants={{
+                        hidden: { width: 0 },
+                        visible: { width: 12 + interest.like * 10 }
+                      }}
+                      initial="hidden"
+                      animate={interestsController}
+                      transition={{ duration: 1, delay: 0.1 }}
+                      className='skill-meter-fg'
+                      ></motion.span>
                     </div>
                   </div>
                 )
