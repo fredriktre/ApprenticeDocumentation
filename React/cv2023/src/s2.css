@@ -9,7 +9,6 @@
     font-weight: 400;
 
     color: rgba(255, 255, 255, 0.87);
-    background-color: #000000;
 }
 
 .home-page {
@@ -127,6 +126,8 @@ nav > img.active {
 
 
 .content-container {
+    position: relative;
+
     width: calc(100% - 8rem);
     height: calc(100% - 8rem);
 
@@ -134,11 +135,18 @@ nav > img.active {
 }
 
 .content-wrapper {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-    background-color: rgba(0, 255, 0, 0.1);
-    border-radius: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    pointer-events: none;
+
+    width: calc(100% - 8rem);
+
     opacity: 0;
 
     transition: 0.4s;
@@ -146,4 +154,83 @@ nav > img.active {
 
 .content-wrapper.active {
     opacity: 1;
+    pointer-events: all;
+}
+
+.card-wrapper {    
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.card-wrapper > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    width: calc(100% - 2rem);
+    
+    background-color: rgba(0, 255, 0, 0.1);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.card-wrapper > div h1,
+.card-wrapper > div p {
+    margin: 0;
+}
+
+.card-wrapper > div > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: rgba(0, 255, 0, 0.2);
+    color: rgba(0, 255, 0, 0.6);
+    
+    border-radius: 1rem;
+    outline: unset;
+    border: 0.2rem solid transparent;
+
+    padding: 0.5rem;
+
+    transition: 0.2s;
+}
+.card-wrapper > div > button:hover {
+    background-color: rgba(0, 255, 0, 0.4);
+    border-color: rgba(0, 255, 0, 0.8);
+    color: rgba(0, 255, 0, 0.8);
+}
+
+.card-wrapper > div > button > svg {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.skill-meter {
+    position: relative;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    max-width: 5rem;
+    background-color: rgba(0, 255, 0, 0.2);
+    border: 0.2rem solid rgba(0, 255, 0, 0.8);
+    border-radius: 1rem;
+    overflow: hidden;
+    text-align: center;
+}
+
+.skill-meter-txt {
+    position: relative;
+    z-index: 2;
+    color: white;
+    mix-blend-mode: difference;
+}
+
+.skill-meter > .skill-meter-fg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: rgba(0, 255, 0, 0.8);
 }
