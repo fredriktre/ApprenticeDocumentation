@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "site": "fmpics",
+    "public": "fmdir",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
