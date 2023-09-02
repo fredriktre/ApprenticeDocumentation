@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react'
 import { initializeApp } from "firebase/app";
-import sixhundredXfourhundred from "./assets/600x400.png"
-import { getStorage, ref as sref, uploadBytes } from "firebase/storage"
-import { getDatabase, set, ref as dbref } from "firebase/database"
+import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { getDatabase, set, ref as dbref, get, child } from "firebase/database"
+import YtPlayer from './components/YtPlayer';
+import VideoPlayer from './components/VideoPlayer';
+import Image from './components/Image';
 
 function App() {
   const [addFiles, setAddFiles] = useState<any[]>([]);
   const [previewURLS, setPreviewURLS] = useState<any[]>([]);
-  // const [images, setImages] = useState<any[]>([]);
   const [currentPrevInteraction, setCurrentPrevInteraction] = useState<number>(0);
   const [rerender, setRerender] = useState(false);
   const [ytLinkOpened, setYtLinkOpened] = useState<boolean>(false)
   const [ytLink, setYtLink] = useState<string>()
+  const [content, setContent] = useState<any[]>([])
 
   const firebaseConfig = {
     apiKey: "AIzaSyCQzJi3wbw9YLLv6ERH_RWgSzWyxMjr_mc",
@@ -27,22 +29,82 @@ function App() {
   const storage = getStorage(app);
   const database = getDatabase(app);
 
+  let runs = 0;
+
+  useEffect(() => {
+
+    if (content.length > 0) return
+    
+    if (runs < 1) {
+      get(dbref(database, "content")).then((snapshot) => {
+        if (snapshot.exists()) {
+          const rawContent = Object.entries(snapshot.val())
+  
+          const content:any[] = []
+          for (let i = 0; i < rawContent.length; i++) {
+            content.push(rawContent[i][1])
+          }
+  
+          handleGetURLS(content)
+        }
+      })
+    }
+
+    runs++
+
+  }, [])
+
+  async function handleGetURLS (content:any) {
+
+    const completeContent:any[] = [];
+    for (let i = 0; i < content.length; i++) {
+      if (content[i].type != "yt") {
+        const url = await getDownloadURL(sref(storage, `content/${content[i].contentID}`))
+        completeContent.push({
+          contentID: content[i].contentID,
+          content_name: content[i].content_name,
+          members: content[i].members,
+          desc: content[i].desc,
+          type: content[i].type,
+          url: url
+        })
+      } else {
+        completeContent.push({
+          contentID: content[i].contentID,
+          content_name: content[i].content_name,
+          members: content[i].members,
+          desc: content[i].desc,
+          type: content[i].type,
+          url: content[i].contentID
+        })
+      }
+    }
+
+    setContent(completeContent);
+  }
+
   const addImagesHandler = async (event:any) => {
     const previewFiles:any[] = []
 
+    
     const newAddFiles:any[] = []
     for (let i = 0; i < event.target.files.length; i++){
       newAddFiles.push({
         file: event.target.files[i],
         content_name: "",
         members: [],
-        desc: ""
+        desc: "",
+        type: `${event.target.files[i].name.split(".")[1]}`
       })
     }
 
     setAddFiles((oldFiles) => [...oldFiles, ...newAddFiles])
     for (let i = 0; i < event.target.files.length; i++) {
-      previewFiles.push(await readFile(event.target.files[i]))
+      const URL = await readFile(event.target.files[i])
+      previewFiles.push({
+        type: `${event.target.files[i].name.split(".")[1]}`,
+        url: URL
+      })
     }
     setPreviewURLS((oldURLS) => [...oldURLS, ...previewFiles]);
   }
@@ -71,6 +133,8 @@ function App() {
   const uploadImagesHandler = async () => {
 
     for (let i = 0; i < addFiles.length; i++) {
+      console.log(addFiles[i])
+
       const id = makeID()
 
       const contentRef = sref(storage, `content/${id}`)
@@ -84,7 +148,8 @@ function App() {
         content_name: addFiles[i].content_name,
         members: addFiles[i].members,
         desc: addFiles[i].desc,
-        contentID: `${id}`
+        contentID: `${id}`,
+        type: addFiles[i].type
       })
 
       console.log("Database done")
@@ -93,7 +158,7 @@ function App() {
 
   }
 
-  const addYTHandler = (event) => {
+  const addYTHandler = (event:any) => {
 
 
 
@@ -134,7 +199,28 @@ function App() {
 
       <div className='w-4/5 h-full mx-auto flex items-center justify-center'>
         <div className='w-full auto-grid gap-5 place-items-center'>
-          <img src={sixhundredXfourhundred} />
+          {
+            content.map((contentPiece:any, index:number) => {
+              let component;
+              if (contentPiece.type === "yt") {
+                component = <YtPlayer 
+                key={`${contentPiece.type}-${index}`} 
+                source={contentPiece.url} />
+              } else if (contentPiece.type === "mp4") {
+                component = <VideoPlayer 
+                key={`${contentPiece.type}-${index}`}
+                source={contentPiece.url} 
+                title={contentPiece.content_name} />
+              } else {
+                component = <Image 
+                key={`${contentPiece.type}-${index}`} 
+                source={contentPiece.url} 
+                alt={contentPiece.content_name} />
+              }
+
+              return component
+            })
+          }
         </div>
       </div>
 
@@ -144,11 +230,16 @@ function App() {
 
         <div className='w-4/5 h-fit max-h-[60%] auto-grid gap-5 place-items-center'>
           {
-            previewURLS.map((url:string, index:number) => (
+            previewURLS.map((preview:any, index:number) => (
 
               <div onClick={() => setCurrentPrevInteraction(index + 1)}
               key={index} className='relative z-30 w-full max-w-lg'>
-                <img src={url} id={`previmg-${index}`} />
+                {
+                  preview.type === "mp4" ? 
+                  <VideoPlayer source={preview.url} title='preview' />
+                  :
+                  <Image source={preview.url} alt='preview' />
+                }
                 <div className={`${currentPrevInteraction === index + 1 ? 
                 "pointer-events-auto opacity-100" :
                 "pointer-events-none opacity-0"} transition-opacity duration-150
