@@ -1,19 +1,25 @@
 const express = require("express");
+const cors = require("cors");
 const https = require('https');
 const app = express();
 
-const PRINTIFY_API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImU1YzlkMDgyNTRiMWUyNmY2YzI4N2YyM2JmZDhhYWRmYzkzYWRlNDhjNDhiM2Q5YTI4YjM3YTYzZDliMDkwMWIxYzE2Yzk1YjFlOGZmZTM3IiwiaWF0IjoxNjg4NDY0OTY3LjYyNzk4NywibmJmIjoxNjg4NDY0OTY3LjYyNzk5MSwiZXhwIjoxNzIwMDg3MzY3LjYxNzM5NCwic3ViIjoiMTMyNjg2NDciLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AcYIBMLyyMlmu7PAtR_saw0B-C1egIQvu3u9I0Suk50c3g4qKmhQwtK8iVd5yMZCr4TKgPHaBb4Z3L5OBVk"
+const PRINTIFY_API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6ImNkYzdiZGZjNDYxMDg4OWE3OWM3NzU2ODA0MDUxZjljMjU3OWQwOTdiMTM2NTk5YjY2OTFmZDg2M2EzNDhlOTE2MThjMjY2MDcxMDc1ODVkIiwiaWF0IjoxNjk1MTUwOTY5LjIwMDcxNywibmJmIjoxNjk1MTUwOTY5LjIwMDcyMSwiZXhwIjoxNzI2NzczMzY5LjE3NjA1OSwic3ViIjoiMTMyNjg2NDciLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AMjsPiCzxEwCU8lbQJmlzwzaji8-IiBb4xHZLsr2zYH_h3ecEtpjLkoG0MCvZlBENN3V75-r_V15Q-3Her8"
 const port = 5000
-// SU = standardURL
-const SU = "/api"
-const SID = 10429257;
+// server_url_starter = standardURL
+const server_url_starter = "/api"
+const shop_id = 10429257;
 let attempts = 0;
 
-app.get(SU, (req, res) => {
+let lastUpdate;
+let lastContent;
+
+app.use(cors());
+
+app.get(server_url_starter, (req, res) => {
    res.status(404).json({error: "could not find route..."})
 })
 
-app.get(`${SU}/getshops`, (req, res) => {
+app.get(`${server_url_starter}/getshops`, (req, res) => {
 
     const options = {
         hostname: "api.printify.com",
@@ -47,40 +53,92 @@ app.get(`${SU}/getshops`, (req, res) => {
 
 })
 
-app.get(`${SU}/getproducts`, (req, response) => {
+app.get(`${server_url_starter}/getproducts`, (req, response) => {
     console.log("attempting get request " + attempts);
     attempts += 1;
+    
+    console.log(lastUpdate)
 
-    const options = {
-        hostname: "api.printify.com",
-        path: `/v1/shops/${SID}/products.json`,
-        headers: {
-            "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+    const today = new Date();
+    const diffTime = Math.abs(today - lastUpdate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+   
+    console.log(diffDays)
+
+    if (diffDays > 1 || lastUpdate == undefined) {
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/shops/${shop_id}/products.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
         }
-    }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const products = JSON.parse(Buffer.concat(data).toString());
+                
+                lastContent = products;
+                lastUpdate = today;
+                response.status(200).json({message: "api successfully retrieved products", body: products})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
+    } else {
+        console.log('Responded with: old');
+        console.log('Response ended: ');
+        response.status(200).json({message: "server_url_starterccessfully retrieved products", body: lastContent})
+    }   
 
-    https.get(options, res => {
-        let data = [];
-        const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
-        console.log("status code: " + res.statusCode);
-        console.log("Date in response-header: " + headerDate);
+})
 
-        res.on("data", chuck => {
-            data.push(chuck);
-        });
-
-        res.on("end", () => {
-            console.log('Response ended: ');
-            const products = JSON.parse(Buffer.concat(data).toString());
-
-            
-            response.status(200).json({message: "successfully retrieved products", body: products})
-
-        }).on('error', err => {
-            console.log('Error: ', err.message);
-        });
-
-    })
+app.get(`${server_url_starter}/getproduct/:id`, (req, response) => {
+    console.log("attempting get request on ID: " + req.url.split("/")[3]);
+    
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/shops/${shop_id}/products/${req.url.split("/")[3]}.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
+        }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const product = JSON.parse(Buffer.concat(data).toString());
+                
+                response.status(200).json({message: "api successfully retrieved product: " + req.url.split("/")[3], body: product})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
 
 })
 

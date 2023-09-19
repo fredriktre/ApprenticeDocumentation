@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
-import CategorySlider from "../components/CategorySlider"
-import ProductCard from "../components/ProductCard"
+import ProductCard from "../components/products/ProductCard";
+import { Product } from "../library/types/productTypes"
+import useProductsStore from "../stores/productStore";
 
 const Home = () => {
-    const [shopData, setShopData] = useState();
-
+    const [shopData, setShopData] = useState<Product[]>([]);
+    const productStore = useProductsStore();
+    let i = 0;
     useEffect(() => {
-
-        if (shopData) return
+        i++
+        if (i < 2) return
+        if (shopData.length > 0) return
         getProducts();
 
     }, [])
@@ -16,12 +19,17 @@ const Home = () => {
 
         try {
 
-            const res = await fetch("/api/getproducts");
+            const res = await fetch("/api/getproducts", {
+                method: "GET",
+            });
             const data = await res.json();
-            setShopData(data)
+            const products:Product[] = data.body.data
+            console.log(products)
             console.log(data)
-            console.log(data.body.data)
-
+            if (!productStore.status) {
+                productStore.addToProducts(products)
+            }
+            setShopData(products)
 
         } catch (error) {
             console.log(error)
@@ -30,14 +38,14 @@ const Home = () => {
     }
     
   return (
-    <div className="w-full h-full min-h-screen-16">
-
-        <div className="w-full h-screen">
-            <div className="w-4/5 mx-auto h-full flex flex-col gap-5">
-                <CategorySlider>
-                    {/* <ProductCard productInformation={} /> */}
-                </CategorySlider>
-            </div>
+    <div className="home-wrapper">
+        <div className="auto-grid"> 
+            {
+                shopData.length > 0 &&
+                shopData.map((data:Product, index:number) => (
+                    <ProductCard key={index} product={data} />
+                ))
+            }
         </div>
     </div>
   )

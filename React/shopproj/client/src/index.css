@@ -1,12 +1,189 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-html, body {
-    margin: 0;
-    padding: 0;
+  color-scheme: light dark;
+  color: rgba(0, 0, 0, 1);
+  background-color: rgba(50, 50, 50, 1);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
-.min-h-screen-16 {
-    min-height: calc(100vh - 4rem);
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  gap: 1rem
+}
+
+nav {
+  width: 100%;
+  height: 5rem;
+
+  background-color: rgba(0, 0, 0, 1);
+}
+
+main {
+  width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.product-card {
+  width: calc(20rem - 2rem);
+  aspect-ratio: 1/1.5;
+
+  background-color: rgba(240, 240, 240, 1);
+  border-radius: 0.5rem;
+
+  overflow: hidden;
+}
+
+.product-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+
+  transition: 0.25s;
+}
+
+.product-card-image-wrapper.hovering {
+  opacity: 0.8;
+  height: 80%;
+}
+
+.product-card-image-wrapper button {
+  position: absolute;
+  z-index: 5;
+
+  top: 50%;
+  transform: translateY(-50%);
+  
+  width: 3rem;
+  aspect-ratio: 1;
+
+  color: white;
+  font-size: 0.5rem;
+  background-color: black;
+  border-radius: 0.5rem;
+
+  outline: unset;
+  border: unset;
+
+  opacity: 0;
+  transition: 0.25s;
+}
+
+.product-card-image-wrapper button:hover {
+  background-color: #222222;
+}
+
+.product-card-image-wrapper button:active {
+  background-color: #444444;
+}
+
+.product-card-image-wrapper button.active {
+  opacity: 1;
+}
+
+.product-card-image-wrapper button.left {
+  left: 1rem;
+}
+
+.product-card-image-wrapper button.right {
+  right: 1rem;
+}
+
+.product-card-image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  
+  opacity: 0;
+  transition: 0.25s;
+}
+
+.product-card-image-wrapper img.shown {
+  opacity: 1;
+} 
+
+.product-card-content-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 0%;
+
+  background-color: rgba(240, 240, 240, 1);
+
+  outline: unset;
+  border: unset;
+
+  text-align: center;
+  color: #000000;
+  font-weight: bold;
+
+  transition: 0.25s;
+}
+
+.product-card-content-button.hovering {
+  height: 20%;
+}
+
+.product-card-content-button:hover {
+  background-color: rgba(180, 180, 180, 1)
+}
+
+.product-card-content-button:active {
+  background-color: rgba(120, 120, 120, 1);
+}
+
+.product-card-content-wrapper-bottom {
+  display: flex;
+  
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  
+  width: 100%;
+}
+
+.home-wrapper {
+  width: 100%;
+  height: fit-content;
+
+  display: flex;
+
+  gap: 1rem;
+
+  padding: 1rem;
+}
+
+.auto-grid {
+  display: grid; 
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(auto-fit, 1fr));
+  gap: 1rem;
 }

@@ -7,7 +7,14 @@ function App() {
   const [currentHoveredButton, setCurrentHoveredButton] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [currentPagePart, setCurrentPagePart] = useState(0);
-  const [modalOpen, setModalOpen] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [portfolioModalContent, setPortfolioModalContent] = useState({
+    name: "",
+    desc: "",
+    tags: [],
+    link: "",
+    image: ""
+  },);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const devlangController = useAnimation()
   const frameworksController = useAnimation()
@@ -59,16 +66,16 @@ function App() {
     },
     {
       name: "Skillset",
-      image: "/assets/devlang.png"
+      image: "/assets/skillset.png"
     },
     {
       name: "Portfolio",
       image: "/assets/portfolio.png"
     },
-    {
-      name: "AIImages",
-      image: "/assets/aistuff.png"
-    },
+    // {
+    //   name: "AIImages",
+    //   image: "/assets/aistuff.png"
+    // },
     {
       name: "Freetime",
       image: "/assets/freetime.png"
@@ -187,6 +194,16 @@ function App() {
       like: 7
     },
   ]
+
+  const Portfolio = [
+    {
+      name: "TrefTravelVlog",
+      desc: "This project was something I worked on to learn Next.js, and to have somewhere to blog my trip to Japan. There were a lot of small issues popping up, and some responsiveness problems. I did learn a lot though, and will probably take some inspiration from this project in the future.",
+      tags: ["vlog", "blog", "Next.js", "React.js", "Front-end"],
+      link: "https://treftravelvlog.vercel.app",
+      image: "/assets/treftravelvlog.webp"
+    },
+  ]
   
 
   const hackify = (id:string) => {
@@ -209,7 +226,7 @@ function App() {
 
   return (
     <div className='home-page'>
-      <nav>
+      <nav className='scrollbar'>
           {
             pages.map((page:any, index:number) => (
               <>
@@ -336,9 +353,15 @@ function App() {
               onClick={() => setCurrentPagePart(4)}>
               Languages
             </button>
+            <button 
+              onClick={() => setCurrentPagePart(5)}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+              </svg>
+            </button>
           </div>
           <div className='card-container'>
-            <div className={`static-cards card-wrapper ${currentPagePart === 1 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 1 ? "cactive" : ""} scrollbar`}>
               {
                 devlang.map((skill:any, index:number) => {
 
@@ -365,7 +388,7 @@ function App() {
                 })
               }
             </div>
-            <div className={`card-wrapper ${currentPagePart === 2 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 2 ? "cactive" : ""} scrollbar`}>
               {
                 frameworks.map((skill:any, index:number) => {
 
@@ -392,7 +415,7 @@ function App() {
                 })
               }
             </div>
-            <div className={`card-wrapper ${currentPagePart === 3 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 3 ? "cactive" : ""} scrollbar`}>
               {
                 libraries.map((skill:any, index:number) => {
 
@@ -419,7 +442,7 @@ function App() {
                 })
               }
             </div>
-            <div className={`card-wrapper ${currentPagePart === 4 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 4 ? "cactive" : ""} scrollbar`}>
               {
                 languages.map((skill:any, index:number) => {
 
@@ -446,13 +469,71 @@ function App() {
                 })
               }
             </div>
+            <div className={`card-wrapper ${currentPagePart === 5 ? "cactive" : ""}`}>
+              <div>
+                <div>
+                  <h2>Skillset</h2>
+                  <p>This section is meant to give you an idea of my confidence in my different skills.</p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Dev - Languages</h2>
+                  <p>
+                    This part shows programming languages that I am familiar with. 
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Frameworks</h2>
+                  <p>
+                    This part shows frameworks for programming languages that I am familiar with. 
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Libraries</h2>
+                  <p>
+                    This part shows libraries for programming languages that I am familiar with. 
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Languages</h2>
+                  <p>
+                    This part shows languages that I am familiar with, covers both vocal and reading ability. 
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
         <div className={`content-wrapper  ${currentPage === 4 ? "active" : ""}`}>
         
-          <div>
+          <div className='auto-grid'>
+            {
+              Portfolio.map((portfolioPiece:any, index:number) => {
 
+                return (
+                  <div key={`${portfolioPiece.name}${index}`} onClick={() => {
+                    setPortfolioModalContent({
+                      name: portfolioPiece.name,
+                      desc: portfolioPiece.desc,
+                      tags: portfolioPiece.tags,
+                      link: portfolioPiece.link,
+                      image: portfolioPiece.image
+                    })
+                    setModalOpen(true);
+                  }}>
+                    <img src={portfolioPiece.image} />
+                  </div>
+                )
+              })
+            }
           </div>
         
         </div>
@@ -467,9 +548,15 @@ function App() {
               onClick={() => setCurrentPagePart(11)}>
               Work Interests
             </button>
+            <button 
+              onClick={() => setCurrentPagePart(12)}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+              </svg>
+            </button>
           </div>
           <div className='card-container'>
-            <div className={`card-wrapper ${currentPagePart === 10 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 10 ? "cactive" : ""} scrollbar`}>
               {
                 interests.map((interest:any, index:number) => {
 
@@ -496,7 +583,7 @@ function App() {
                 })
               }
             </div>
-            <div className={`card-wrapper ${currentPagePart === 11 ? "cactive" : ""}`}>
+            <div className={`card-wrapper ${currentPagePart === 11 ? "cactive" : ""} scrollbar`}>
               {
                 workinterests.map((interest:any, index:number) => {
 
@@ -522,6 +609,30 @@ function App() {
                   )
                 })
               }
+            </div>
+            <div className={`card-wrapper ${currentPagePart === 12 ? "cactive" : ""}`}>
+              <div>
+                <div>
+                  <h2>Freetime</h2>
+                  <p>This section covers my interests, activities and similar stuff to that.</p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Interests</h2>
+                  <p>
+                    This part shows interests that I have. 
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <h2>Work Interests</h2>
+                  <p>
+                    This part shows interests that I have related to my work. 
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

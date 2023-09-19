@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { initializeApp } from "firebase/app";
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { getDatabase, set, ref as dbref, get, child } from "firebase/database"
+import { getDatabase, set, ref as dbref, get } from "firebase/database"
 import YtPlayer from './components/YtPlayer';
 import VideoPlayer from './components/VideoPlayer';
 import Image from './components/Image';
@@ -12,8 +12,22 @@ function App() {
   const [currentPrevInteraction, setCurrentPrevInteraction] = useState<number>(0);
   const [rerender, setRerender] = useState(false);
   const [ytLinkOpened, setYtLinkOpened] = useState<boolean>(false)
-  const [ytLink, setYtLink] = useState<string>()
+  const [ytLink, setYtLink] = useState<any>({
+    contentID: ``,
+    content_name: "",
+    members: [],
+    desc: "",
+    type: `yt`
+  })
   const [content, setContent] = useState<any[]>([])
+  const [contentModal, setContentModal] = useState({
+    contentID: "",
+    content_name: "",
+    desc: "",
+    members: [],
+    type: "",
+    url: "",
+  })
 
   const firebaseConfig = {
     apiKey: "AIzaSyCQzJi3wbw9YLLv6ERH_RWgSzWyxMjr_mc",
@@ -154,26 +168,57 @@ function App() {
 
       console.log("Database done")
 
+      setAddFiles([]);
+      setPreviewURLS([]);
+      setPreviewURLS([]);
     }
 
   }
 
-  const addYTHandler = (event:any) => {
+  const addYTHandler = async () => {
 
+    const id = ytLink.contentID.split("?v=")[1]
 
+    await set(dbref(database, `content/${id}`), {
+      content_name: ytLink.content_name,
+      members: ytLink.members,
+      desc: ytLink.desc,
+      contentID: `${id}`,
+      type: "yt"
+    })
 
+    console.log("Database done")
+
+    setYtLink({
+      contentID: ``,
+      content_name: "",
+      members: [],
+      desc: "",
+      type: `yt`
+    })
+    setYtLinkOpened(false);
+  }
+
+  const handleContentClick = (id:string) => {
+    const clicked = content.filter((contentPiece) => contentPiece.contentID === id)
+    setContentModal({
+      contentID: clicked[0].contentID,
+      content_name: clicked[0].content_name,
+      desc: clicked[0].desc,
+      members: clicked[0].members,
+      type: clicked[0].type,
+      url: clicked[0].url,      
+    })
   }
 
   return (
     <div className='w-full h-full flex flex-col justify-stretch items-center'>
 
-      <nav className='w-full h-20 bg-black flex justify-between items-center px-5 gap-5'>
-        <div>
-          <h1 className='text-2xl text-white'>Trevland Images</h1>
-        </div>
+      <nav className='w-full h-32 bg-emerald-600 flex justify-end items-center px-5 gap-5 relative z-[100]'>
+        
         <div className='flex gap-5'>
-          <div className='relative bg-gray-400 p-4 rounded-lg hover:bg-gray-300 active:bg-gray-500
-          border-2 border-gray-600 hover:border-gray-700 active:border-gray-500 transition-colors 
+          <div className='relative bg-gray-200 p-4 rounded-lg hover:bg-gray-300 active:bg-green-400
+          border-2 border-stone-800 transition-colors 
           duration-150 overflow-hidden'>
             <input
               onChange={addImagesHandler}
@@ -187,8 +232,8 @@ function App() {
           </div>
           <button 
             onClick={() => setYtLinkOpened(!ytLinkOpened)}
-            className='bg-gray-400 p-4 rounded-lg hover:bg-gray-300 active:bg-gray-500
-            border-2 border-gray-600 hover:border-gray-700 active:border-gray-500 transition-colors 
+            className='bg-gray-200 p-4 rounded-lg hover:bg-gray-300 active:bg-green-400
+            border-2 border-stone-800 transition-colors 
             duration-150 overflow-hidden'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
@@ -201,18 +246,25 @@ function App() {
         <div className='w-full auto-grid gap-5 place-items-center'>
           {
             content.map((contentPiece:any, index:number) => {
+              console.log(contentPiece)
               let component;
               if (contentPiece.type === "yt") {
-                component = <YtPlayer 
+                component = <YtPlayer clickable={true}
+                clickHandler={handleContentClick}
+                id={contentPiece.contentID}
                 key={`${contentPiece.type}-${index}`} 
                 source={contentPiece.url} />
               } else if (contentPiece.type === "mp4") {
-                component = <VideoPlayer 
+                component = <VideoPlayer clickable={true}
+                clickHandler={handleContentClick}
+                id={contentPiece.contentID}
                 key={`${contentPiece.type}-${index}`}
                 source={contentPiece.url} 
                 title={contentPiece.content_name} />
               } else {
-                component = <Image 
+                component = <Image clickable={true}
+                id={contentPiece.contentID}
+                clickHandler={handleContentClick}
                 key={`${contentPiece.type}-${index}`} 
                 source={contentPiece.url} 
                 alt={contentPiece.content_name} />
@@ -226,24 +278,28 @@ function App() {
 
       <div className={`absolute top-0 left-0 w-full h-screen flex justify-center 
       items-center ${previewURLS.length > 0 ? "opacity-100 pointer-events-auto" 
-      : "opacity-0 pointer-events-none"} transition-opacity duration-150 z-20`}>
+      : "opacity-0 pointer-events-none"} transition-opacity duration-150 z-[110]`}>
 
-        <div className='w-4/5 h-fit max-h-[60%] auto-grid gap-5 place-items-center'>
+        <div className='w-4/5 h-screen auto-grid gap-5 place-items-center'>
           {
             previewURLS.map((preview:any, index:number) => (
 
               <div onClick={() => setCurrentPrevInteraction(index + 1)}
-              key={index} className='relative z-30 w-full max-w-lg'>
-                {
-                  preview.type === "mp4" ? 
-                  <VideoPlayer source={preview.url} title='preview' />
-                  :
-                  <Image source={preview.url} alt='preview' />
-                }
+              key={index} className='relative z-30 w-full max-w-lg max-h-[50rem]'>
+                <div className='w-fit relative'>
+                  {
+                    preview.type === "mp4" ? 
+                    <VideoPlayer clickable={false} id={`preview-${index}`} source={preview.url} title='preview' />
+                    :
+                    <Image clickable={false} id={`preview-${index}`} source={preview.url} alt='preview' />
+                  }
+                </div>
                 <div className={`${currentPrevInteraction === index + 1 ? 
                 "pointer-events-auto opacity-100" :
                 "pointer-events-none opacity-0"} transition-opacity duration-150
-                absolute top-0 left-0 w-full h-full flex justify-center items-center flex-col gap-4`}>
+                absolute top-0 left-0 w-full h-full p-4`}>
+                  <div className='w-full h-full overflow-y-auto z-40 relative'>
+                  <div className='w-full h-fit flex justify-center items-center flex-col gap-4'>
                   <input 
                     onChange={(event) => {
                       const newArray = addFiles;
@@ -252,10 +308,12 @@ function App() {
                       setAddFiles(newArray)
                     }}
                     type='text' 
-                    className='z-40 py-2 px-4' 
+                    className='z-40 py-2 px-4 rounded-lg outline-none
+                    border-2 border-stone-800 focus:border-gray-200
+                    transition-colors duration-150'  
                     placeholder='Image name'/>
 
-                  <div className='z-40'>
+                  <div className='z-40 flex gap-5'>
                     <button 
                       className='bg-green-400 z-40 p-2 rounded-lg 
                       hover:bg-green-300 active:bg-green-500
@@ -268,7 +326,10 @@ function App() {
                         setAddFiles(newArray)
                         setRerender(!rerender)
                       }}>
-                      Add member
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+
                     </button>
                     <button 
                       className='bg-red-400 z-40 p-2 rounded-lg 
@@ -282,11 +343,15 @@ function App() {
                         setAddFiles(newArray)
                         setRerender(!rerender)
                       }}>
-                      Remove member
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+
                     </button>
                   </div>
 
-                  <div className='z-40 grid auto-grid gap-2 overflow-y-auto'>
+                  <div className={`z-40 grid auto-grid gap-2
+                  ${addFiles[index].members.length > 0 ? "min-h-[4rem] h-fit" : "h-0"}`}>
                     {
                       addFiles[index].members.map((member:string, index2:number) => (
                         <input key={`${index2}`}
@@ -298,7 +363,9 @@ function App() {
                           }}
                           value={member}
                           type='text' 
-                          className='z-40 py-2 px-4' 
+                          className='z-40 py-2 px-4 rounded-lg outline-none
+                          border-2 border-stone-800 focus:border-gray-200
+                          transition-colors duration-150'  
                           placeholder={`member-${index2 + 1}`}/>
                       ))
                     }
@@ -311,9 +378,16 @@ function App() {
                       setAddFiles(newArray)          
                       setRerender(!rerender)
                     }}
-                    className='z-40 resize-none py-2 px-4' 
+                    className='z-40 resize-none py-2 px-4 
+                    rounded-lg outline-none
+                    border-2 border-stone-800 
+                    focus:border-gray-200
+                    transition-colors duration-150' 
                     maxLength={1000}
                     placeholder='Description'></textarea>
+                  </div>   
+                  </div>
+                                 
                   <span className='absolute top-0 left-0 w-full h-full bg-black opacity-80'></span>
                 </div>
               </div>
@@ -323,9 +397,9 @@ function App() {
         </div>
 
         <div className='absolute top-5 right-5 z-30 flex gap-5'>          
-          <div className='relative bg-gray-400 p-4 rounded-lg hover:bg-gray-300 active:bg-gray-500
-            border-2 border-gray-600 hover:border-gray-700 active:border-gray-500 transition-colors 
-            duration-150 overflow-hidden'>
+          <div className='relative bg-gray-200 p-4 rounded-lg hover:bg-gray-300 active:bg-green-400
+          border-2 border-stone-800 transition-colors 
+          duration-150 overflow-hidden'>
             <input
               onChange={addImagesHandler}
               multiple
@@ -337,8 +411,7 @@ function App() {
             </svg>
           </div>
           <button className='bg-green-400 p-4 rounded-lg hover:bg-green-300 active:bg-green-500
-            border-2 border-green-600 hover:border-green-700 
-            active:border-green-500 transition-colors 
+            border-2 border-stone-800 transition-colors 
             duration-150 overflow-hidden'
             onClick={uploadImagesHandler}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -346,8 +419,7 @@ function App() {
             </svg>
           </button>
           <button className='bg-red-400 p-4 rounded-lg hover:bg-red-300 active:bg-red-500
-            border-2 border-red-600 hover:border-red-700 
-            active:border-red-500 transition-colors 
+            border-2 border-stone-800 transition-colors 
             duration-150 overflow-hidden'
             onClick={() => {
               setAddFiles([]);
@@ -359,48 +431,146 @@ function App() {
           </button>
         </div>
         <span onClick={() => setCurrentPrevInteraction(0)}
-        className='absolute top-0 left-0 w-full h-full bg-black opacity-80'></span>
+        className='fixed top-0 left-0 w-full h-full bg-black opacity-80'></span>
       </div>
 
       <div className={`absolute top-0 left-0 w-full h-screen flex justify-center 
       items-center ${ytLinkOpened ? "opacity-100 pointer-events-auto" 
-      : "opacity-0 pointer-events-none"} transition-opacity duration-150 z-20`}>
+      : "opacity-0 pointer-events-none"} transition-opacity duration-150 z-[110]`}>
 
         <div className='w-fit h-fit p-4 rounded-lg flex flex-col justify-center items-center 
-        gap-5 bg-black'>
+        gap-5 bg-emerald-600 z-40'>
           <input 
             type='text'
             placeholder='Youtube Link'
+            value={ytLink.contentID}
             onChange={(event) => {
-
+              setYtLink({
+                contentID: event.target.value,
+                content_name: ytLink.content_name,
+                members: ytLink.members,
+                desc: ytLink.desc,
+                type: ytLink.type
+              })
               setRerender(!rerender)
             }}  
-            className='z-40 py-2 px-4' 
+            className='z-40 py-2 px-4 rounded-lg outline-none
+            border-2 border-stone-800 focus:border-gray-200
+            transition-colors duration-150' 
             />
           <input 
             type='text'
             placeholder='Video Name'
             onChange={(event) => {
-
+              setYtLink({
+                contentID: ytLink.contentID,
+                content_name: event.target.value,
+                members: ytLink.members,
+                desc: ytLink.desc,
+                type: ytLink.type
+              })
               setRerender(!rerender)
             }}  
-            className='z-40 py-2 px-4' 
+            className='z-40 py-2 px-4 rounded-lg outline-none
+            border-2 border-stone-800 focus:border-gray-200
+            transition-colors duration-150'  
           />
+          <div className='z-40 flex gap-5'>
+            <button 
+              className='bg-green-400 z-40 p-2 rounded-lg 
+              hover:bg-green-300 active:bg-green-500
+              border-2 border-green-600 hover:border-green-700 
+              active:border-green-500 transition-colors 
+              duration-150 overflow-hidden'
+              onClick={() => {
+                const newArray = ytLink.members;
+                newArray.push("")
+                setYtLink({
+                  contentID: ytLink.contentID,
+                  content_name: ytLink.content_name,
+                  members: newArray,
+                  desc: ytLink.desc,
+                  type: ytLink.type
+                })
+                setRerender(!rerender)
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+
+            </button>
+            <button 
+              className='bg-red-400 z-40 p-2 rounded-lg 
+              hover:bg-red-300 active:bg-red-500
+              border-2 border-red-600 hover:border-red-700 
+              active:border-red-500 transition-colors 
+              duration-150 overflow-hidden'
+              onClick={() => {
+                const newArray = ytLink.members;
+                newArray.pop()
+                setYtLink({
+                  contentID: ytLink.contentID,
+                  content_name: ytLink.content_name,
+                  members: newArray,
+                  desc: ytLink.desc,
+                  type: ytLink.type
+                })
+                setRerender(!rerender)
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+
+            </button>
+          </div>
+          <div className='z-40 flex flex-col gap-2 max-h-[10rem] overflow-y-auto'>
+            {
+              ytLink.members.map((member:string, index:number) => (
+                <input key={`${index}`}
+                  onChange={(event) => {    
+                    const newArray = ytLink.members;
+                    newArray[index] = `${event.target.value}`
+                    setYtLink({
+                      contentID: ytLink.contentID,
+                      content_name: ytLink.content_name,
+                      members: newArray,
+                      desc: ytLink.desc,
+                      type: ytLink.type
+                    })
+                    setRerender(!rerender)
+                  }}
+                  value={member}
+                  type='text' 
+                  className='z-40 py-2 px-4 rounded-lg outline-none
+                  border-2 border-stone-800 focus:border-gray-200
+                  transition-colors duration-150'  
+                  placeholder={`member-${index + 1}`}/>
+              ))
+            }
+          </div>
           <textarea 
             onChange={(event) => {
-              // const newArray = addFiles;
-              // newArray[index].desc = `${event.target.value}`
-              // setAddFiles(newArray)          
+              setYtLink({
+                contentID: ytLink.contentID,
+                content_name: ytLink.content_name,
+                members: ytLink.members,
+                desc: event.target.value,
+                type: ytLink.type
+              })         
               setRerender(!rerender)
             }}
-            className='z-40 resize-none py-2 px-4' 
+            value={ytLink.desc}
+            className='z-40 resize-none py-2 px-4 
+            rounded-lg outline-none
+            border-2 border-stone-800 
+            focus:border-gray-200
+            transition-colors duration-150' 
             maxLength={1000}
             placeholder='Description'></textarea>
         </div>
         <div className='absolute top-5 right-5 z-30 flex gap-5'>  
           <button className='bg-green-400 p-4 rounded-lg hover:bg-green-300 active:bg-green-500
-            border-2 border-green-600 hover:border-green-700 
-            active:border-green-500 transition-colors 
+            border-2 border-stone-800 transition-colors 
             duration-150 overflow-hidden'
             onClick={addYTHandler}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -408,10 +578,16 @@ function App() {
             </svg>
           </button>
           <button className='bg-red-400 p-4 rounded-lg hover:bg-red-300 active:bg-red-500
-            border-2 border-red-600 hover:border-red-700 
-            active:border-red-500 transition-colors 
+            border-2 border-stone-800 transition-colors 
             duration-150 overflow-hidden'
             onClick={() => {
+              setYtLink({
+                contentID: "",
+                content_name: "",
+                members: [],
+                desc: "",
+                type: "yt"
+              })    
               setYtLinkOpened(false)
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -420,7 +596,76 @@ function App() {
           </button>
         </div>
         <span onClick={() => setCurrentPrevInteraction(0)}
-        className='absolute top-0 left-0 w-full h-full bg-black opacity-80'></span>
+        className='fixed top-0 left-0 w-full h-full bg-black opacity-80'></span>
+      </div>
+
+      <div className={`absolute top-0 left-0 w-full h-screen flex justify-center 
+      items-center ${contentModal.contentID.length > 0 ? "opacity-100 pointer-events-auto" 
+      : "opacity-0 pointer-events-none"} transition-opacity duration-150 z-[100]`}>
+
+        <div className='w-4/5 h-4/5 flex gap-5 md:flex-row flex-col relative z-40'>
+          <div className='text-white p-4 bg-emerald-600 rounded-lg
+          flex flex-col gap-5'>
+            <div>
+              <p>ContentID:</p>
+              <p>{contentModal.contentID}</p>
+            </div>
+            <div>
+              <p>Name:</p>
+              <p>{contentModal.content_name}</p>
+            </div>
+            <div>
+              <p>Description:</p>
+              <p>{contentModal.desc}</p>
+            </div>
+            <div>
+              <p>Members:</p>
+              {
+              contentModal.members.map((member:string, index:number) => {              
+                return (
+                  <p key={`content-member-${index}`}>{member}</p>
+                )
+              })
+            }
+            </div>          
+          </div>
+          {
+            contentModal.type != "yt" &&
+            contentModal.type != "mp4" &&
+            <Image clickable={false} source={contentModal.url} id={contentModal.contentID} alt={contentModal.content_name} />
+          }
+          {
+            contentModal.type === "mp4" &&
+            <VideoPlayer clickable={false} source={contentModal.url} id={contentModal.contentID} title={contentModal.content_name} />
+          }
+          {
+            contentModal.type === "yt" &&
+            <YtPlayer clickable={false}
+             source={contentModal.url} id={contentModal.contentID} />
+          }
+        </div>
+
+        <div className='absolute top-5 right-5 z-30'>  
+          <button className='bg-red-400 p-4 rounded-lg hover:bg-red-300 active:bg-red-500
+            border-2 border-red-600 hover:border-red-700 
+            active:border-red-500 transition-colors 
+            duration-150 overflow-hidden'
+            onClick={() => {
+              setContentModal({
+                contentID: "",
+                content_name: "",
+                desc: "",
+                members: [],
+                type: "",
+                url: "",
+              })    
+            }}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+        </div>
+        <span className='absolute top-0 left-0 w-full h-full bg-black opacity-80'></span>
       </div>
     </div>
   )
