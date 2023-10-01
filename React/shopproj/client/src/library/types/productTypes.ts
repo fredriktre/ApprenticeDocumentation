@@ -1,4 +1,3 @@
-
 export type Product = {
     blueprint_id: number,
     created_at: string,
