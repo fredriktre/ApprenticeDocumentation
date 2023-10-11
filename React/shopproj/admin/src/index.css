@@ -1,0 +1,149 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+.design-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+
+}
+
+.design-tool-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  gap: 1rem;
+
+  width: 80%;
+  height: 80%;
+
+}
+
+.assets-nav {
+  height: 100%;
+  width: 20%;
+  background-color: rgba(100, 100, 100, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.assets-nav .file-button {
+  position: relative;
+
+  width: 100%;
+  height: fit-content;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(150, 150, 150, 1);
+  
+  border-radius: 1rem;
+}
+
+.assets-nav .file-button input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.design-screen-container {
+  height: 100%;
+  width: 60%;
+  background-color: rgba(150, 150, 150, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.design-screen {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+}
+
+.design-screen .element {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.element-toolbar {
+  position: absolute;
+  top:0;
+  left: 0;
+  z-index: 2;
+
+  width: calc(100% - 0.2rem);
+  height: calc(100% - 0.2rem);
+
+  display: flex;
+  justify-content: right;
+  align-items: flex-start;
+
+  border: 0.1rem solid black;
+}
+
+.element-toolbar button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: unset;
+  border: unset;
+  padding: 0;
+  background-color: rgba(100, 100, 100, 1);
+}
+
+.element-toolbar button:hover {
+  background-color: rgba(50, 50, 50, 1);
+}
+
+.element-toolbar button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.element > img {
+  width: 100%;
+}
+
+.settings-nav {
+  height: 100%;
+  width: 20%;
+  background-color: rgba(100, 100, 100, 1);
+  border-radius: 1rem;
+  padding: 1rem;
+}
