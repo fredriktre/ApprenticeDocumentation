@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 
-type ElementType = {
+type ElementImage = {
+    type: string
     src: string,
     id: string,
     file: any,
@@ -8,18 +9,36 @@ type ElementType = {
     y: number,
     width: number,
 }
+type ElementText = {
+    type: string,
+    id: string,
+    x: number,
+    y: number,
+    text: string,
+    fontsize: number,
+}
 
 
 const Design = () => {
     const [currentProduct, setCurrentProduct] = useState();
-    const [elements, setElements] = useState<ElementType[]>([]);
+    const [elements, setElements] = useState<any[]>([]);
     const [isMouseMoving, setIsMouseMoving] = useState<boolean>(false);
     const [currentlyMovingSettings, setCurrentlyMovingSettings] = useState({
         id: "",
         startWidth: 0,
         mouseX: 0,
-        mouseY: 0
+        mouseY: 0,
+        offsetX: 0,
+        offsetY: 0,
     });    
+    const [resizing, setResizing] = useState<boolean>(false)
+    const [designScreenPlacement, setDesignScreenPlacement] = useState({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+    })
+    const [refresh, setRefresh] = useState<boolean>(false)
 
     const alphabetAndNumbers = [
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -27,10 +46,6 @@ const Design = () => {
         "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
         "u", "v", "w", "x", "y", "z"
     ];
-
-    useEffect(() => {
-        console.log(elements)
-    }, [elements])
 
     function makeID () {
         let ID = "E"
@@ -45,6 +60,7 @@ const Design = () => {
     const handleAddImage = async (event:any) => {
         const blob:any = await readFile(event.target.files[0])
         setElements((oldElements) => [...oldElements, {
+            type: "image",
             src: `${blob}`,
             id: makeID(),
             file: event.target.files[0],
@@ -64,37 +80,81 @@ const Design = () => {
         })
     }
 
-    const startElementResize = (id:string, event:any) => {
-        const currentElement = elements.filter((element:ElementType) => element.id === currentlyMovingSettings.id)[0];
-        
+    const startElementEditing = (id:string, event:any) => {
+        const currentElement = elements.filter((element:ElementImage) => element.id === id)[0];
         setIsMouseMoving(true);
+        
+        const bcr = event.target.getBoundingClientRect()
         
         setCurrentlyMovingSettings({
             id: id,
             startWidth: currentElement.width,
             mouseX: event.clientX,
-            mouseY: event.clientY
+            mouseY: event.clientY,
+            offsetY: (bcr.top - designScreenPlacement.y) - event.clientY,
+            offsetX: (bcr.left - designScreenPlacement.x) - event.clientX,
         })
+        setRefresh(!refresh)
     }
-    
+
     const handleMovement = (event:any) => {
-        if (isMouseMoving) {
+        if (isMouseMoving && resizing) {
             const oldArray = elements;
-            console.log(oldArray)
-            const currentElement = oldArray.filter((element:ElementType) => element.id === currentlyMovingSettings.id)[0];
-            const index = oldArray.findIndex((element:ElementType) => element.id === currentlyMovingSettings.id)
+            let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
+            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id)
             const newWidth = (currentlyMovingSettings.startWidth + event.clientX - currentlyMovingSettings.mouseX);
-            currentElement.width = newWidth;
-        }
+            currentElement.width = newWidth
+            oldArray[index] = currentElement
+            setElements(oldArray)
+            setRefresh(!refresh)
+        } else if (isMouseMoving && !resizing) {
+            const oldArray = elements;
+            let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
+            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id)
+            currentElement.x = (event.clientX + currentlyMovingSettings.offsetX)
+            currentElement.y = (event.clientY + currentlyMovingSettings.offsetY)
+            oldArray[index] = currentElement;
+            setElements(oldArray)
+            setRefresh(!refresh)
+        }   
     }
 
     const handleElementRemove = (id:string) => {
-
+        const newArray = elements.filter((element:ElementImage) => element.id != id);
+        setElements(newArray)
     }
 
-    const handleElementMove = (id:string, event:any) => {
-
+    const handleDesignScreenPos = (event:any) => {
+        if (designScreenPlacement.width === 0) {
+            const bcr = event.target.childNodes[0].getBoundingClientRect()
+            console.log(bcr)
+            setDesignScreenPlacement({
+                y: bcr.top,
+                x: bcr.left,
+                width: bcr.width,
+                height: bcr.height,
+            })
+        }
     }
+
+    const addTextBox = () => {
+        setElements((oldElements) => [...oldElements, {
+            type: "text",
+            id: makeID(),
+            x: 0,
+            y: 0,
+            text: "Write here",
+            fontsize: 18,
+        }])
+    }
+
+    const handleTextChange = (event:any, id:string) => {
+        
+    }
+
+    useEffect(() => {
+        console.log(elements)
+    }, [elements])
 
     return (
         <div className="design-page">
@@ -109,39 +169,122 @@ const Design = () => {
                             onChange={(event) => handleAddImage(event)} />
                         <p>Add Image from Desktop</p>
                     </div>
+                    <button className="button"
+                    onMouseDown={addTextBox}>
+                        Add Text
+                    </button>
                 </div>
         
-                <div className="design-screen-container"
-                onPointerMove={(event) => handleMovement(event)}>
+                <div className={`design-screen-container ${isMouseMoving ? "hide-cursor" : ""}`}
+                onMouseEnter={(event) => handleDesignScreenPos(event)}
+                onMouseMove={(event) => handleMovement(event)}
+                onMouseUp={() => {
+                    setIsMouseMoving(false)
+                    if (resizing) {
+                        setResizing(false)
+                    }
+                }}
+                >
                     <div className="design-screen">
                         {
-                            elements.map((element:ElementType, index:number) => (
-                                <div 
-                                className="element" 
-                                id={`${element.id}`} 
-                                key={`${element.id}${index}`}
-                                style={{
-                                    width: `${element.width}px`,
-                                }}>
-                                    <div className="element-toolbar">
-                                        <button
-                                        onPointerDown={() => handleElementRemove(element.id)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                        <button
-                                        onPointerDown={(event) => startElementResize(element.id, event)}
-                                        onPointerUp={(event) => setIsMouseMoving(false)}
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                                            </svg>
-                                        </button>
-                                    </div> 
-                                    <img src={element.src} />
-                                </div>
-                            ))
+                            elements.map((element:any, index:number) => {
+
+
+                                if (element.type === "image") {
+                                    return (
+                                        <div onMouseDown={(event) => startElementEditing(element.id, event)}
+                                        className="element" 
+                                        id={`${element.id}`} 
+                                        key={`${element.id}${index}`}
+                                        style={{
+                                            top: element.y,
+                                            left: element.x,
+                                            width: `${element.width}px`,
+                                        }}>
+                                            <div className={`element-toolbar ${currentlyMovingSettings.id === element.id && "moving"}`}>
+                                                <button
+                                                onMouseDown={() => {
+                                                    handleElementRemove(element.id)
+                                                    setResizing(false)
+                                                    setCurrentlyMovingSettings({
+                                                        id: "",
+                                                        startWidth: 0,
+                                                        mouseX: 0,
+                                                        mouseY: 0,
+                                                        offsetY: 0,
+                                                        offsetX: 0,
+                                                    })
+                                                }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                onMouseDown={(event) => {
+                                                    startElementEditing(element.id, event)
+                                                    setResizing(true)
+                                                }}
+                                                onMouseUp={() => {
+                                                    setIsMouseMoving(false)
+                                                    setResizing(false)
+                                                }}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                                    </svg>
+                                                </button>
+                                            </div> 
+                                            <img src={element.src} />
+                                        </div>
+                                    )
+                                } else if (element.type === "text") {
+                                    return (
+                                        <div onMouseDown={(event) => startElementEditing(element.id, event)}
+                                        className="element" 
+                                        id={`${element.id}`} 
+                                        key={`${element.id}${index}`}
+                                        style={{
+                                            top: element.y,
+                                            left: element.x,
+                                        }}>
+                                            <div className={`element-toolbar ${currentlyMovingSettings.id === element.id && "moving"}`}>
+                                                <button
+                                                onMouseDown={() => {
+                                                    handleElementRemove(element.id)
+                                                    setCurrentlyMovingSettings({
+                                                        id: "",
+                                                        startWidth: 0,
+                                                        mouseX: 0,
+                                                        mouseY: 0,
+                                                        offsetY: 0,
+                                                        offsetX: 0,
+                                                    })
+                                                }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
+                                                    </svg>
+                                                </button>
+                                            </div> 
+                                            <input type="text" value={element.text} onChange={(event) => handleTextChange(event, element.id)} />
+                                        </div>
+                                    )
+                                }
+
+                            }
+                                
+                            )
                         }
                     </div>
                 </div>

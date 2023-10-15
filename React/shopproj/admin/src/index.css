@@ -31,7 +31,6 @@ html, body {
 
   width: 100%;
   height: 100%;
-
 }
 
 .design-tool-container {
@@ -52,6 +51,11 @@ html, body {
   background-color: rgba(100, 100, 100, 1);
   border-radius: 1rem;
   padding: 1rem;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .assets-nav .file-button {
@@ -60,6 +64,8 @@ html, body {
   width: 100%;
   height: fit-content;
 
+  padding: 0.5rem 0;
+  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,6 +73,10 @@ html, body {
   background-color: rgba(150, 150, 150, 1);
   
   border-radius: 1rem;
+}
+.assets-nav .file-button p{
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .assets-nav .file-button input {
@@ -76,6 +86,26 @@ html, body {
   width: 100%;
   height: 100%;
   opacity: 0;
+}
+
+.assets-nav .button {
+  position: relative;
+
+  width: 100%;
+  height: fit-content;
+
+  padding: 0.5rem 0;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  background-color: rgba(150, 150, 150, 1);
+  
+  outline: unset;
+  border: unset;
+  border-radius: 1rem;
+  font-size: 1.5rem;
 }
 
 .design-screen-container {
@@ -91,6 +121,8 @@ html, body {
 
   width: 100%;
   height: 100%;
+
+  overflow: hidden;
 }
 
 .design-screen .element {
@@ -113,8 +145,13 @@ html, body {
   display: flex;
   justify-content: right;
   align-items: flex-start;
+  opacity: 0;
 
   border: 0.1rem solid black;
+}
+
+.element-toolbar.moving {
+  opacity: 1;
 }
 
 .element-toolbar button {
@@ -146,4 +183,8 @@ html, body {
   background-color: rgba(100, 100, 100, 1);
   border-radius: 1rem;
   padding: 1rem;
+}
+
+.hide-cursor {
+  cursor: none;
 }
