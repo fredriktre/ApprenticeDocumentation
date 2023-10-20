@@ -10,6 +10,7 @@ type ElementImage = {
     width: number,
 }
 type ElementText = {
+    font: string
     type: string,
     id: string,
     x: number,
@@ -37,6 +38,10 @@ const Design = () => {
         y: 0,
         width: 0,
         height: 0,
+    })
+    const [modalInfo, setModalInfo] = useState({
+        currentProviderID: 0,
+        open: false,
     })
     const [refresh, setRefresh] = useState<boolean>(false)
 
@@ -145,16 +150,105 @@ const Design = () => {
             y: 0,
             text: "Write here",
             fontsize: 18,
+            font: "'Roboto'",
         }])
     }
 
-    const handleTextChange = (event:any, id:string) => {
-        
+    const handleTextChange = async (event:any, id:string) => {
+        const oldArray = elements;
+        let currentElement = oldArray.filter((element:ElementText) => element.id === id)[0];
+        let index = oldArray.findIndex((element:ElementText) => element.id === id);
+        const text = event.target.value;
+        const newElement:ElementText = {
+            font: currentElement.font,
+            fontsize: currentElement.fontsize,
+            id: currentElement.id,
+            text: text,
+            type: currentElement.type,
+            x: currentElement.x,
+            y: currentElement.y
+        }
+        console.log(index)
+
+        oldArray[index] = newElement;
+
+        console.log(newElement)
+        console.log(oldArray[index])
+
+        setElements(oldArray)
+        setRefresh(!refresh)
     }
 
-    useEffect(() => {
-        console.log(elements)
-    }, [elements])
+    // const getProviders = async () => {
+    //     console.log("start attempt")
+
+    //     try {
+
+    //         const res = await fetch("/api/getproviders", {
+    //             method: "GET",
+    //         });
+    //         const data = await res.json();
+    //         const providers = data.body
+    //         console.log(data)
+
+    //         for (let i = 0; i < providers.length; i++) {
+    //             if (providers[i].location.country != "US" && providers[i].location.country != "CN") {
+    //                 console.log("EU location")
+    //                 console.log(providers[i].location.country)
+    //                 const res = await fetch(`/api/getprovider/${providers[i].id}`, {
+    //                     method: "GET",
+    //                 });
+    //                 const data = await res.json();
+    //                 data.body.blueprints
+    //             } else {
+    //                 console.log("!EU location")
+    //             }
+    //         }
+
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    const getBlueprints = async () => {
+        console.log("start attempt")
+
+        try {
+
+            const res = await fetch("/api/getprovider/30", {
+                method: "GET",
+            });
+            const data = await res.json();
+            const blueprints = data.body.blueprints
+            console.log(data)
+            const variants:any[] = [];
+            for (let i = 0; i < blueprints.length; i++) {
+                const variant = await getVariants(blueprints[i].id);
+                // variants.push(variant);
+            }
+
+            // console.log(variants);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getVariants = async (id:number) => {
+        console.log("start attempt")
+
+        try {
+
+            const res = await fetch(`/api/getblueprint/${id}/30`, {
+                method: "GET",
+            });
+            const data = await res.json();
+
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className="design-page">
@@ -172,6 +266,14 @@ const Design = () => {
                     <button className="button"
                     onMouseDown={addTextBox}>
                         Add Text
+                    </button>
+                    {/* <button className="button"
+                    onMouseDown={getProviders}>
+                        getproviders
+                    </button> */}
+                    <button className="button"
+                    onMouseDown={getBlueprints}>
+                        get blueprints
                     </button>
                 </div>
         
@@ -264,20 +366,16 @@ const Design = () => {
                                                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                                     </svg>
                                                 </button>
-                                                <button
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                    </svg>
-                                                </button>
-                                                <button
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15" />
-                                                    </svg>
-                                                </button>
                                             </div> 
-                                            <input type="text" value={element.text} onChange={(event) => handleTextChange(event, element.id)} />
+                                            <input 
+                                                className={`${currentlyMovingSettings.id === element.id || element.text.length < 1 ? "moving" : ""}`}
+                                                style={{
+                                                    fontSize: `${element.fontsize}px`,
+                                                    fontFamily: `${element.font}`,
+                                                }}
+                                                type="text" 
+                                                value={element.text} 
+                                                onChange={(event) => handleTextChange(event, element.id)} />
                                         </div>
                                     )
                                 }
@@ -294,6 +392,14 @@ const Design = () => {
                 </div>
             </div>
 
+            <div className={`blueprint-modal ${modalInfo.open === true && "open"}`}>
+                <div>
+
+                </div>
+                <div>
+                    
+                </div>
+            </div>
         </div>
     )
 }

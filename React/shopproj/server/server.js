@@ -142,6 +142,113 @@ app.get(`${server_url_starter}/getproduct/:id`, (req, response) => {
 
 })
 
+app.get(`${server_url_starter}/getprovider/:id`, (req, response) => {
+    console.log("attempting get request on ID: " + req.url.split("/")[3]);
+    
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/catalog/print_providers/${req.url.split("/")[3]}.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
+        }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const product = JSON.parse(Buffer.concat(data).toString());
+                
+                response.status(200).json({message: "api successfully retrieved product: " + req.url.split("/")[3], body: product})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
+
+})
+
+app.get(`${server_url_starter}/getblueprint/:bid/:pid`, (req, response) => {
+    console.log("attempting get request on ID: " + req.url.split("/")[3]);
+        console.log(req.url.split("/")[4])
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/catalog/blueprints/${req.url.split("/")[3]}/print_providers/${req.url.split("/")[4]}/variants.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
+        }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const product = JSON.parse(Buffer.concat(data).toString());
+                
+                response.status(200).json({message: "api successfully retrieved product: " + req.url.split("/")[3], body: product})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
+
+})
+
+app.get(`${server_url_starter}/getproviders`, (req, response) => {
+    console.log("attempting get request on ID: " + req.url.split("/")[3]);
+    
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/catalog/print_providers.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
+        }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const product = JSON.parse(Buffer.concat(data).toString());
+                
+                response.status(200).json({message: "api successfully retrieved product: " + req.url.split("/")[3], body: product})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
+})
+
 app.listen(port, () => {
     console.log("Server started on port: " + port)
 })

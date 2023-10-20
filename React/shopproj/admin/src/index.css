@@ -1,3 +1,11 @@
+/*Roboto 'Roboto'*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap');
+/*Pixelify Sans 'Pixelify Sans'*/
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+/*Lora 'Lora'*/
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+/*Josefin Sans 'Josefin Sans'*/
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -69,6 +77,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 
   background-color: rgba(150, 150, 150, 1);
   
@@ -173,8 +182,30 @@ html, body {
   height: 1.5rem;
 }
 
+.element-toolbar button p {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  height: 1.5rem;
+  width: 1.5rem;
+  font-size: 1rem;
+}
+
 .element > img {
   width: 100%;
+}
+
+.element > input {
+  position: relative;
+  z-index: 10;
+  background-color: unset;
+  outline: unset;
+  border: 1px solid transparent;
+  margin: 1rem;
+}
+
+.element > input.moving {
+  border: 1px solid black;
 }
 
 .settings-nav {
@@ -187,4 +218,12 @@ html, body {
 
 .hide-cursor {
   cursor: none;
+}
+
+.blueprint-modal {
+  
+}
+
+.blueprint-modal.open {
+
 }
