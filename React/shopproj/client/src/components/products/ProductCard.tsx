@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Product, ProductImage, ProductOptions } from "../../library/types/productTypes"
+import { Product, ProductImage } from "../../library/types/productTypes"
 import { Link } from "react-router-dom";
 
 interface Props {

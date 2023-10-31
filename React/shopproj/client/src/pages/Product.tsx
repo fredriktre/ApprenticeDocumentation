@@ -33,7 +33,7 @@ const Product = () => {
       });
       const data = await res.json();
       const product:ProductType = data.body;
-      console.log(product)
+      console.log(product);
       setCurrentProduct(product);
 
     } catch (error) {

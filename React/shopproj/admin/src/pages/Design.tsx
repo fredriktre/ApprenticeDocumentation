@@ -43,6 +43,8 @@ const Design = () => {
         currentProviderID: 0,
         open: false,
     })
+    const [variantsMenuOpen, setVariantsMenuOpen] = useState<boolean>(false)
+    const [activeDesignColors, setActiveDesignColors] = useState<any[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false)
 
     const alphabetAndNumbers = [
@@ -89,7 +91,7 @@ const Design = () => {
         const currentElement = elements.filter((element:ElementImage) => element.id === id)[0];
         setIsMouseMoving(true);
         
-        const bcr = event.target.getBoundingClientRect()
+        const bcr = event.target.getBoundingClientRect();
         
         setCurrentlyMovingSettings({
             id: id,
@@ -98,47 +100,47 @@ const Design = () => {
             mouseY: event.clientY,
             offsetY: (bcr.top - designScreenPlacement.y) - event.clientY,
             offsetX: (bcr.left - designScreenPlacement.x) - event.clientX,
-        })
-        setRefresh(!refresh)
+        });
+        setRefresh(!refresh);
     }
 
     const handleMovement = (event:any) => {
         if (isMouseMoving && resizing) {
             const oldArray = elements;
             let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
-            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id)
+            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id);
             const newWidth = (currentlyMovingSettings.startWidth + event.clientX - currentlyMovingSettings.mouseX);
-            currentElement.width = newWidth
-            oldArray[index] = currentElement
-            setElements(oldArray)
-            setRefresh(!refresh)
+            currentElement.width = newWidth;
+            oldArray[index] = currentElement;
+            setElements(oldArray);
+            setRefresh(!refresh);
         } else if (isMouseMoving && !resizing) {
             const oldArray = elements;
             let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
-            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id)
-            currentElement.x = (event.clientX + currentlyMovingSettings.offsetX)
-            currentElement.y = (event.clientY + currentlyMovingSettings.offsetY)
+            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id);
+            currentElement.x = (event.clientX + currentlyMovingSettings.offsetX);
+            currentElement.y = (event.clientY + currentlyMovingSettings.offsetY);
             oldArray[index] = currentElement;
-            setElements(oldArray)
-            setRefresh(!refresh)
+            setElements(oldArray);
+            setRefresh(!refresh);
         }   
     }
 
     const handleElementRemove = (id:string) => {
         const newArray = elements.filter((element:ElementImage) => element.id != id);
-        setElements(newArray)
+        setElements(newArray);
     }
 
     const handleDesignScreenPos = (event:any) => {
         if (designScreenPlacement.width === 0) {
-            const bcr = event.target.childNodes[0].getBoundingClientRect()
-            console.log(bcr)
+            const bcr = event.target.childNodes[0].getBoundingClientRect();
+            console.log(bcr);
             setDesignScreenPlacement({
                 y: bcr.top,
                 x: bcr.left,
                 width: bcr.width,
                 height: bcr.height,
-            })
+            });
         }
     }
 
@@ -151,7 +153,7 @@ const Design = () => {
             text: "Write here",
             fontsize: 18,
             font: "'Roboto'",
-        }])
+        }]);
     }
 
     const handleTextChange = async (event:any, id:string) => {
@@ -168,15 +170,15 @@ const Design = () => {
             x: currentElement.x,
             y: currentElement.y
         }
-        console.log(index)
+        console.log(index);
 
         oldArray[index] = newElement;
 
-        console.log(newElement)
-        console.log(oldArray[index])
+        console.log(newElement);
+        console.log(oldArray[index]);
 
-        setElements(oldArray)
-        setRefresh(!refresh)
+        setElements(oldArray);
+        setRefresh(!refresh);
     }
 
     // const getProviders = async () => {
@@ -211,7 +213,7 @@ const Design = () => {
     // }
 
     const getBlueprints = async () => {
-        console.log("start attempt")
+        console.log("start attempt");
 
         try {
 
@@ -219,8 +221,8 @@ const Design = () => {
                 method: "GET",
             });
             const data = await res.json();
-            const blueprints = data.body.blueprints
-            console.log(data)
+            const blueprints = data.body.blueprints;
+            console.log(data);
             const variants:any[] = [];
             for (let i = 0; i < blueprints.length; i++) {
                 const variant = await getVariants(blueprints[i].id);
@@ -230,12 +232,12 @@ const Design = () => {
             // console.log(variants);
 
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
     const getVariants = async (id:number) => {
-        console.log("start attempt")
+        console.log("start attempt");
 
         try {
 
@@ -244,14 +246,18 @@ const Design = () => {
             });
             const data = await res.json();
 
-            console.log(data)
+            console.log(data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
+    const handleVariantPicks = () => {
+
+    }
+
     return (
-        <div className="design-page">
+        <main className="design-page">
 
             <div className="design-tool-container">
                 <div className="assets-nav">
@@ -275,6 +281,19 @@ const Design = () => {
                     onMouseDown={getBlueprints}>
                         get blueprints
                     </button>
+                    <button className="button"
+                    onMouseDown={() => setVariantsMenuOpen(true)}>
+                        variants
+                    </button>
+                    <select>
+                        {
+                            activeDesignColors.map((color:any, index:number) => (
+                                <option value={color} key={index}>
+                                    {color}
+                                </option>
+                            ))
+                        }
+                    </select>
                 </div>
         
                 <div className={`design-screen-container ${isMouseMoving ? "hide-cursor" : ""}`}
@@ -392,15 +411,21 @@ const Design = () => {
                 </div>
             </div>
 
+            <div className={`variant-modal ${variantsMenuOpen ? "open" : ""}`}>
+                {
+
+                    <div>
+                        <h4></h4>
+                    </div>
+
+                }
+            </div>
             <div className={`blueprint-modal ${modalInfo.open === true && "open"}`}>
                 <div>
 
                 </div>
-                <div>
-                    
-                </div>
             </div>
-        </div>
+        </main>
     )
 }
 

@@ -16,12 +16,12 @@ function App() {
     image: ""
   },);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const devlangController = useAnimation()
-  const frameworksController = useAnimation()
-  const librariesController = useAnimation()
-  const languagesController = useAnimation()
-  const interestsController = useAnimation()
-  const workinterestsController = useAnimation()
+  const devlangController = useAnimation();
+  const frameworksController = useAnimation();
+  const librariesController = useAnimation();
+  const languagesController = useAnimation();
+  const interestsController = useAnimation();
+  const workinterestsController = useAnimation();
 
   useEffect(() => {
     devlangController.start("hidden");
