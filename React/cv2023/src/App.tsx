@@ -1,35 +1,46 @@
 import { useEffect, useState } from 'react'
-// import "./s1.css"
-import "./s2.css"
 import { motion, useAnimation } from 'framer-motion'
 
 function App() {
   const [currentHoveredButton, setCurrentHoveredButton] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [currentPagePart, setCurrentPagePart] = useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [portfolioModalContent, setPortfolioModalContent] = useState({
     name: "",
     desc: "",
     tags: [],
     link: "",
-    image: ""
+    images: []
   },);
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const devlangController = useAnimation();
   const frameworksController = useAnimation();
   const librariesController = useAnimation();
   const languagesController = useAnimation();
-  const interestsController = useAnimation();
-  const workinterestsController = useAnimation();
+  const recreationalController = useAnimation();
+  const workrelatedController = useAnimation();
+
+  // const firebaseConfig = {
+  //   apiKey: "AIzaSyDRSOzyxhr1RhxXhMj73Kh4BhYW2fC661g",
+  //   authDomain: "fstportfolio.firebaseapp.com",
+  //   projectId: "fstportfolio",
+  //   storageBucket: "fstportfolio.appspot.com",
+  //   messagingSenderId: "121558793079",
+  //   appId: "1:121558793079:web:74a21e41a90fadb6197f72"
+  // };
+
+  // const app = initializeApp(firebaseConfig);
 
   useEffect(() => {
     devlangController.start("hidden");
     frameworksController.start("hidden");
     librariesController.start("hidden");
     languagesController.start("hidden");
-    interestsController.start("hidden");
-    workinterestsController.start("hidden");
+    recreationalController.start("hidden");
+    workrelatedController.start("hidden");
 
     if (currentPage === 3) {
       if (currentPagePart === 1) {
@@ -41,11 +52,11 @@ function App() {
       } else if (currentPagePart === 4) {
         languagesController.start("visible");
       }
-    } else if (currentPage === 6) {
+    } else if (currentPage === 5) {
       if (currentPagePart === 10) {
-        interestsController.start("visible");
+        recreationalController.start("visible");
       } else if (currentPagePart === 11) {
-        workinterestsController.start("visible");
+        workrelatedController.start("visible");
       }
     }
 
@@ -72,10 +83,6 @@ function App() {
       name: "Portfolio",
       image: "/assets/portfolio.png"
     },
-    // {
-    //   name: "AIImages",
-    //   image: "/assets/aistuff.png"
-    // },
     {
       name: "Freetime",
       image: "/assets/freetime.png"
@@ -118,10 +125,6 @@ function App() {
       confidence: 2
     },
     {
-      name: "Svelte.js",
-      confidence: 0
-    },
-    {
       name: "Next.js",
       confidence: 6
     },
@@ -130,6 +133,10 @@ function App() {
     {
       name: "Unity",
       confidence: 1
+    },
+    {
+      name: "Unreal",
+      confidence: 2
     },
     {
       name: "Tailwind",
@@ -154,14 +161,10 @@ function App() {
       confidence: 1
     },
   ]
-  const interests = [
+  const recreational = [
     {
       name: "Gaming",
-      like: 10
-    },
-    {
-      name: "AI image generation",
-      like: 6
+      like: 8
     },
     {
       name: "Music | Listening",
@@ -173,25 +176,33 @@ function App() {
     },
     {
       name: "Exercise",
-      like: 8
+      like: 5
+    },
+    {
+      name: "Piano",
+      like: 4
     },
   ]
-  const workinterests = [
+  const workrelated = [
     {
       name: "Front - End Development",
       like: 6
     },
     {
       name: "Back - End Development",
-      like: 5
-    },
-    {
-      name: "Email - Development",
       like: 4
     },
     {
+      name: "Email - Development",
+      like: 3
+    },
+    {
       name: "Game - Development",
-      like: 7
+      like: 6
+    },
+    {
+      name: "3D - Modelling",
+      like: 5
     },
   ]
 
@@ -199,9 +210,37 @@ function App() {
     {
       name: "TrefTravelVlog",
       desc: "This project was something I worked on to learn Next.js, and to have somewhere to blog my trip to Japan. There were a lot of small issues popping up, and some responsiveness problems. I did learn a lot though, and will probably take some inspiration from this project in the future.",
-      tags: ["vlog", "blog", "Next.js", "React.js", "Front-end"],
+      tags: ["Vlog", "Blog", "Next.js", "React.js", "MongoDB", "Front-end"],
       link: "https://treftravelvlog.vercel.app",
-      image: "/assets/treftravelvlog.webp"
+      images: ["/assets/treftravelvlog.webp", "/assets/treftravelvlog2.webp"]
+    },
+    {
+      name: "Passgen",
+      desc: "This very small project where I was trying to understand how to use loops and variables to quickly create a set of strings depending on certain conditions.",
+      tags: ["Utility", "Generator", "Front-end"],
+      link: "https://passgen-a833e.web.app",
+      images: ["/assets/passgen.webp", "/assets/passgen2.webp"]
+    },
+    {
+      name: "Boredhub",
+      desc: "This was a 4 hour project where I made a cardgame with a couple animations and interchangable images.",
+      tags: ["Game", "React.js", "Front-end", "Algorithms"],
+      link: "https://boredhub.web.app",
+      images: ["/assets/boredhub.webp", "/assets/boredhub2.webp"]
+    },
+    {
+      name: "Querymessenger",
+      desc: "This is one of my first proper projects using React.js and firebase",
+      tags: ["Chat", "React.js", "Front-end", "Firebase"],
+      link: "https://querymessenger.web.app",
+      images: ["/assets/querymessenger.webp"]
+    },
+    {
+      name: "Blender | Donut",
+      desc: "This is my first 3D model made with blender, following Blender Guru's tutorial. The Open button directs you to the tutorial. I also imported it into an Unreal Engine project, but the sprinkles didn't make it.",
+      tags: ["Art", "3D-modelling", "Blender"],
+      link: "https://www.youtube.com/playlist?list=PLjEaoINr3zgFX8ZsChQVQsuDSjEqdWMAD",
+      images: ["/assets/donut.webp", "/assets/donutwires.webp"]
     },
   ]
   
@@ -224,6 +263,22 @@ function App() {
     }, 10)
   }
 
+  const handlePageShift = (value:boolean, length:number) => {
+    if (value) {
+
+      if (currentImage < length) {
+        setCurrentImage(currentImage + 1)
+      }
+      
+    } else {
+      
+      if (currentImage > 0) {
+        setCurrentImage(currentImage - 1)
+      }
+
+    }
+  }
+
   return (
     <div className='home-page'>
       <nav className='scrollbar'>
@@ -234,7 +289,7 @@ function App() {
                   setCurrentPage(index)
                   if (index === 3) {
                     setCurrentPagePart(1)
-                  } else if (index === 6) {
+                  } else if (index === 5) {
                     setCurrentPagePart(10)
                   } else {
                     setCurrentPagePart(0)
@@ -259,6 +314,16 @@ function App() {
       </nav>
       
       <div className='content-container'>
+        <div className={`content-wrapper card-wrapper ${currentPage === 0 ? "active" : ""}`}>
+          <section className='home-content'>
+            <h1>Hi, my name is Fredrik Sjøli Trevland.</h1>
+            <h2>And I'm a software developer from Norway.</h2>
+            <p>And my goal is to create new and amazing things!</p>
+            {/* <button onPointerDown={() => setVideoModalOpen(true)}>
+              More about me
+            </button> */}
+          </section>
+        </div>
         <div className={`content-wrapper card-wrapper ${currentPage === 1 ? "active" : ""}`}>
           <div>
             <div>
@@ -314,7 +379,7 @@ function App() {
             <div>
               <h1>KGH</h1>
               <p>June 2022 -{">"} August 2022</p>
-              <p>BLANK</p>
+              <p>Customs Process Administrator</p>
             </div>
             {/* <button>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -514,7 +579,13 @@ function App() {
         
         <div className={`content-wrapper  ${currentPage === 4 ? "active" : ""}`}>
         
-          <div className='auto-grid'>
+          <div className='auto-grid scrollbar'>
+            <a 
+              className='github-btn'
+              href='https://github.com/fredriktre/ApprenticeDocumentation' 
+              target='_blank'>
+              <p>Github</p>
+            </a>
             {
               Portfolio.map((portfolioPiece:any, index:number) => {
 
@@ -525,11 +596,11 @@ function App() {
                       desc: portfolioPiece.desc,
                       tags: portfolioPiece.tags,
                       link: portfolioPiece.link,
-                      image: portfolioPiece.image
-                    })
+                      images: portfolioPiece.images
+                    });
                     setModalOpen(true);
                   }}>
-                    <img src={portfolioPiece.image} />
+                    <img src={portfolioPiece.images[0]} />
                   </div>
                 )
               })
@@ -538,15 +609,15 @@ function App() {
         
         </div>
         
-        <div className={`content-wrapper  ${currentPage === 6 ? "active" : ""}`}>
+        <div className={`content-wrapper  ${currentPage === 5 ? "active" : ""}`}>
           <div className='pagepartbtn-wrapper'>
             <button
               onClick={() => setCurrentPagePart(10)}>
-              Interests
+              Recreational
             </button>
             <button
               onClick={() => setCurrentPagePart(11)}>
-              Work Interests
+              Work Related
             </button>
             <button 
               onClick={() => setCurrentPagePart(12)}>
@@ -558,7 +629,7 @@ function App() {
           <div className='card-container'>
             <div className={`card-wrapper ${currentPagePart === 10 ? "cactive" : ""} scrollbar`}>
               {
-                interests.map((interest:any, index:number) => {
+                recreational.map((interest:any, index:number) => {
 
                   return (
                     <div key={`${interest.name}-${index}`}>
@@ -573,8 +644,8 @@ function App() {
                           visible: { width: 12 + interest.like * 10 }
                         }}
                         initial="hidden"
-                        animate={interestsController}
-                        transition={{ duration: 1, delay: 0.2 }}
+                        animate={recreationalController}
+                        transition={{ ease: "easeInOut", duration: 1, delay: 0.2 }}
                         className='skill-meter-fg'
                         ></motion.span>
                       </div>
@@ -585,7 +656,7 @@ function App() {
             </div>
             <div className={`card-wrapper ${currentPagePart === 11 ? "cactive" : ""} scrollbar`}>
               {
-                workinterests.map((interest:any, index:number) => {
+                workrelated.map((interest:any, index:number) => {
 
                   return (
                     <div key={`${interest.name}-${index}`}>
@@ -600,8 +671,8 @@ function App() {
                           visible: { width: 12 + interest.like * 10 }
                         }}
                         initial="hidden"
-                        animate={workinterestsController}
-                        transition={{ duration: 1, delay: 0.2 }}
+                        animate={workrelatedController}
+                        transition={{ ease: "easeInOut", duration: 1, delay: 0.2 }}
                         className='skill-meter-fg'
                         ></motion.span>
                       </div>
@@ -614,22 +685,22 @@ function App() {
               <div>
                 <div>
                   <h2>Freetime</h2>
-                  <p>This section covers my interests, activities and similar stuff to that.</p>
+                  <p>This section covers my recreational, activities and similar stuff to that.</p>
                 </div>
               </div>
               <div>
                 <div>
-                  <h2>Interests</h2>
+                  <h2>recreational</h2>
                   <p>
-                    This part shows interests that I have. 
+                    This part shows recreational that I have. 
                   </p>
                 </div>
               </div>
               <div>
                 <div>
-                  <h2>Work Interests</h2>
+                  <h2>Work related</h2>
                   <p>
-                    This part shows interests that I have related to my work. 
+                    This part shows recreational that I have related to my work. 
                   </p>
                 </div>
               </div>
@@ -639,7 +710,67 @@ function App() {
       </div>
 
       <div className={`info-modal ${modalOpen ? "active" : ""}`}>
-
+        <div className={`image-wrapper`}>          
+          <button className={`left ${currentImage > 0 ? "visible" : ""}`}
+            onPointerDown={() => handlePageShift(false, portfolioModalContent.images.length - 1)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+          {
+            portfolioModalContent.images.map((image:string, index:number) => (
+              <img className={`${currentImage === index ? "visible" : ""}`}
+                src={image} 
+                key={index} 
+                alt={`${index}`} />
+            ))
+          }
+          <button className={`right ${currentImage < portfolioModalContent.images.length - 1 ? "visible" : ""}`}
+            onPointerDown={() => handlePageShift(true, portfolioModalContent.images.length - 1)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
+        <div className={`content`}>
+          <h1>{portfolioModalContent.name}</h1>
+          <p>{portfolioModalContent.desc}</p>
+          <div className='tags-wrapper'>
+            {
+              portfolioModalContent.tags.map((tag:string, index:number) => (
+                <div key={index}>
+                  <p>{tag}</p>
+                </div>
+              ))
+            }
+          </div>
+          {
+            portfolioModalContent.link.length > 0 &&
+            <a href={portfolioModalContent.link} target='_blank'>Open</a>
+          }
+        </div>
+        <span 
+          onPointerDown={() => {
+            setPortfolioModalContent({
+              name: "",
+              desc: "",
+              tags: [],
+              link: "",
+              images: []
+            });
+            setCurrentImage(0);
+            setModalOpen(false);
+          }}
+        ></span>
+      </div>
+      <div className={`video-modal ${videoModalOpen ? "active" : ""}`}>
+        <span 
+          onPointerDown={() => {            
+            setVideoModalOpen(false);
+          }}
+        ></span>
       </div>
       <span></span>
     </div>

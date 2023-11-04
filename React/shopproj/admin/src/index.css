@@ -32,7 +32,9 @@ html, body {
   height: 100vh;
 }
 
-
+button {
+  cursor: pointer;
+}
 
 .design-page {
   display: flex;
@@ -222,10 +224,105 @@ html, body {
   cursor: none;
 }
 
-.blueprint-modal {
-  
+.close-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 101;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 100%;
+  padding: 0.5rem;
+  background-color: #ffffff;
+  color: #000000;
+
+  outline: unset;
+  border: unset;
+
+  transition: 0.25s;
 }
 
-.blueprint-modal.open {
+.close-btn:hover {
+  background-color: #aaaaaa;
+}
 
+.close-btn svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.blueprints-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 100%;
+  height: 100dvh;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: 0.25s
+}
+
+.blueprints-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.blueprints-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(auto-fit, 1fr));
+
+  width: 80%;
+  height: 80%;
+
+  overflow: hidden;
+
+  border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.blueprints-modal-grid .grid-item {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.blueprints-modal-grid .grid-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+  pointer-events: none;
+  
+  transition: 0.25s;
+}
+
+.blueprints-modal-grid .grid-item img.shown {
+  opacity: 1;
+}
+
+.blueprints-modal span {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.5);
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 type ElementImage = {
     type: string
@@ -19,9 +19,13 @@ type ElementText = {
     fontsize: number,
 }
 
+type ProviderData = {
+    provider: number,
+    title: string,
+    blueprints: any[]
+}
 
-const Design = () => {
-    const [currentProduct, setCurrentProduct] = useState();
+const Design = () => {    
     const [elements, setElements] = useState<any[]>([]);
     const [isMouseMoving, setIsMouseMoving] = useState<boolean>(false);
     const [currentlyMovingSettings, setCurrentlyMovingSettings] = useState({
@@ -39,12 +43,22 @@ const Design = () => {
         width: 0,
         height: 0,
     })
-    const [modalInfo, setModalInfo] = useState({
-        currentProviderID: 0,
-        open: false,
+    const [providerData, setProviderData] = useState<ProviderData>({
+        provider: 30,
+        title: "",
+        blueprints: [],
     })
-    const [variantsMenuOpen, setVariantsMenuOpen] = useState<boolean>(false)
-    const [activeDesignColors, setActiveDesignColors] = useState<any[]>([]);
+    const [blueprintData, setBlueprintData] = useState({
+        brand: "",
+        id: 0,
+        images: [],
+        model: "",
+        title: "",
+    }) 
+    const [variantsData, setVariantsData] = useState({
+
+    })
+    const [blueprintsMenuOpen, setBlueprintsMenuOpen] = useState<boolean>(false)
     const [refresh, setRefresh] = useState<boolean>(false)
 
     const alphabetAndNumbers = [
@@ -221,14 +235,34 @@ const Design = () => {
                 method: "GET",
             });
             const data = await res.json();
-            const blueprints = data.body.blueprints;
             console.log(data);
-            const variants:any[] = [];
-            for (let i = 0; i < blueprints.length; i++) {
-                const variant = await getVariants(blueprints[i].id);
-                // variants.push(variant);
-            }
 
+            const newBlueprints:any[] = [];
+
+            data.body.blueprints.forEach((element:any) => {
+                console.log(element)
+                newBlueprints.push({
+                    brand: element.brand,
+                    id: element.id,
+                    images: element.images,
+                    model: element.model,
+                    title: element.title,
+                })
+            });
+
+            setProviderData({
+                provider: providerData.provider,
+                title: data.body.title,
+                blueprints: newBlueprints
+            })
+
+            // const variants:any[] = [];
+            // for (let i = 0; i < blueprints.length; i++) {
+            //     if (blueprints[i].id < 5000) {
+            //         const variant = await getVariants(blueprints[i].id);
+            //         variants.push(variant);
+            //     }
+            // }
             // console.log(variants);
 
         } catch (error) {
@@ -236,24 +270,20 @@ const Design = () => {
         }
     }
 
-    const getVariants = async (id:number) => {
-        console.log("start attempt");
-
-        try {
-
-            const res = await fetch(`/api/getblueprint/${id}/30`, {
-                method: "GET",
-            });
-            const data = await res.json();
-
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const handleVariantPicks = () => {
-
+    const getVariants = (id:number) => {
+        return new Promise(async (resolve:any) => {            
+                    try {
+            
+                        const res = await fetch(`/api/getblueprint/${id}/30`, {
+                            method: "GET",
+                        });
+                        const data = await res.json();
+            
+                        resolve(data)
+                    } catch (error) {
+                        console.log(error);
+                    }
+        })
     }
 
     return (
@@ -267,7 +297,7 @@ const Design = () => {
                             accept="image/png, image/jpg"
                             multiple={false}
                             onChange={(event) => handleAddImage(event)} />
-                        <p>Add Image from Desktop</p>
+                        <p>Add Image</p>
                     </div>
                     <button className="button"
                     onMouseDown={addTextBox}>
@@ -282,18 +312,9 @@ const Design = () => {
                         get blueprints
                     </button>
                     <button className="button"
-                    onMouseDown={() => setVariantsMenuOpen(true)}>
-                        variants
+                    onMouseDown={() => setBlueprintsMenuOpen(true)}>
+                        {blueprintData.id != 0 ? `${blueprintData.title}` : "Pick Blueprint"}
                     </button>
-                    <select>
-                        {
-                            activeDesignColors.map((color:any, index:number) => (
-                                <option value={color} key={index}>
-                                    {color}
-                                </option>
-                            ))
-                        }
-                    </select>
                 </div>
         
                 <div className={`design-screen-container ${isMouseMoving ? "hide-cursor" : ""}`}
@@ -410,20 +431,43 @@ const Design = () => {
         
                 </div>
             </div>
+            <div className={`blueprints-modal ${blueprintsMenuOpen ? "open" : ""}`}>
 
-            <div className={`variant-modal ${variantsMenuOpen ? "open" : ""}`}>
-                {
+                <div className={`blueprints-modal-grid`}>
+                    {
+                        providerData.blueprints.map((blueprint:any, index:number) => (
+                            <div
+                                className="grid-item"
+                                onPointerDown={() => setBlueprintData({
+                                    brand: blueprint.brand,
+                                    id: blueprint.id,
+                                    images: blueprint.images,
+                                    model: blueprint.model,
+                                    title: blueprint.title,
+                                })}>
+                                <button>
 
-                    <div>
-                        <h4></h4>
-                    </div>
+                                </button>
+                                {
+                                    blueprint.images.map((image:string, index:number) => (
+                                        <img src={image} alt={`${blueprint.id}-productimage-${index}`}
+                                        className={`shown`} />
+                                    ))
+                                }
+                                <button>
 
-                }
-            </div>
-            <div className={`blueprint-modal ${modalInfo.open === true && "open"}`}>
-                <div>
-
+                                </button>
+                            </div>
+                        ))
+                    }
                 </div>
+            
+                <button className="close-btn" onPointerDown={() => setBlueprintsMenuOpen(false)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+                <span></span>
             </div>
         </main>
     )
