@@ -401,7 +401,7 @@ function App() {
           </div>
         </div>
         <div className={`content-wrapper  ${currentPage === 3 ? "active" : ""}`}>
-          <div className='pagepartbtn-wrapper'>
+          <div className='pagepartbtn-wrapper scrollbar'>
             <button
               onClick={() => setCurrentPagePart(1)}>
               Dev - Languages
@@ -610,7 +610,7 @@ function App() {
         </div>
         
         <div className={`content-wrapper  ${currentPage === 5 ? "active" : ""}`}>
-          <div className='pagepartbtn-wrapper'>
+          <div className='pagepartbtn-wrapper scrollbar'>
             <button
               onClick={() => setCurrentPagePart(10)}>
               Recreational
@@ -685,14 +685,14 @@ function App() {
               <div>
                 <div>
                   <h2>Freetime</h2>
-                  <p>This section covers my recreational, activities and similar stuff to that.</p>
+                  <p>This section covers my recreational activities and work activities.</p>
                 </div>
               </div>
               <div>
                 <div>
                   <h2>recreational</h2>
                   <p>
-                    This part shows recreational that I have. 
+                    This part shows recreational activities that I like, and how much I like doing those things on a 0 -{'>'} 10 scale
                   </p>
                 </div>
               </div>
@@ -700,7 +700,7 @@ function App() {
                 <div>
                   <h2>Work related</h2>
                   <p>
-                    This part shows recreational that I have related to my work. 
+                    This part shows work-related activities that I do and and how interesting I find them
                   </p>
                 </div>
               </div>

@@ -22,7 +22,15 @@ type ElementText = {
 type ProviderData = {
     provider: number,
     title: string,
-    blueprints: any[]
+    blueprints: BlueprintType[]
+}
+
+type BlueprintType = {
+    brand: string,
+    id: number,
+    images: string[],
+    model: string,
+    title: string
 }
 
 const Design = () => {    
@@ -48,7 +56,7 @@ const Design = () => {
         title: "",
         blueprints: [],
     })
-    const [blueprintData, setBlueprintData] = useState({
+    const [blueprintData, setBlueprintData] = useState<BlueprintType>({
         brand: "",
         id: 0,
         images: [],
@@ -59,6 +67,10 @@ const Design = () => {
 
     })
     const [blueprintsMenuOpen, setBlueprintsMenuOpen] = useState<boolean>(false)
+    const [currentBlueprintImage, setCurrentBlueprintImage] = useState({
+        currentID: 0,
+        showingNum: 0
+    })
     const [refresh, setRefresh] = useState<boolean>(false)
 
     const alphabetAndNumbers = [
@@ -286,6 +298,20 @@ const Design = () => {
         })
     }
 
+    // this is somewhat broken, getting an overflow
+    const handleBPImageChange = (id:any, value:boolean) => {
+        const currentBlueprint = providerData.blueprints.filter((blueprint:any) => blueprint.id === id)[0]
+        const newValue = value 
+        ? currentBlueprintImage.showingNum < currentBlueprint.images.length 
+        ? currentBlueprintImage.showingNum + 1 : currentBlueprint.images.length - 1
+        : currentBlueprintImage.showingNum > 0 
+        ? currentBlueprintImage.showingNum - 1 : 0;
+        setCurrentBlueprintImage({
+            currentID: id,
+            showingNum: newValue,
+        })
+    }
+
     return (
         <main className="design-page">
 
@@ -436,7 +462,7 @@ const Design = () => {
                 <div className={`blueprints-modal-grid`}>
                     {
                         providerData.blueprints.map((blueprint:any, index:number) => (
-                            <div
+                            <div key={index}
                                 className="grid-item"
                                 onPointerDown={() => setBlueprintData({
                                     brand: blueprint.brand,
@@ -445,17 +471,21 @@ const Design = () => {
                                     model: blueprint.model,
                                     title: blueprint.title,
                                 })}>
-                                <button>
-
+                                <button className={`left ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprint.id, false)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                 </button>
                                 {
                                     blueprint.images.map((image:string, index:number) => (
-                                        <img src={image} alt={`${blueprint.id}-productimage-${index}`}
-                                        className={`shown`} />
+                                        <img key={`${blueprint.brand}-${index}`} src={image} alt={`${blueprint.id}-productimage-${index}`}
+                                        className={`${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
                                     ))
                                 }
-                                <button>
-
+                                <button className={`right ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum < blueprint.images.length ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprint.id, true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                 </button>
                             </div>
                         ))

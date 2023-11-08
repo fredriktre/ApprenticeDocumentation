@@ -12,6 +12,8 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: #000000;
+  width: 100%;
+  height: 100dvh;
 }
 
 svg {
@@ -50,8 +52,8 @@ svg {
   left: 0;
   z-index: -1;
 
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100dvh;
 
   background: linear-gradient(to right, rgba(0, 0, 0, 1), transparent, transparent);
 }
@@ -119,8 +121,8 @@ nav > img {
   left: 0;
   transform: translateY(-50%);
   z-index: -2;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100dvh;
   transition: 0.4s;
   object-fit: cover;
   filter: sepia(100%) hue-rotate(50deg);
@@ -202,6 +204,9 @@ nav > img.active {
 .pagepartbtn-wrapper {
   display: flex;
   gap: 1rem;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 1rem;
 }
 
 .card-container {
@@ -409,7 +414,7 @@ button > svg {
   justify-content: center;
   align-items: center;
 
-  width: calc(100% - 10rem);
+  width: calc(100vw - 10rem);
   height: calc(100dvh - 10rem);
 
   padding: 5rem;
@@ -444,7 +449,8 @@ button > svg {
   background-color: rgba(0, 255, 0, 0.1);
   border-radius: 1rem;
 
-  aspect-ratio: 16/9;
+  width: 100%;
+  height: 100%;
 
   color: #ffffff;
   text-decoration: none;
@@ -470,7 +476,7 @@ button > svg {
   align-items: center;
   gap: 1rem;
 
-  width: calc(100% - 10rem);
+  width: calc(100vw - 10rem);
   height: calc(100dvh - 10rem);
 
   padding: 5rem;
@@ -608,4 +614,41 @@ button > svg {
   height: 100%;
 
   background-color: rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 620px) {
+  .content-container {
+    width: 100%;
+    padding: 0;
+  }
+  .content-wrapper {
+    padding: 0;
+    width: 100%;
+  }
+  .info-modal {
+    left: 0;
+    width: 100vw;
+    padding: 0;
+  }
+  .video-modal {
+    left: 0;
+    width: 100vw;
+    padding: 0;
+  }
+  .auto-grid {
+    width: 95%;
+  }
+  .auto-grid > div {      
+    width: calc(100% - 4rem);
+    height: calc(100% - 2rem);
+    margin: 0 auto;
+  }
+  .auto-grid > a {    
+    width: calc(100% - 2rem);
+    height: 100%;
+    margin: 0 auto;
+  }  
+  .auto-grid.scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

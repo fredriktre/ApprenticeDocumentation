@@ -279,14 +279,20 @@ button {
 }
 
 .blueprints-modal-grid {
+  position: relative;
+  z-index: 10;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   grid-template-rows: repeat(auto-fit, minmax(auto-fit, 1fr));
+  gap: 1rem;
 
   width: 80%;
   height: 80%;
 
   overflow: hidden;
+  overflow-y: auto;
+
+  padding: 1rem;
 
   border-radius: 1rem;
   background-color: rgba(0, 0, 0, 0.7);
@@ -297,6 +303,12 @@ button {
 
   width: 100%;
   aspect-ratio: 1;
+  
+  transition: 0.25s;
+}
+
+.blueprints-modal-grid .grid-item:hover {
+  opacity: 0.8;
 }
 
 .blueprints-modal-grid .grid-item img {
@@ -308,6 +320,7 @@ button {
 
   opacity: 0;
   pointer-events: none;
+  border-radius: 1rem;
   
   transition: 0.25s;
 }
@@ -316,10 +329,44 @@ button {
   opacity: 1;
 }
 
+.blueprints-modal-grid .grid-item button {
+  position: absolute;
+  z-index: 15;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 3rem;
+  height: 3rem;
+
+  background-color: #000000;
+  border-radius: 100%;
+  
+  opacity: 0;
+  transition: 0.25s;
+}
+.blueprints-modal-grid .grid-item button svg {
+  width: 2rem;
+  height: 2rem;
+}
+.blueprints-modal-grid .grid-item button.left {
+  left: 1rem;
+}
+.blueprints-modal-grid .grid-item button.right {
+  right: 1rem;
+}
+.blueprints-modal-grid .grid-item:hover button.showing {
+  opacity: 1;
+}
+
 .blueprints-modal span {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 5;
 
   width: 100%;
   height: 100%;
