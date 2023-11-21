@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type ElementImage = {
     type: string
@@ -33,6 +33,21 @@ type BlueprintType = {
     title: string
 }
 
+type VariantParentType = {
+    id: number,
+    title: string,
+    variants: VariantsType[],
+    sizes: string[],
+    colors: string[]
+}
+
+type VariantsType = {
+    id: number,
+    options: any[],
+    placeholder: any[],
+    title: string
+}
+
 const Design = () => {    
     const [elements, setElements] = useState<any[]>([]);
     const [isMouseMoving, setIsMouseMoving] = useState<boolean>(false);
@@ -63,10 +78,15 @@ const Design = () => {
         model: "",
         title: "",
     }) 
-    const [variantsData, setVariantsData] = useState({
-
+    const [variantsData, setVariantsData] = useState<VariantParentType>({
+        id: 0,
+        title: "",
+        variants: [],
+        sizes: [],
+        colors: []
     })
     const [blueprintsMenuOpen, setBlueprintsMenuOpen] = useState<boolean>(false)
+    const [variantsMenuOpen, setVariantsMenuOpen] = useState<boolean>(false)
     const [currentBlueprintImage, setCurrentBlueprintImage] = useState({
         currentID: 0,
         showingNum: 0
@@ -266,16 +286,7 @@ const Design = () => {
                 provider: providerData.provider,
                 title: data.body.title,
                 blueprints: newBlueprints
-            })
-
-            // const variants:any[] = [];
-            // for (let i = 0; i < blueprints.length; i++) {
-            //     if (blueprints[i].id < 5000) {
-            //         const variant = await getVariants(blueprints[i].id);
-            //         variants.push(variant);
-            //     }
-            // }
-            // console.log(variants);
+            })            
 
         } catch (error) {
             console.log(error);
@@ -284,32 +295,83 @@ const Design = () => {
 
     const getVariants = (id:number) => {
         return new Promise(async (resolve:any) => {            
-                    try {
+            try {
             
-                        const res = await fetch(`/api/getblueprint/${id}/30`, {
-                            method: "GET",
-                        });
-                        const data = await res.json();
+                const res = await fetch(`/api/getblueprint/${id}/30`, {
+                    method: "GET",
+                });
+                const data = await res.json();
             
-                        resolve(data)
-                    } catch (error) {
-                        console.log(error);
-                    }
+                resolve(data)
+            } catch (error) {
+                console.log(error);
+            }
         })
     }
 
-    // this is somewhat broken, getting an overflow
-    const handleBPImageChange = (id:any, value:boolean) => {
-        const currentBlueprint = providerData.blueprints.filter((blueprint:any) => blueprint.id === id)[0]
-        const newValue = value 
-        ? currentBlueprintImage.showingNum < currentBlueprint.images.length 
-        ? currentBlueprintImage.showingNum + 1 : currentBlueprint.images.length - 1
-        : currentBlueprintImage.showingNum > 0 
-        ? currentBlueprintImage.showingNum - 1 : 0;
-        setCurrentBlueprintImage({
-            currentID: id,
-            showingNum: newValue,
+    useEffect(() => {
+        console.log(blueprintData);
+        if (blueprintData.id === 0) return
+
+        getVariants(blueprintData.id).then((response:any) => {
+            console.log(response.body);
+            if (response.body.error) return
+            else {
+                console.log(response.body.variants.filter((variant:any) => variant.options.size === "S"))
+
+                const sizes:any[] = [];
+                const colors:any[] = [];
+                for (let i = 0; i < response.body.variants.length; i++) {
+                    if (response.body.variants[i].options.size) {
+                        if (sizes.filter((size:string) => size === response.body.variants[i].options.size).length < 1) {
+                            sizes.push(response.body.variants[i].options.size)
+                        }
+                    } 
+                    if (response.body.variants[i].options.color) {
+                        if (colors.filter((color:string) => color === response.body.variants[i].options.color).length < 1) {
+                            colors.push(response.body.variants[i].options.color)
+                        }
+                    }
+                }        
+                
+                console.log(sizes,colors);
+
+                setVariantsData({
+                    id: response.body.id,
+                    title: response.body.title,
+                    variants: response.body.variants,
+                    sizes: sizes,
+                    colors: colors
+                })
+            }
         })
+    }, [blueprintData])
+
+    const handleBPImageChange = (id:any, value:boolean) => {
+        if (id != currentBlueprintImage.currentID) {
+            setCurrentBlueprintImage({
+                currentID: id,
+                showingNum: 0,
+            })
+        }
+
+        const currentBlueprint = providerData.blueprints.filter((blueprint:any) => blueprint.id === id)[0];
+        
+        if (value) {
+            if (currentBlueprintImage.showingNum < currentBlueprint.images.length - 1) {
+                setCurrentBlueprintImage({
+                    currentID: id,
+                    showingNum: currentBlueprintImage.showingNum + 1,
+                })
+            }
+        } else {
+            if (currentBlueprintImage.showingNum > 0) {
+                setCurrentBlueprintImage({
+                    currentID: id,
+                    showingNum: currentBlueprintImage.showingNum - 1,
+                })
+            }
+        }
     }
 
     return (
@@ -340,6 +402,10 @@ const Design = () => {
                     <button className="button"
                     onMouseDown={() => setBlueprintsMenuOpen(true)}>
                         {blueprintData.id != 0 ? `${blueprintData.title}` : "Pick Blueprint"}
+                    </button>
+                    <button className="button"
+                    onMouseDown={() => setVariantsMenuOpen(true)}>
+                        VariantsMenu
                     </button>
                 </div>
         
@@ -461,38 +527,104 @@ const Design = () => {
 
                 <div className={`blueprints-modal-grid`}>
                     {
-                        providerData.blueprints.map((blueprint:any, index:number) => (
-                            <div key={index}
-                                className="grid-item"
-                                onPointerDown={() => setBlueprintData({
-                                    brand: blueprint.brand,
-                                    id: blueprint.id,
-                                    images: blueprint.images,
-                                    model: blueprint.model,
-                                    title: blueprint.title,
-                                })}>
-                                <button className={`left ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprint.id, false)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </button>
-                                {
-                                    blueprint.images.map((image:string, index:number) => (
-                                        <img key={`${blueprint.brand}-${index}`} src={image} alt={`${blueprint.id}-productimage-${index}`}
-                                        className={`${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
-                                    ))
-                                }
-                                <button className={`right ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum < blueprint.images.length ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprint.id, true)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        ))
+                        providerData.blueprints.map((blueprint:any, index:number) => {
+
+                            if (blueprint.id < 10000) {
+                                return (
+                                    <div key={index}
+                                    className="grid-item">
+                                    <button className={`left ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprint.id, false)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </button>
+                                    <div onPointerDown={() => {
+                                        setBlueprintData({
+                                            brand: blueprint.brand,
+                                            id: blueprint.id,
+                                            images: blueprint.images,
+                                            model: blueprint.model,
+                                            title: blueprint.title,
+                                        });
+                                        setBlueprintsMenuOpen(false);
+                                    }}>
+                                        {
+                                            blueprint.images.map((image:string, index:number) => (
+                                                <img key={`${blueprint.brand}-${index}`} src={image} alt={`${blueprint.id}-productimage-${index}`}
+                                                className={`${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
+                                            ))
+                                        }
+                                    </div>
+                                    <button className={`right ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum < blueprint.images.length - 1 ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprint.id, true)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                          <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                )
+                            }
+                        })
                     }
                 </div>
             
                 <button className="close-btn" onPointerDown={() => setBlueprintsMenuOpen(false)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+                <span></span>
+            </div>
+
+            <div className={`variants-modal ${variantsMenuOpen ? "open" : ""}`}>
+                <div className="blueprint-images-container">
+                    <button className={`left ${currentBlueprintImage.currentID === blueprintData.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprintData.id, false)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                    <div>
+                        {
+                            blueprintData.images.map((image:string, index:number) => (
+                                <img key={`${blueprintData.brand}-${index}`} src={image} alt={`${blueprintData.id}-productimage-${index}`}
+                                className={`${currentBlueprintImage.currentID === blueprintData.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
+                            ))
+                        }
+                    </div>
+                    <button className={`right ${currentBlueprintImage.currentID === blueprintData.id ? currentBlueprintImage.showingNum < blueprintData.images.length - 1 ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprintData.id, true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="variants-wrapper">            
+                    <div className="size-variants-wrapper">
+                        {
+                            variantsData.sizes.map((size:string, index:number) => (
+                                <button 
+                                    key={`size-button-${index}`}
+                                    className={``}
+                                    >
+                                    {size}
+                                </button>
+                            ))
+                        }
+                    </div>
+                    {/* <div className="color-variants-wrapper">
+                        {
+                            variantsData.colors.map((color:string, index:number) => (
+                                <div>
+                                    <span
+                                        style={{
+                                            backgroundColor: `${color}`
+                                        }}
+                                    ></span>
+                                </div>
+                            ))
+                        }
+                    </div> */}
+                </div>
+
+                <button className="close-btn" onPointerDown={() => setVariantsMenuOpen(false)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
