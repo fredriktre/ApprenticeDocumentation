@@ -9,6 +9,7 @@ type ElementImage = {
     y: number,
     width: number,
 }
+
 type ElementText = {
     font: string
     type: string,

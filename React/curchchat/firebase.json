@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "site": "churchchat",
+    "public": "firedist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
