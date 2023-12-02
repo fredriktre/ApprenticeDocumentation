@@ -7,6 +7,7 @@ type ElementImage = {
     file: any,
     x: number,
     y: number,
+    rotation: number,
     width: number,
 }
 
@@ -61,6 +62,7 @@ const Design = () => {
         offsetY: 0,
     });    
     const [resizing, setResizing] = useState<boolean>(false)
+    const [rotating, setRotating] = useState<boolean>(false)
     const [designScreenPlacement, setDesignScreenPlacement] = useState({
         x: 0,
         y: 0,
@@ -120,6 +122,7 @@ const Design = () => {
             file: event.target.files[0],
             x: 0,
             y: 0,
+            rotation: 0,
             width: 100,
         }])
     }
@@ -152,25 +155,59 @@ const Design = () => {
     }
 
     const handleMovement = (event:any) => {
-        if (isMouseMoving && resizing) {
+        if (isMouseMoving && resizing && !rotating) {
+
             const oldArray = elements;
             let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
             const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id);
+
             const newWidth = (currentlyMovingSettings.startWidth + event.clientX - currentlyMovingSettings.mouseX);
             currentElement.width = newWidth;
+
             oldArray[index] = currentElement;
             setElements(oldArray);
             setRefresh(!refresh);
-        } else if (isMouseMoving && !resizing) {
+
+        } else if (isMouseMoving && !resizing && !rotating) {
+
             const oldArray = elements;
             let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
             const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id);
+
             currentElement.x = (event.clientX + currentlyMovingSettings.offsetX);
             currentElement.y = (event.clientY + currentlyMovingSettings.offsetY);
+
             oldArray[index] = currentElement;
             setElements(oldArray);
             setRefresh(!refresh);
-        }   
+
+        } else if (isMouseMoving && !resizing && rotating) {
+
+            const oldArray = elements;
+            let currentElement = oldArray.filter((element:ElementImage) => element.id === currentlyMovingSettings.id)[0];
+            const index = oldArray.findIndex((element:ElementImage) => element.id === currentlyMovingSettings.id);
+            const htmlElement = document.getElementById(`${currentElement.id}`)
+
+            if (htmlElement != null) {
+                const {left, top, width, height} = htmlElement.getBoundingClientRect();
+
+                const mos = {
+                    x: left + width / 2, 
+                    y: top + height / 2
+                };
+    
+                const angle = Math.atan2(event.clientY - mos.y, event.clientX - mos.x);
+    
+                currentElement.rotation = angle * 2;
+    
+                oldArray[index] = currentElement;
+                setElements(oldArray);
+                setRefresh(!refresh);
+            } else {
+                throw new Error("Can't find Element")
+            }
+            
+        }
     }
 
     const handleElementRemove = (id:string) => {
@@ -375,6 +412,8 @@ const Design = () => {
         }
     }
 
+    
+
     return (
         <main className="design-page">
 
@@ -418,6 +457,9 @@ const Design = () => {
                     if (resizing) {
                         setResizing(false)
                     }
+                    if (rotating) {
+                        setRotating(false)
+                    }
                 }}
                 >
                     <div className="design-screen">
@@ -434,6 +476,7 @@ const Design = () => {
                                         style={{
                                             top: element.y,
                                             left: element.x,
+                                            transform: `rotate(${element.rotation}rad)`,
                                             width: `${element.width}px`,
                                         }}>
                                             <div className={`element-toolbar ${currentlyMovingSettings.id === element.id && "moving"}`}>
@@ -458,6 +501,9 @@ const Design = () => {
                                                 onMouseDown={(event) => {
                                                     startElementEditing(element.id, event)
                                                     setResizing(true)
+                                                    if (rotating) {
+                                                        setRotating(false)
+                                                    }
                                                 }}
                                                 onMouseUp={() => {
                                                     setIsMouseMoving(false)
@@ -466,6 +512,23 @@ const Design = () => {
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                                                       <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                onMouseDown={(event) => {
+                                                    startElementEditing(element.id, event)                                                    
+                                                    setRotating(true)
+                                                    if (resizing) {
+                                                        setResizing(false)
+                                                    }
+                                                }}
+                                                onMouseUp={() => {
+                                                    setIsMouseMoving(false)
+                                                    setRotating(true)
+                                                }}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                                     </svg>
                                                 </button>
                                             </div> 
@@ -610,7 +673,7 @@ const Design = () => {
                             ))
                         }
                     </div>
-                    {/* <div className="color-variants-wrapper">
+                    {/*<div className="color-variants-wrapper">
                         {
                             variantsData.colors.map((color:string, index:number) => (
                                 <div>
