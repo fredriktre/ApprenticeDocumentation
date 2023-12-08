@@ -220,6 +220,110 @@ button {
   padding: 1rem;
 }
 
+.settings-nav > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings-nav > div > .btns-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  padding: 0.5rem;
+  border-radius: 1rem;
+
+  background-color: rgba(120, 120, 120, 1);
+}
+
+.settings-nav > div input {
+  width: 100%;
+
+  box-sizing: border-box;
+  
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  outline: unset;
+  border: 0.2rem solid transparent;
+  
+  font-size: 1.2rem;
+
+  transition: 0.25s;
+}
+
+.settings-nav > div input:hover {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
+}
+.settings-nav > div input:focus {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
+}
+
+.inputnbuttons-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.smallchangebtns-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+}
+
+.smallchangebtns-wrapper button {
+  height: 50%;
+  width: 100%;
+  
+  border: 0.2rem solid transparent;
+  outline: unset;
+
+  background-color: rgb(59, 59, 59);
+  
+  transition: 0.25s;
+}
+
+.smallchangebtns-wrapper button.top {
+  border-radius: 1rem 1rem 0 0;
+}
+.smallchangebtns-wrapper button.bottom {
+  border-radius: 0 0 1rem 1rem;
+}
+
+.smallchangebtns-wrapper button:hover {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
+}
+.smallchangebtns-wrapper button:focus {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
+}
+
+.smallchangebtns-wrapper button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* 
+  Got this from w3schools to hide number arrows on x and y pos 
+  (The default one). So I can switch it out.
+*/
+/* Chrome, Safari, Edge, Opera */
+.settings-nav > div input::-webkit-outer-spin-button,
+.settings-nav > div input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.settings-nav > div input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .hide-cursor {
   cursor: none;
 }

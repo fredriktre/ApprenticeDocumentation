@@ -13,6 +13,12 @@ let attempts = 0;
 let lastUpdate;
 let lastContent;
 
+/* 
+    What we need here
+    1. Push function
+    2. Error function (products that are not properly responding)
+*/
+
 app.use(cors());
 
 app.get(server_url_starter, (req, res) => {

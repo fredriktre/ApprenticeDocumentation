@@ -17,6 +17,7 @@ type ElementText = {
     id: string,
     x: number,
     y: number,
+    rotation: number,
     text: string,
     fontsize: number,
 }
@@ -50,17 +51,30 @@ type VariantsType = {
     title: string
 }
 
+type movingSettingsType = {
+    id: string,
+    type: string,
+    startWidth: number,
+    mouseX: number,
+    mouseY: number,
+    offsetX: number,
+    offsetY: number,
+    currentElementData: ElementImage|ElementText|any
+}
+
 const Design = () => {    
     const [elements, setElements] = useState<any[]>([]);
     const [isMouseMoving, setIsMouseMoving] = useState<boolean>(false);
-    const [currentlyMovingSettings, setCurrentlyMovingSettings] = useState({
+    const [currentlyMovingSettings, setCurrentlyMovingSettings] = useState<movingSettingsType>({
         id: "",
+        type: "",
         startWidth: 0,
         mouseX: 0,
         mouseY: 0,
         offsetX: 0,
         offsetY: 0,
-    });    
+        currentElementData: {}
+    });   
     const [resizing, setResizing] = useState<boolean>(false)
     const [rotating, setRotating] = useState<boolean>(false)
     const [designScreenPlacement, setDesignScreenPlacement] = useState({
@@ -94,6 +108,7 @@ const Design = () => {
         currentID: 0,
         showingNum: 0
     })
+    const [availableFonts, setAvailableFonts] = useState<string[]>([])
     const [refresh, setRefresh] = useState<boolean>(false)
 
     const alphabetAndNumbers = [
@@ -113,6 +128,16 @@ const Design = () => {
         return ID
     } 
 
+    async function readFile (target:any) {
+        return new Promise((resolve:any) => {
+          const reader = new FileReader();
+          reader.onload = (evt:any) => {
+            resolve(evt.target.result);
+          }
+          reader.readAsDataURL(target);
+        })
+    }
+
     const handleAddImage = async (event:any) => {
         const blob:any = await readFile(event.target.files[0])
         setElements((oldElements) => [...oldElements, {
@@ -125,31 +150,23 @@ const Design = () => {
             rotation: 0,
             width: 100,
         }])
-    }
-
-    async function readFile (target:any) {
-        return new Promise((resolve:any) => {
-          const reader = new FileReader();
-          reader.onload = (evt:any) => {
-            resolve(evt.target.result);
-          }
-          reader.readAsDataURL(target);
-        })
-    }
+    }    
 
     const startElementEditing = (id:string, event:any) => {
         const currentElement = elements.filter((element:ElementImage) => element.id === id)[0];
         setIsMouseMoving(true);
         
         const bcr = event.target.getBoundingClientRect();
-        
+
         setCurrentlyMovingSettings({
             id: id,
+            type: currentElement.type,
             startWidth: currentElement.width,
             mouseX: event.clientX,
             mouseY: event.clientY,
             offsetY: (bcr.top - designScreenPlacement.y) - event.clientY,
             offsetX: (bcr.left - designScreenPlacement.x) - event.clientX,
+            currentElementData: currentElement
         });
         setRefresh(!refresh);
     }
@@ -163,6 +180,7 @@ const Design = () => {
 
             const newWidth = (currentlyMovingSettings.startWidth + event.clientX - currentlyMovingSettings.mouseX);
             currentElement.width = newWidth;
+
 
             oldArray[index] = currentElement;
             setElements(oldArray);
@@ -196,9 +214,16 @@ const Design = () => {
                     y: top + height / 2
                 };
     
-                const angle = Math.atan2(event.clientY - mos.y, event.clientX - mos.x);
-    
-                currentElement.rotation = angle * 2;
+                const rad = Math.atan2(event.clientY - mos.y, event.clientX - mos.x);
+                const rawAngle = (rad * 2) * (180/Math.PI);
+
+                let angle = rawAngle % 360;
+
+                if (angle < 0) {
+                    angle += 360
+                }
+
+                currentElement.rotation = angle;
     
                 oldArray[index] = currentElement;
                 setElements(oldArray);
@@ -234,6 +259,7 @@ const Design = () => {
             id: makeID(),
             x: 0,
             y: 0,
+            rotation: 0,
             text: "Write here",
             fontsize: 18,
             font: "'Roboto'",
@@ -251,6 +277,7 @@ const Design = () => {
             id: currentElement.id,
             text: text,
             type: currentElement.type,
+            rotation: currentElement.rotation,
             x: currentElement.x,
             y: currentElement.y
         }
@@ -412,8 +439,6 @@ const Design = () => {
         }
     }
 
-    
-
     return (
         <main className="design-page">
 
@@ -476,7 +501,7 @@ const Design = () => {
                                         style={{
                                             top: element.y,
                                             left: element.x,
-                                            transform: `rotate(${element.rotation}rad)`,
+                                            transform: `rotate(${element.rotation}deg)`,
                                             width: `${element.width}px`,
                                         }}>
                                             <div className={`element-toolbar ${currentlyMovingSettings.id === element.id && "moving"}`}>
@@ -486,11 +511,13 @@ const Design = () => {
                                                     setResizing(false)
                                                     setCurrentlyMovingSettings({
                                                         id: "",
+                                                        type: "",
                                                         startWidth: 0,
                                                         mouseX: 0,
                                                         mouseY: 0,
                                                         offsetY: 0,
                                                         offsetX: 0,
+                                                        currentElementData: {}
                                                     })
                                                 }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -544,6 +571,7 @@ const Design = () => {
                                         style={{
                                             top: element.y,
                                             left: element.x,
+                                            transform: `rotate(${element.rotation}deg)`,
                                         }}>
                                             <div className={`element-toolbar ${currentlyMovingSettings.id === element.id && "moving"}`}>
                                                 <button
@@ -551,15 +579,34 @@ const Design = () => {
                                                     handleElementRemove(element.id)
                                                     setCurrentlyMovingSettings({
                                                         id: "",
+                                                        type: "",
                                                         startWidth: 0,
                                                         mouseX: 0,
                                                         mouseY: 0,
                                                         offsetY: 0,
                                                         offsetX: 0,
+                                                        currentElementData: {}
                                                     })
                                                 }}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                                                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                <button
+                                                onMouseDown={(event) => {
+                                                    startElementEditing(element.id, event)                                                    
+                                                    setRotating(true)
+                                                    if (resizing) {
+                                                        setResizing(false)
+                                                    }
+                                                }}
+                                                onMouseUp={() => {
+                                                    setIsMouseMoving(false)
+                                                    setRotating(true)
+                                                }}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                                                     </svg>
                                                 </button>
                                             </div> 
@@ -584,7 +631,141 @@ const Design = () => {
                 </div>
         
                 <div className="settings-nav">
-        
+                    {
+                        currentlyMovingSettings.type.length > 0 &&
+                        currentlyMovingSettings.type === "image" 
+                        ? 
+                            <div>
+                                <div className="btns-wrapper">
+                                    <div>
+                                        <label htmlFor="X-Pos-image">X-Pos (px)</label>
+                                        <input id="X-Pos-image" type="number" placeholder="X-Pos" value={currentlyMovingSettings.currentElementData.x} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.x = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="Y-Pos-image">Y-Pos (px)</label>
+                                        <input id="Y-Pos-image" type="number" placeholder="Y-Pos" value={currentlyMovingSettings.currentElementData.y} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.y = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label htmlFor="Rotation-image">Rotation (deg)</label>
+                                    <input id="Rotation-image" type="number" placeholder="Rotation" value={currentlyMovingSettings.currentElementData.rotation} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.rotation = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                </div>
+                                <div>
+                                    <label htmlFor="Width-image">Width (px)</label>
+                                    <input id="Width-image" type="number" placeholder="Width" value={currentlyMovingSettings.currentElementData.width} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.width = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                </div>
+                            </div>
+                        : currentlyMovingSettings.type === "text" 
+                        ?
+                            <div>
+                                <div className="btns-wrapper">
+                                    <div className="inputnbuttons-wrapper">
+                                        <div>
+                                            <label htmlFor="X-Pos-text">X-Pos (px)</label>
+                                            <input id="X-Pos-text" type="number" placeholder="X-Pos" value={currentlyMovingSettings.currentElementData.x} onChange={(event) => {
+                                            const array:any[] = elements;
+                                            const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                            const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                            currentElement.x = parseFloat(event.target.value);
+                                            array[index] = currentElement
+                                            setElements(array)
+                                            setRefresh(!refresh)
+                                            }} />
+                                        </div>
+                                        <div className="smallchangebtns-wrapper">
+                                            <button className="top">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                                </svg>
+                                            </button>
+                                            <button className="bottom">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="Y-Pos-text">Y-Pos (px)</label>
+                                        <input id="Y-Pos-text" type="number" placeholder="Y-Pos" value={currentlyMovingSettings.currentElementData.y} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.y = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label htmlFor="Rotation-text">Rotation (deg)</label>
+                                    <input id="Rotation-text" type="number" placeholder="Rotation" value={currentlyMovingSettings.currentElementData.rotation} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.rotation = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                </div> 
+                                <div>
+                                    <label htmlFor="Font-Size-text">Font-Size (px)</label>
+                                    <input id="Font-Size-text" type="number" placeholder="Font-Size" value={currentlyMovingSettings.currentElementData.fontsize} onChange={(event) => {
+                                        const array:any[] = elements;
+                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                        currentElement.fontsize = parseFloat(event.target.value);
+                                        array[index] = currentElement
+                                        setElements(array)
+                                        setRefresh(!refresh)
+                                        }} />
+                                </div> 
+                                <div>
+                                    <select onChange={(event) => {console.log(event.target.value, currentlyMovingSettings.currentElementData)}}>
+                                        <option value="'Roboto'">'Roboto'</option>
+                                        {
+                                            availableFonts.map((font:string, index:number) => <option key={index} value={font} style={{font:font}}>{font}</option>)
+                                        }
+                                    </select>
+                                </div> 
+                            </div>
+                        :
+                        ""
+                    }
                 </div>
             </div>
             <div className={`blueprints-modal ${blueprintsMenuOpen ? "open" : ""}`}>
@@ -597,34 +778,34 @@ const Design = () => {
                                 return (
                                     <div key={index}
                                     className="grid-item">
-                                    <button className={`left ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprint.id, false)}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </button>
-                                    <div onPointerDown={() => {
-                                        setBlueprintData({
-                                            brand: blueprint.brand,
-                                            id: blueprint.id,
-                                            images: blueprint.images,
-                                            model: blueprint.model,
-                                            title: blueprint.title,
-                                        });
-                                        setBlueprintsMenuOpen(false);
-                                    }}>
-                                        {
-                                            blueprint.images.map((image:string, index:number) => (
-                                                <img key={`${blueprint.brand}-${index}`} src={image} alt={`${blueprint.id}-productimage-${index}`}
-                                                className={`${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
-                                            ))
-                                        }
+                                        <button className={`left ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum > 0 ? "showing" : "" : ""}`} onClick={() => handleBPImageChange(blueprint.id, false)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
+                                        <div onPointerDown={() => {
+                                            setBlueprintData({
+                                                brand: blueprint.brand,
+                                                id: blueprint.id,
+                                                images: blueprint.images,
+                                                model: blueprint.model,
+                                                title: blueprint.title,
+                                            });
+                                            setBlueprintsMenuOpen(false);
+                                        }}>
+                                            {
+                                                blueprint.images.map((image:string, index:number) => (
+                                                    <img key={`${blueprint.brand}-${index}`} src={image} alt={`${blueprint.id}-productimage-${index}`}
+                                                    className={`${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum === index ? "shown" : "" : index === 0 ? "shown" : ""}`} />
+                                                ))
+                                            }
+                                        </div>
+                                        <button className={`right ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum < blueprint.images.length - 1 ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprint.id, true)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    <button className={`right ${currentBlueprintImage.currentID === blueprint.id ? currentBlueprintImage.showingNum < blueprint.images.length - 1 ? "showing" : "" : "showing"}`} onClick={() => handleBPImageChange(blueprint.id, true)}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                          <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
                                 )
                             }
                         })
