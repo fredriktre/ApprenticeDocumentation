@@ -87,6 +87,10 @@ function App() {
       name: "Freetime",
       image: "/assets/freetime.png"
     },
+    {
+      name: "Contact",
+      image: "/assets/freetime.png"
+    },
   ]
 
   const devlang = [
@@ -704,6 +708,49 @@ function App() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={`content-wrapper  ${currentPage === 6 ? "active" : ""}`}>
+          <div className='contacts-wrapper'>
+            <div className='auto-grid scrollbar'>
+              <a 
+                className='github-btn'
+                href='https://github.com/fredriktre' 
+                target='_blank'>
+                <p>Github</p>
+              </a>
+              <a 
+                className='github-btn'
+                href='https://discord.gg/2TJdTPgams' 
+                target='_blank'>
+                <p>Discord</p>
+              </a>
+              <a 
+                className='github-btn'
+                href='https://www.upwork.com/freelancers/~01bb38442ce1039a26' 
+                target='_blank'>
+                <p>Upwork</p>
+              </a>              
+              <a 
+                className='github-btn'
+                href='https://www.youtube.com/channel/UCBeVO7IeDJ5N-qHqqSGSAMg' 
+                target='_blank'>
+                <p>Youtube</p>
+              </a>              
+              <a 
+                className='github-btn'
+                href='https://www.linkedin.com/in/fredrik-trevland-73a74a249/' 
+                target='_blank'>
+                <p>LinkedIn</p>
+              </a>              
+              <a 
+                className='github-btn'
+                href='mailto:trevlandf0604@gmail.com'
+                target='_blank'>
+                <p>Email</p>
+              </a>              
             </div>
           </div>
         </div>

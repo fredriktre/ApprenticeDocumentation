@@ -211,6 +211,10 @@ button {
 }
 
 .settings-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   height: 100%;
   width: 20%;
   background-color: rgba(100, 100, 100, 1);
@@ -263,6 +267,8 @@ button {
 
 .settings-nav > div > .splitdiv {
   display: flex;
+  align-items: center;
+  gap: 1rem;
 
   width: 100%;
 }
@@ -281,8 +287,6 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  height: 100%;
 }
 
 .smallchangebtns-wrapper button {
@@ -434,6 +438,27 @@ button {
 
 .hide-cursor {
   cursor: none;
+}
+
+.result-wrapper button {  
+  padding: 0.5rem;
+
+  border: 0.2rem solid transparent;
+  border-radius: 1rem;
+  outline: unset;
+
+  background-color: #242424;
+  
+  transition: 0.25s;
+}
+
+.result-wrapper button:hover {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
+}
+.result-wrapper button:focus {
+  border-color: #000000;
+  filter: drop-shadow(5px 5px 5px #000000);
 }
 
 .close-btn {

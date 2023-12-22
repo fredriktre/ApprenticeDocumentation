@@ -715,54 +715,194 @@ const Design = () => {
                         ? 
                             <div>
                                 <div className="btns-wrapper">
-                                    <div>
-                                        <label htmlFor="X-Pos-image">X-Pos (px)</label>
-                                        <input id="X-Pos-image" type="number" placeholder="X-Pos" value={currentlyMovingSettings.currentElementData.x} onChange={(event) => {
-                                        const array:any[] = elements;
-                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
-                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                        currentElement.x = parseFloat(event.target.value);
-                                        array[index] = currentElement
-                                        setElements(array)
-                                        setRefresh(!refresh)
-                                        }} />
+                                <div className="inputnbuttons-wrapper">
+                                        <div>
+                                            <label htmlFor="X-Pos-text">X-Pos (px)</label>
+                                            <input id="X-Pos-text" type="number" placeholder="X-Pos" value={currentlyMovingSettings.currentElementData.x} onChange={(event) => {
+                                            const array:any[] = elements;
+                                            const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                            const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                            currentElement.x = parseFloat(event.target.value);
+                                            array[index] = currentElement
+                                            setElements(array)
+                                            setRefresh(!refresh)
+                                            }} />
+                                        </div>
+                                        <div className="smallchangebtns-wrapper">
+                                            <button 
+                                                className="top"
+                                                onClick={() => {
+                                                    const array:any[] = elements;
+                                                    const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                    const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                    currentElement.x = currentElement.x + 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                                </svg>
+                                            </button>
+                                            <button 
+                                                className="bottom"
+                                                onClick={() => {
+                                                    const array:any[] = elements;
+                                                    const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                    const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                    currentElement.x = currentElement.x - 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label htmlFor="Y-Pos-image">Y-Pos (px)</label>
-                                        <input id="Y-Pos-image" type="number" placeholder="Y-Pos" value={currentlyMovingSettings.currentElementData.y} onChange={(event) => {
-                                        const array:any[] = elements;
-                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
-                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                        currentElement.y = parseFloat(event.target.value);
-                                        array[index] = currentElement
-                                        setElements(array)
-                                        setRefresh(!refresh)
-                                        }} />
+                                    <div className="inputnbuttons-wrapper">
+                                        <div>
+                                            <label htmlFor="Y-Pos-text">Y-Pos (px)</label>
+                                            <input id="Y-Pos-text" type="number" placeholder="Y-Pos" value={currentlyMovingSettings.currentElementData.y} onChange={(event) => {
+                                            const array:any[] = elements;
+                                            const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                            const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                            currentElement.y = parseFloat(event.target.value);
+                                            array[index] = currentElement
+                                            setElements(array)
+                                            setRefresh(!refresh)
+                                            }} />
+                                        </div>
+                                        <div className="smallchangebtns-wrapper">
+                                            <button 
+                                                className="top"
+                                                onClick={() => {
+                                                    const array:any[] = elements;
+                                                    const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                    const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                    currentElement.y = currentElement.y + 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                                </svg>
+                                            </button>
+                                            <button 
+                                                className="bottom"
+                                                onClick={() => {
+                                                    const array:any[] = elements;
+                                                    const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                    const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                    currentElement.y = currentElement.y - 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="Rotation-image">Rotation (deg)</label>
-                                    <input id="Rotation-image" type="number" placeholder="Rotation" value={currentlyMovingSettings.currentElementData.rotation} onChange={(event) => {
-                                        const array:any[] = elements;
-                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
-                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                        currentElement.rotation = parseFloat(event.target.value);
-                                        array[index] = currentElement
-                                        setElements(array)
-                                        setRefresh(!refresh)
-                                        }} />
+                                <div className="splitdiv">
+                                    <div className="content">
+                                        <label htmlFor="Rotation-image">Rotation (deg)</label>
+                                        <input id="Rotation-image" type="number" placeholder="Rotation" value={currentlyMovingSettings.currentElementData.rotation} onChange={(event) => {
+                                            const array:any[] = elements;
+                                            const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                            const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                            currentElement.rotation = parseFloat(event.target.value);
+                                            array[index] = currentElement
+                                            setElements(array)
+                                            setRefresh(!refresh)
+                                            }} />
+                                    </div>
+                                    <div className="smallchangebtns-wrapper">
+                                        <button 
+                                            className="top"
+                                            onClick={() => {
+                                                const array:any[] = elements;
+                                                const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                currentElement.fontsize = currentElement.fontsize + 1;
+                                                array[index] = currentElement
+                                                setElements(array)
+                                                setRefresh(!refresh)
+                                            }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                        <button 
+                                            className="bottom"
+                                            onClick={() => {
+                                                const array:any[] = elements;
+                                                const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                if (currentElement.fontsize > 1) {
+                                                    currentElement.fontsize = currentElement.fontsize - 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }
+                                            }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="Width-image">Width (px)</label>
-                                    <input id="Width-image" type="number" placeholder="Width" value={currentlyMovingSettings.currentElementData.width} onChange={(event) => {
-                                        const array:any[] = elements;
-                                        const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
-                                        const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                        currentElement.width = parseFloat(event.target.value);
-                                        array[index] = currentElement
-                                        setElements(array)
-                                        setRefresh(!refresh)
-                                        }} />
+                                <div className="splitdiv">
+                                    <div className="content">
+                                        <label htmlFor="Width-image">Width (px)</label>
+                                        <input id="Width-image" type="number" placeholder="Width" value={currentlyMovingSettings.currentElementData.width} onChange={(event) => {
+                                            const array:any[] = elements;
+                                            const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                            const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                            currentElement.width = parseFloat(event.target.value);
+                                            array[index] = currentElement
+                                            setElements(array)
+                                            setRefresh(!refresh)
+                                            }} />
+                                    </div>
+                                    <div className="smallchangebtns-wrapper">
+                                        <button 
+                                            className="top"
+                                            onClick={() => {
+                                                const array:any[] = elements;
+                                                const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                currentElement.width = currentElement.fontsize + 1;
+                                                array[index] = currentElement
+                                                setElements(array)
+                                                setRefresh(!refresh)
+                                            }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                            </svg>
+                                        </button>
+                                        <button 
+                                            className="bottom"
+                                            onClick={() => {
+                                                const array:any[] = elements;
+                                                const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
+                                                const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
+                                                if (currentElement.width > 1) {
+                                                    currentElement.width = currentElement.width - 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }
+                                            }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         : currentlyMovingSettings.type === "text" 
@@ -882,7 +1022,7 @@ const Design = () => {
                                                 const array:any[] = elements;
                                                 const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
                                                 const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                                currentElement.x = currentElement.x + 1;
+                                                currentElement.rotation = currentElement.rotation + 1;
                                                 array[index] = currentElement
                                                 setElements(array)
                                                 setRefresh(!refresh)
@@ -897,7 +1037,7 @@ const Design = () => {
                                                 const array:any[] = elements;
                                                 const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
                                                 const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                                currentElement.x = currentElement.x - 1;
+                                                currentElement.rotation = currentElement.rotation - 1;
                                                 array[index] = currentElement
                                                 setElements(array)
                                                 setRefresh(!refresh)
@@ -928,7 +1068,7 @@ const Design = () => {
                                                 const array:any[] = elements;
                                                 const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
                                                 const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                                currentElement.x = currentElement.x + 1;
+                                                currentElement.fontsize = currentElement.fontsize + 1;
                                                 array[index] = currentElement
                                                 setElements(array)
                                                 setRefresh(!refresh)
@@ -943,10 +1083,12 @@ const Design = () => {
                                                 const array:any[] = elements;
                                                 const currentElement = elements.filter((element:any) => element.id === currentlyMovingSettings.id)[0];
                                                 const index = elements.findIndex((element:any) => element.id === currentlyMovingSettings.id);
-                                                currentElement.x = currentElement.x - 1;
-                                                array[index] = currentElement
-                                                setElements(array)
-                                                setRefresh(!refresh)
+                                                if (currentElement.fontsize > 1) {
+                                                    currentElement.fontsize = currentElement.fontsize - 1;
+                                                    array[index] = currentElement
+                                                    setElements(array)
+                                                    setRefresh(!refresh)
+                                                }
                                             }}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -973,6 +1115,11 @@ const Design = () => {
                         :
                         ""
                     }
+                    <div className="result-wrapper">
+                        <button>
+                            Finish
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className={`blueprints-modal ${blueprintsMenuOpen ? "open" : ""}`}>
