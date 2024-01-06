@@ -145,8 +145,81 @@ app.get(`${server_url_starter}/getproduct/:id`, (req, response) => {
             });
     
         })
+})
+
+// Temporary to get them colors
+app.get(`${server_url_starter}/getcolors`, (req, response) => {
+    console.log("attempting get request " + attempts);
+    attempts += 1;
+
+    const options = {
+        hostname: "api.printify.com",
+        path: `/v1/shops/13430543/products.json`,
+        headers: {
+            "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+        }
+    }
+    
+    https.get(options, res => {
+        let data = [];
+        const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+        console.log("status code: " + res.statusCode);
+        console.log("Date in response-header: " + headerDate);
+    
+        res.on("data", chuck => {
+            data.push(chuck);
+        });
+    
+        res.on("end", () => {
+            console.log('Responded with: new');
+            console.log('Response ended: ');
+            const products = JSON.parse(Buffer.concat(data).toString());
+            
+            response.status(200).json({message: "api successfully retrieved products", body: products})
+    
+        }).on('error', err => {
+            console.log('Error: ', err.message);
+        });
+    
+    })
 
 })
+
+app.get(`${server_url_starter}/getcolor/:id`, (req, response) => {
+    console.log("attempting get request on ID: " + req.url.split("/")[3]);
+    
+        const options = {
+            hostname: "api.printify.com",
+            path: `/v1/shops/13430543/products/${req.url.split("/")[3]}.json`,
+            headers: {
+                "Authorization": `Bearer ${PRINTIFY_API_TOKEN}`
+            }
+        }
+    
+        https.get(options, res => {
+            let data = [];
+            const headerDate = res.headers && res.headers.date ? res.headers.date : "no response date";
+            console.log("status code: " + res.statusCode);
+            console.log("Date in response-header: " + headerDate);
+    
+            res.on("data", chuck => {
+                data.push(chuck);
+            });
+    
+            res.on("end", () => {
+                console.log('Responded with: new');
+                console.log('Response ended: ');
+                const product = JSON.parse(Buffer.concat(data).toString());
+                
+                response.status(200).json({message: "api successfully retrieved product: " + req.url.split("/")[3], body: product})
+    
+            }).on('error', err => {
+                console.log('Error: ', err.message);
+            });
+    
+        })
+})
+// Temporary End
 
 app.get(`${server_url_starter}/getprovider/:id`, (req, response) => {
     console.log("attempting get request on ID: " + req.url.split("/")[3]);

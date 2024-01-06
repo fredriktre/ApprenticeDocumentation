@@ -110,6 +110,9 @@ const Design = () => {
         currentID: 0,
         showingNum: 0
     })
+    const [colorList, setColorList] = useState<any[]>([]);
+    const [activeColors, setActiveColors] = useState<any[]>([]);
+    const [activeSizes, setActiveSizes] = useState<any[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false)
 
     const availableFonts = [
@@ -132,69 +135,6 @@ const Design = () => {
         "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
         "u", "v", "w", "x", "y", "z"
     ];
-
-    const colorCodes = [
-        {
-            id: 1,
-            name: "Dark Grey Heather",
-            color: "rgb(28, 27, 28)"
-        },
-        {
-            id: 2,
-            name: "Athletic Heather",
-            color: "rgb(199, 199, 197);"
-        },
-        {
-            id: 3,
-            name: "Heather Navy",
-            color: "rgb(46, 46, 60);"
-        },
-        {
-            id: 4,
-            name: "Heather True Royal",
-            color: "rgb(70, 89, 156);"
-        },
-        {
-            id: 5,
-            name: "Heather Kelly",
-            color: "rgb(0, 191, 133);"
-        },
-        {
-            id: 6,
-            name: "Heather Red",
-            color: "rgb(221, 53, 60);"
-        },
-        {
-            id: 7,
-            name: "Black",
-            color: "rgb(0, 0, 0);"
-        },
-        {
-            id: 8,
-            name: "White",
-            color: "rgb(255, 255, 255);"
-        },
-        {
-            id: 8,
-            name: "Dark Grey",
-            color: "rgb(42, 41, 48);"
-        },
-        {
-            id: 8,
-            name: "Asphalt",
-            color: "rgb(82, 84, 85);"
-        },
-        {
-            id: 9,
-            name: "Silver",
-            color: "rgb(214, 213, 209);"
-        },
-        {
-            id: 9,
-            name: "Navy",
-            color: "rgb(26, 31, 53);"
-        },
-    ]
 
     function makeID () {
         let ID = "E"
@@ -321,7 +261,6 @@ const Design = () => {
     const handleDesignScreenPos = (event:any) => {
         if (designScreenPlacement.width === 0) {
             const bcr = event.target.childNodes[0].getBoundingClientRect();
-            console.log(bcr);
             setDesignScreenPlacement({
                 y: bcr.top,
                 x: bcr.left,
@@ -359,12 +298,8 @@ const Design = () => {
             x: currentElement.x,
             y: currentElement.y
         }
-        console.log(index);
 
         oldArray[index] = newElement;
-
-        console.log(newElement);
-        console.log(oldArray[index]);
 
         setElements(oldArray);
         setRefresh(!refresh);
@@ -410,12 +345,10 @@ const Design = () => {
                 method: "GET",
             });
             const data = await res.json();
-            console.log(data);
 
             const newBlueprints:any[] = [];
 
             data.body.blueprints.forEach((element:any) => {
-                console.log(element)
                 newBlueprints.push({
                     brand: element.brand,
                     id: element.id,
@@ -444,7 +377,7 @@ const Design = () => {
                     method: "GET",
                 });
                 const data = await res.json();
-            
+                console.log(data)
                 resolve(data)
             } catch (error) {
                 console.log(error);
@@ -453,32 +386,32 @@ const Design = () => {
     }
 
     useEffect(() => {
-        console.log(blueprintData);
         if (blueprintData.id === 0) return
 
         getVariants(blueprintData.id).then((response:any) => {
-            console.log(response.body);
             if (response.body.error) return
             else {
-                console.log(response.body.variants.filter((variant:any) => variant.options.size === "S"))
-
                 const sizes:any[] = [];
                 const colors:any[] = [];
                 for (let i = 0; i < response.body.variants.length; i++) {
                     if (response.body.variants[i].options.size) {
-                        if (sizes.filter((size:string) => size === response.body.variants[i].options.size).length < 1) {
-                            sizes.push(response.body.variants[i].options.size)
+                        if (sizes.filter((size:any) => size.size === response.body.variants[i].options.size).length < 1) {
+                            sizes.push({
+                                size: response.body.variants[i].options.size,
+                                active: false,
+                            })
                         }
                     } 
                     if (response.body.variants[i].options.color) {
-                        if (colors.filter((color:string) => color === response.body.variants[i].options.color).length < 1) {
-                            colors.push(response.body.variants[i].options.color)
+                        if (colors.filter((color:any) => color.color === response.body.variants[i].options.color).length < 1) {
+                            colors.push({
+                                color: response.body.variants[i].options.color,
+                                active: false
+                            })
                         }
                     }
                 }        
-                
-                console.log(sizes,colors);
-
+                console.log(sizes,colors)
                 setVariantsData({
                     id: response.body.id,
                     title: response.body.title,
@@ -517,6 +450,119 @@ const Design = () => {
         }
     }
 
+    async function getColorCodes () {
+        console.log("Initiating Function")
+        try {
+            const res = await fetch("/api/getcolors", {
+                method: "GET",
+            });
+            const data = await res.json();
+            console.log("Data retrieved")
+            const colors:any[] = []
+
+            for (let i = 0; i < data.body.data.length; i++) {
+                const options:any[] = data.body.data[i].options;
+                const placeInArray = options.findIndex((item:any) => item.type === 'color');
+                let iterations = 0;
+                for (let j = 0; j < options[placeInArray].values.length; j++) {
+                    const targetData = options[placeInArray].values[j]
+                    const potentialData:any = colors.filter((item:any) => item.id === targetData.id)
+                    if (potentialData.length < 1) {
+                        colors.push({
+                            id: targetData.id,
+                            title: targetData.title,
+                            colors: targetData.colors
+                        })
+                    }
+                    iterations++
+                }
+                console.log(`total j | ${iterations}...`)
+                console.log(`i | ${i}...`)
+            }
+
+            const colorsRedone:any[] = [];
+            for (let k = 0; k < colors.length; k++) {
+                const existsOfSameTitle:any = colors.filter((item:any) => item.title === colors[k].title);
+                if (existsOfSameTitle.length > 1) {
+                    console.error("Found 2 of the same one");
+                    const newColorList:any[] = []
+                    for (let l = 0; l < existsOfSameTitle.length; l++) {
+                        newColorList.push({
+                            color: existsOfSameTitle[l].colors[0],
+                            id: existsOfSameTitle[l].id,
+                        })
+                    }
+                    const newID = makeID();
+                    const newItem = {
+                        colors: newColorList,
+                        id: newID,
+                        title: existsOfSameTitle[0].title
+                    }
+                    colorsRedone.push(newItem);
+                } else {
+                    const newID = makeID();
+                    colorsRedone.push({
+                        id: newID,
+                        title: existsOfSameTitle[0].title,
+                        colors: [{
+                            color: existsOfSameTitle[0].colors[0],
+                            id: existsOfSameTitle[0].id,
+                        }]
+                    })
+                }
+            }
+
+            console.log(colorsRedone)
+            setColorList(colorsRedone);
+        } catch (error){
+
+        }        
+    }
+
+    useEffect(() => {
+        if (variantsData.colors.length < 1 && variantsData.sizes.length < 1) return
+
+        activeColorCheck();
+        activeSizeCheck();
+
+    }, [variantsData])
+
+    function activeColorCheck() {
+        if (variantsData.colors.length > 0) {
+            const data = variantsData.colors.filter((item:any) => item.active === true);
+            
+            const newData:string[] = []
+            data.forEach((data:any) => {
+                newData.push(data.color)
+            })
+            console.log(newData)
+            setActiveColors(newData)
+        }
+    }
+
+    function activeSizeCheck() {
+        if (variantsData.sizes.length > 0) {
+            const data = variantsData.sizes.filter((item:any) => item.active === true);
+
+            const newData:string[] = []
+            data.forEach((data:any) => {
+                newData.push(data.size)
+            })
+    
+            setActiveColors(newData)
+        }
+    }
+
+    function gcd (width:number,height:number): number  {
+        const value = (height == 0) ? width : gcd(height, width%height);
+        console.log(value)
+        return value;
+    }
+
+    function findDesignArea () {
+
+    }
+
     return (
         <main className="design-page">
 
@@ -550,6 +596,18 @@ const Design = () => {
                     onMouseDown={() => setVariantsMenuOpen(true)}>
                         VariantsMenu
                     </button>
+                    <button className="button"
+                    onMouseDown={getColorCodes}>
+                        Get Color Codes
+                    </button>
+                    {
+                        activeColors.length > 0 &&
+                        <DDWrap id={"hello"} value={0} options={activeColors} setNewValue={() => {console.log("hi")}} />
+                    }
+                    {
+                        activeSizes.length > 0 &&
+                        <DDWrap id={"hi"} value={0} options={activeSizes} setNewValue={() => {console.log("hi")}} />
+                    }
                 </div>
         
                 <div className={`design-screen-container ${isMouseMoving ? "hide-cursor" : ""}`}
@@ -709,6 +767,7 @@ const Design = () => {
                 </div>
         
                 <div className="settings-nav">
+                    <div className="top-settings">
                     {
                         currentlyMovingSettings.type.length > 0 &&
                         currentlyMovingSettings.type === "image" 
@@ -1115,6 +1174,8 @@ const Design = () => {
                         :
                         ""
                     }
+
+                    </div>
                     <div className="result-wrapper">
                         <button>
                             Finish
@@ -1198,32 +1259,72 @@ const Design = () => {
                 <div className="variants-wrapper">            
                     <div className="size-variants-wrapper">
                         {
-                            variantsData.sizes.map((size:string, index:number) => (
+                            variantsData.sizes.map((size:any, index:number) => (
                                 <button 
                                     key={`size-button-${index}`}
-                                    className={``}
+                                    className={`${size.active ? "picked" : ""}`}
+                                    onClick={() => {
+                                        const index:number = variantsData.sizes.findIndex((item:any) => item.size === size.size)
+                                        const newArray:any[] = variantsData.sizes;
+                                        newArray[index] = {
+                                            size: size.size,
+                                            active: !size.active
+                                        }
+                                        console.log(newArray)
+                                        setVariantsData({  
+                                            id: variantsData.id,
+                                            title: variantsData.title,
+                                            variants: variantsData.variants,
+                                            sizes: newArray,
+                                            colors: variantsData.colors
+                                        })
+                                        setRefresh(!refresh)
+                                    }}
                                     >
-                                    {size}
+                                    {size.size}
                                 </button>
                             ))
                         }
                     </div>
                     <div className="color-variants-wrapper">
-                        {/* {
-                            variantsData.colors.map((color:string, index:number) => {
+                        {
+                            variantsData.colors.map((color:any, index:number) => {
+                                // console.log(color)
+                                const colorCode:any = colorList.filter((item:any) => item.title === color.color)[0]
 
-                                const currentColor = colorCodes.filter(())
-
-                                return (
-                                    <div>
-                                        <span
-                                            style={{
-                                            backgroundColor: `${color}`
+                                if (colorCode != undefined) {
+                                    return (
+                                        <div 
+                                            key={colorCode.colors[0].color} 
+                                            className={`${color.active ? "picked" : ""}`}
+                                            onClick={() => {
+                                                const index:number = variantsData.colors.findIndex((item:any) => item.color === color.color)
+                                                const newArray:any[] = variantsData.colors;
+                                                newArray[index] = {
+                                                    color: color.color,
+                                                    active: !color.active
+                                                }
+                                                console.log(newArray)
+                                                setVariantsData({  
+                                                    id: variantsData.id,
+                                                    title: variantsData.title,
+                                                    variants: variantsData.variants,
+                                                    sizes: variantsData.sizes,
+                                                    colors: newArray
+                                                })
+                                                setRefresh(!refresh)
                                             }}
-                                        ></span>
-                                    </div>
-                            )})
-                        } */}
+                                            >
+                                            <span
+                                                style={{
+                                                backgroundColor: `${colorCode.colors[0].color}`
+                                                }}
+                                            ></span>
+                                        </div>
+                                    )
+                                }
+                            })
+                        }
                     </div>
                 </div>
 

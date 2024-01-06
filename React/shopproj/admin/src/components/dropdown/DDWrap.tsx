@@ -10,6 +10,7 @@ interface Props {
 
 const DDWrap = ({id, options, value, setNewValue}:Props) => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+    console.log(options)
     return (
         <div id={id} className={`ddwrap`}>
             <p>{value}</p>
