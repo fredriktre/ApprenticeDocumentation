@@ -409,23 +409,30 @@ button {
   position: absolute;
   top: calc(100% + 1rem);
   left: 0;
+  z-index: 2;
 
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 0.5rem;
 
-  width: 100%;
-  height: 11rem;
+  width: calc(100% - 2rem);
+  height: 12rem;
 
   overflow-y: auto;
 
   opacity: 0;
   pointer-events: none;
 
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 1rem;
+
   transition: 0.25s;
 }
 
 .dropdown.open {
+  z-index: 5;
   opacity: 1;
   pointer-events: auto;
 }

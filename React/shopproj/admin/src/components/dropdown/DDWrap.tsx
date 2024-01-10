@@ -3,7 +3,7 @@ import DDOption from "./DDOption";
 
 interface Props {
     id: string|undefined
-    value: number
+    value: string|number
     options: string[]|number[]
     setNewValue: any
 }

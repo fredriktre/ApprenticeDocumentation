@@ -305,37 +305,6 @@ const Design = () => {
         setRefresh(!refresh);
     }
 
-    // const getProviders = async () => {
-    //     console.log("start attempt")
-
-    //     try {
-
-    //         const res = await fetch("/api/getproviders", {
-    //             method: "GET",
-    //         });
-    //         const data = await res.json();
-    //         const providers = data.body
-    //         console.log(data)
-
-    //         for (let i = 0; i < providers.length; i++) {
-    //             if (providers[i].location.country != "US" && providers[i].location.country != "CN") {
-    //                 console.log("EU location")
-    //                 console.log(providers[i].location.country)
-    //                 const res = await fetch(`/api/getprovider/${providers[i].id}`, {
-    //                     method: "GET",
-    //                 });
-    //                 const data = await res.json();
-    //                 data.body.blueprints
-    //             } else {
-    //                 console.log("!EU location")
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-
     const getBlueprints = async () => {
         console.log("start attempt");
 
@@ -549,7 +518,7 @@ const Design = () => {
                 newData.push(data.size)
             })
     
-            setActiveColors(newData)
+            setActiveSizes(newData)
         }
     }
 
@@ -600,14 +569,8 @@ const Design = () => {
                     onMouseDown={getColorCodes}>
                         Get Color Codes
                     </button>
-                    {
-                        activeColors.length > 0 &&
-                        <DDWrap id={"hello"} value={0} options={activeColors} setNewValue={() => {console.log("hi")}} />
-                    }
-                    {
-                        activeSizes.length > 0 &&
-                        <DDWrap id={"hi"} value={0} options={activeSizes} setNewValue={() => {console.log("hi")}} />
-                    }
+                    <DDWrap id={"colorDropDown"} value={"Edit Color"} options={activeColors} setNewValue={() => {console.log("hi")}} />
+                    <DDWrap id={"sizeDropDown"} value={"Edit Size"} options={activeSizes} setNewValue={() => {console.log("hi")}} />
                 </div>
         
                 <div className={`design-screen-container ${isMouseMoving ? "hide-cursor" : ""}`}
